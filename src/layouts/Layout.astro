@@ -2,6 +2,12 @@
 // src/layouts/Layout.astro
 import Footer from "../components/Footer.astro";
 import "../styles/global.css";
+
+interface Props {
+	baseUrl: string;
+}
+
+const { baseUrl } = Astro.props;
 ---
 
 <html lang="es" class="dark">
@@ -41,7 +47,14 @@ import "../styles/global.css";
 				class="max-w-4xl mx-auto px-4 py-4 flex justify-between items-center"
 			>
 				<div class="text-2xl font-bold">
-					<a href="#top">OrPiRa</a>
+					<!-- <a href="#top">OrPiRa</a> -->
+					<a href="#top"
+						><img
+							src={`${baseUrl}/opr.png`}
+							alt="OrPiRa"
+							class="size-14 inline text-white"
+						/></a
+					>
 				</div>
 
 				<!-- Menú desktop -->
