@@ -6,7 +6,9 @@
 		"dev": "astro dev",
 		"start": "astro dev",
 		"build": "astro check && astro build",
-		"deploy": "astro deploy",
+		"deploy": "./deploy.sh",
+		"deploy-quick": "git add . && git commit -m 'Quick deploy' && git push origin main",
+		"deploy-message": "./deploy.sh",
 		"preview": "astro preview",
 		"astro": "astro"
 	},
