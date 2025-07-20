@@ -1,0 +1,251 @@
+---
+// src/layouts/Layout.astro
+import Footer from "../components/Footer.astro"; // Si aún no lo has creado, puedes comentar esta línea
+import "../styles/global.css";
+
+// Obtener el año actual dinámicamente
+const year = new Date().getFullYear();
+---
+
+<html lang="es" class="dark">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>OrPiRa | Portfolio</title>
+
+		<script>
+			if (
+				localStorage.theme === "dark" ||
+				(!("theme" in localStorage) &&
+					window.matchMedia("(prefers-color-scheme: dark)").matches)
+			) {
+				document.documentElement.classList.add("dark");
+			} else {
+				document.documentElement.classList.remove("dark");
+			}
+		</script>
+
+		<style>
+			html {
+				transition:
+					background-color 0.5s ease,
+					color 0.5s ease;
+			}
+		</style>
+	</head>
+
+	<body
+		class="bg-white dark:bg-zinc-900 text-zinc-900 dark:text-white font-sans"
+	>
+		<header
+			class="fixed top-0 w-full bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md shadow z-50"
+		>
+			<nav
+				class="max-w-4xl mx-auto px-4 py-4 flex justify-between items-center"
+			>
+				<div class="text-2xl font-bold">
+					<a href="#top">OrPiRa</a>
+				</div>
+
+				<!-- Menú desktop -->
+				<ul class="hidden md:flex space-x-6 text-base">
+					<li><a href="#top" class="hover:underline">Inicio</a></li>
+					<li><a href="#experience" class="hover:underline">Experiencia</a></li>
+					<li><a href="#skills" class="hover:underline">Habilidades</a></li>
+					<li><a href="#projects" class="hover:underline">Proyectos</a></li>
+					<li><a href="#services" class="hover:underline">Servicios</a></li>
+					<li><a href="#contact" class="hover:underline">Contacto</a></li>
+				</ul>
+
+				<!-- Botones de la derecha -->
+				<div class="flex items-center">
+					<button 
+						id="theme-toggle" 
+						class="border px-3 py-2 rounded hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+						aria-label="Cambiar tema"
+					>
+						<!-- Icono de sol (tema claro) - se muestra en modo oscuro -->
+						<svg
+							id="sun-icon"
+							class="w-5 h-5 hidden dark:block"
+							fill="currentColor"
+							viewBox="0 0 20 20"
+						>
+							<path
+								fill-rule="evenodd"
+								d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"
+								clip-rule="evenodd"
+							></path>
+						</svg>
+						
+						<!-- Icono de luna (tema oscuro) - se muestra en modo claro -->
+						<svg
+							id="moon-icon"
+							class="w-5 h-5 block dark:hidden"
+							fill="currentColor"
+							viewBox="0 0 20 20"
+						>
+							<path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+						</svg>
+					</button>
+
+					<!-- Botón hamburguesa para móvil -->
+					<button
+						id="mobile-menu-button"
+						class="md:hidden ml-2 p-2 rounded focus:outline-none hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+						aria-label="Abrir menú"
+					>
+						<!-- Icono hamburguesa (por defecto) -->
+						<svg
+							id="hamburger-icon"
+							class="w-6 h-6"
+							fill="none"
+							stroke="currentColor"
+							viewBox="0 0 24 24"
+						>
+							<path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								stroke-width="2"
+								d="M4 6h16M4 12h16M4 18h16"></path>
+						</svg>
+						
+						<!-- Icono X (cuando el menú está abierto) -->
+						<svg
+							id="close-icon"
+							class="w-6 h-6 hidden"
+							fill="none"
+							stroke="currentColor"
+							viewBox="0 0 24 24"
+						>
+							<path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								stroke-width="2"
+								d="M6 18L18 6M6 6l12 12"></path>
+						</svg>
+					</button>
+				</div>
+			</nav>
+
+			<!-- Menú móvil -->
+			<div
+				id="mobile-menu"
+				class="md:hidden hidden bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md"
+			>
+				<ul class="px-4 py-2 space-y-2">
+					<li>
+						<a
+							href="#experience"
+							class="block py-2 hover:underline mobile-menu-link">Experiencia</a
+						>
+					</li>
+					<li>
+						<a
+							href="#skills"
+							class="block py-2 hover:underline mobile-menu-link">Habilidades</a
+						>
+					</li>
+					<li>
+						<a
+							href="#projects"
+							class="block py-2 hover:underline mobile-menu-link">Proyectos</a
+						>
+					</li>
+					<li>
+						<a
+							href="#services"
+							class="block py-2 hover:underline mobile-menu-link">Servicios</a
+						>
+					</li>
+					<li>
+						<a
+							href="#contact"
+							class="block py-2 hover:underline mobile-menu-link">Contacto</a
+						>
+					</li>
+				</ul>
+			</div>
+		</header>
+
+		<main class="pt-24 pb-32 max-w-4xl mx-auto px-4">
+			<slot />
+		</main>
+
+		<!-- Footer fijo -->
+		<footer
+			class="fixed bottom-0 w-full py-4 text-center border-t border-zinc-200 dark:border-zinc-700 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md z-40"
+		>
+			<div class="flex justify-center gap-6 text-lg mb-2">
+				<a href="https://linkedin.com/in/orlandopr" aria-label="LinkedIn">🔗</a>
+				<a href="https://github.com/orpira" aria-label="GitHub">💻</a>
+				<a href="mailto:orlandopr@example.com" aria-label="Correo">✉️</a>
+			</div>
+			<p class="text-xs">Orlando Pineda Raad · Bilbao, España · {year}</p>
+		</footer>
+
+		<script>
+			// Toggle de tema
+			const themeToggle = document.getElementById("theme-toggle");
+			if (themeToggle) {
+				themeToggle.addEventListener("click", () => {
+					const html = document.documentElement;
+					html.classList.toggle("dark");
+					localStorage.theme = html.classList.contains("dark")
+						? "dark"
+						: "light";
+				});
+			}
+
+			// Toggle del menú móvil
+			const mobileMenuButton = document.getElementById("mobile-menu-button");
+			const mobileMenu = document.getElementById("mobile-menu");
+			const hamburgerIcon = document.getElementById("hamburger-icon");
+			const closeIcon = document.getElementById("close-icon");
+
+			if (mobileMenuButton && mobileMenu && hamburgerIcon && closeIcon) {
+				mobileMenuButton.addEventListener("click", () => {
+					const isMenuOpen = !mobileMenu.classList.contains("hidden");
+					
+					mobileMenu.classList.toggle("hidden");
+					
+					// Cambiar iconos y aria-label
+					if (isMenuOpen) {
+						// Menú se está cerrando
+						hamburgerIcon.classList.remove("hidden");
+						closeIcon.classList.add("hidden");
+						mobileMenuButton.setAttribute("aria-label", "Abrir menú");
+					} else {
+						// Menú se está abriendo
+						hamburgerIcon.classList.add("hidden");
+						closeIcon.classList.remove("hidden");
+						mobileMenuButton.setAttribute("aria-label", "Cerrar menú");
+					}
+				});
+
+				// Cerrar menú al hacer clic en un enlace
+				const mobileMenuLinks = document.querySelectorAll(".mobile-menu-link");
+				mobileMenuLinks.forEach((link) => {
+					link.addEventListener("click", () => {
+						mobileMenu.classList.add("hidden");
+						// Restaurar icono hamburguesa
+						hamburgerIcon.classList.remove("hidden");
+						closeIcon.classList.add("hidden");
+						mobileMenuButton.setAttribute("aria-label", "Abrir menú");
+					});
+				});
+
+				// Cerrar menú al redimensionar ventana (cuando se pasa a desktop)
+				window.addEventListener("resize", () => {
+					if (window.innerWidth >= 768) {
+						mobileMenu.classList.add("hidden");
+						// Restaurar icono hamburguesa
+						hamburgerIcon.classList.remove("hidden");
+						closeIcon.classList.add("hidden");
+						mobileMenuButton.setAttribute("aria-label", "Abrir menú");
+					}
+				});
+			}
+		</script>
+	</body>
+</html>

@@ -1,47 +1,85 @@
-# Astro Starter Kit: Minimal
+# Portfolio Orlando Pineda Raad
 
-```sh
-npm create astro@latest -- --template minimal
+Portfolio personal desarrollado con Astro y Tailwind CSS, desplegado automáticamente en GitHub Pages.
+
+## 🚀 Tecnologías
+
+- **Astro** - Framework para sitios web estáticos
+- **Tailwind CSS** - Framework de CSS utilitario
+- **TypeScript** - Superset de JavaScript con tipado estático
+- **GitHub Pages** - Hosting gratuito para sitios estáticos
+
+## 🛠️ Desarrollo Local
+
+### Prerequisitos
+
+- Node.js 18+
+- npm o yarn
+
+### Instalación
+
+```bash
+# Clonar el repositorio
+git clone https://github.com/orpira/portfolio-orpira.git
+cd portfolio-orpira
+
+# Instalar dependencias
+npm install
+
+# Iniciar servidor de desarrollo
+npm run dev
 ```
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/withastro/astro/tree/latest/examples/minimal)
-[![Open with CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/sandbox/github/withastro/astro/tree/latest/examples/minimal)
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/withastro/astro?devcontainer_path=.devcontainer/minimal/devcontainer.json)
+El sitio estará disponible en `http://localhost:4321`
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+## � Scripts Disponibles
 
-## 🚀 Project Structure
+- `npm run dev` - Inicia el servidor de desarrollo
+- `npm run build` - Construye el sitio para producción
+- `npm run preview` - Previsualiza el build de producción
+- `npm run astro` - CLI de Astro
 
-Inside of your Astro project, you'll see the following folders and files:
+## 🚀 Despliegue
+
+El sitio se despliega automáticamente en GitHub Pages cuando se hace push a la rama `main`.
+
+### Configuración de GitHub Pages
+
+1. Ve a tu repositorio en GitHub
+2. Settings → Pages
+3. Source: GitHub Actions
+4. El workflow se ejecutará automáticamente
+
+### URL del sitio
+
+Una vez desplegado, el sitio estará disponible en:
+`https://orpira.github.io/portfolio-orpira/`
+
+## 📁 Estructura del Proyecto
 
 ```text
 /
-├── public/
+├── public/          # Archivos estáticos (imágenes, iconos)
 ├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
+│   ├── components/  # Componentes reutilizables
+│   ├── layouts/     # Layouts de página
+│   ├── pages/       # Páginas del sitio
+│   └── styles/      # Estilos globales
+├── astro.config.mjs # Configuración de Astro
+└── tailwind.config.js # Configuración de Tailwind
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+## 🎨 Características
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+- ✅ Diseño responsive
+- ✅ Modo oscuro/claro
+- ✅ Navegación suave
+- ✅ Optimizado para SEO
+- ✅ Menú hamburguesa móvil
+- ✅ Habilidades organizadas por categorías
+- ✅ Proyectos destacados
+- ✅ Información de contacto
 
-Any static assets, like images, can be placed in the `public/` directory.
+## 📝 Licencia
 
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+Este proyecto está bajo la Licencia MIT.
