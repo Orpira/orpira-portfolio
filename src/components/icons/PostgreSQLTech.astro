@@ -1,0 +1,15 @@
+---
+// src/components/icons/PostgreSQLTech.astro
+interface Props {
+	class?: string;
+}
+
+const { class: className = "size-4" } = Astro.props;
+---
+
+<img
+	src="/orpira-portfolio/postgresql-icon.svg"
+	alt="PostgreSQL"
+	class={`inline-block ${className}`}
+	{...Astro.props}
+/>

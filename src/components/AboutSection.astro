@@ -2,6 +2,7 @@
 import Email from "./icons/Email.astro";
 import Github from "./icons/Github.astro";
 import LinkedIn from "./icons/LinkedIn.astro";
+import Phone from "./icons/Phone.astro";
 import RedSocial from "./RedSocial.astro";
 
 // src/components/AboutSection.astro
@@ -32,7 +33,7 @@ const { baseUrl } = Astro.props;
 	<!-- Botón para descargar CV -->
 	<div class="mt-8 mb-6">
 		<a
-			href={`${baseUrl}/CV_OrlandoPinedaRaad.pdf`}
+			href={`${baseUrl}/CV_Orlando_Pineda_Raad.pdf`}
 			download="CV_Orlando_Pineda_Raad.pdf"
 			class="inline-flex items-center gap-3 bg-amber-500 hover:bg-amber-600 dark:bg-amber-600 dark:hover:bg-amber-700 text-white font-semibold px-6 py-3 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
 		>
@@ -62,7 +63,8 @@ const { baseUrl } = Astro.props;
 				<span class="hidden sm:inline">orpira@icloud.com</span>
 			</RedSocial>
 			<RedSocial>
-				<span class="text-xs sm:text-sm">📱 +34 643 684 541</span>
+				<Phone class="size-4 sm:size-6 text-yellow-400" />
+				<span class="text-xs sm:text-sm">+34 643 684 541</span>
 			</RedSocial>
 		</nav>
 	</div>

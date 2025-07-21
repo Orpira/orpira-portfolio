@@ -1,0 +1,15 @@
+---
+// src/components/icons/JavaTech.astro
+interface Props {
+	class?: string;
+}
+
+const { class: className = "size-4" } = Astro.props;
+---
+
+<img
+	src="/orpira-portfolio/java-icon.svg"
+	alt="Java"
+	class={`inline-block ${className}`}
+	{...Astro.props}
+/>
