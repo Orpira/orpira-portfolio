@@ -12,135 +12,212 @@ const { baseUrl } = Astro.props;
 		Tecnologías y Herramientas
 	</h2>
 
-	<!-- Bases de Datos -->
-	<div class="mb-8">
-		<h3 class="text-lg font-semibold mb-4 text-amber-600 dark:text-amber-400">
-			Bases de Datos
-		</h3>
-		<div class="grid grid-cols-2 sm:grid-cols-4 gap-6 justify-items-center">
-			<div class="flex flex-col items-center">
-				<img
-					src={`${baseUrl}/postgresql-icon.svg`}
-					alt="PostgreSQL"
-					class="w-12 h-12 mb-2"
-				/>
-				<span class="text-sm">PostgreSQL</span>
-			</div>
-			<div class="flex flex-col items-center">
-				<img
-					src={`${baseUrl}/mysql-icon.svg`}
-					alt="MySQL"
-					class="w-12 h-12 mb-2"
-				/>
-				<span class="text-sm">MySQL</span>
-			</div>
+	<!-- Contenedor con títulos desplegables en línea -->
+	<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+		<!-- Bases de Datos -->
+		<div
+			class="bg-white dark:bg-zinc-800 rounded-xl border border-zinc-200 dark:border-zinc-700 shadow-lg overflow-hidden"
+		>
+			<details class="group">
+				<summary
+					class="flex items-center justify-between p-4 cursor-pointer bg-amber-50 dark:bg-amber-900/20 hover:bg-amber-100 dark:hover:bg-amber-800/30 transition-colors"
+				>
+					<h3 class="text-lg font-semibold text-amber-600 dark:text-amber-400">
+						Bases de Datos
+					</h3>
+					<svg
+						class="w-5 h-5 transition-transform group-open:rotate-180"
+						fill="currentColor"
+						viewBox="0 0 20 20"
+					>
+						<path
+							fill-rule="evenodd"
+							d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+							clip-rule="evenodd"></path>
+					</svg>
+				</summary>
+				<div class="p-4 space-y-4">
+					<div class="flex flex-col items-center">
+						<img
+							src={`${baseUrl}/postgresql-icon.svg`}
+							alt="PostgreSQL"
+							class="w-12 h-12 mb-2"
+						/>
+						<span class="text-sm">PostgreSQL</span>
+					</div>
+					<div class="flex flex-col items-center">
+						<img
+							src={`${baseUrl}/mysql-icon.svg`}
+							alt="MySQL"
+							class="w-12 h-12 mb-2"
+						/>
+						<span class="text-sm">MySQL</span>
+					</div>
+				</div>
+			</details>
 		</div>
-	</div>
 
-	<!-- Lenguajes de Programación -->
-	<div class="mb-8">
-		<h3 class="text-lg font-semibold mb-4 text-blue-600 dark:text-blue-400">
-			Lenguajes de Programación
-		</h3>
-		<div class="grid grid-cols-2 sm:grid-cols-4 gap-6 justify-items-center">
-			<div class="flex flex-col items-center">
-				<img
-					src={`${baseUrl}/java-icon.svg`}
-					alt="Java"
-					class="w-12 h-12 mb-2"
-				/>
-				<span class="text-sm">Java</span>
-			</div>
-			<div class="flex flex-col items-center">
-				<img
-					src={`${baseUrl}/javascript-icon.svg`}
-					alt="JavaScript"
-					class="w-12 h-12 mb-2"
-				/>
-				<span class="text-sm">JavaScript</span>
-			</div>
-			<div class="flex flex-col items-center">
-				<img
-					src={`${baseUrl}/typescriptlang-icon.svg`}
-					alt="TypeScript"
-					class="w-12 h-12 mb-2"
-				/>
-				<span class="text-sm">TypeScript</span>
-			</div>
-			<div class="flex flex-col items-center">
-				<img
-					src={`${baseUrl}/w3_html5-icon.svg`}
-					alt="HTML"
-					class="w-12 h-12 mb-2"
-				/>
-				<span class="text-sm">HTML</span>
-			</div>
+		<!-- Lenguajes de Programación -->
+		<div
+			class="bg-white dark:bg-zinc-800 rounded-xl border border-zinc-200 dark:border-zinc-700 shadow-lg overflow-hidden"
+		>
+			<details class="group">
+				<summary
+					class="flex items-center justify-between p-4 cursor-pointer bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-800/30 transition-colors"
+				>
+					<h3 class="text-lg font-semibold text-blue-600 dark:text-blue-400">
+						Programación
+					</h3>
+					<svg
+						class="w-5 h-5 transition-transform group-open:rotate-180"
+						fill="currentColor"
+						viewBox="0 0 20 20"
+					>
+						<path
+							fill-rule="evenodd"
+							d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+							clip-rule="evenodd"></path>
+					</svg>
+				</summary>
+				<div class="p-4 space-y-4">
+					<div class="flex flex-col items-center">
+						<img
+							src={`${baseUrl}/java-icon.svg`}
+							alt="Java"
+							class="w-12 h-12 mb-2"
+						/>
+						<span class="text-sm">Java</span>
+					</div>
+					<div class="flex flex-col items-center">
+						<img
+							src={`${baseUrl}/javascript-icon.svg`}
+							alt="JavaScript"
+							class="w-12 h-12 mb-2"
+						/>
+						<span class="text-sm">JavaScript</span>
+					</div>
+					<div class="flex flex-col items-center">
+						<img
+							src={`${baseUrl}/typescriptlang-icon.svg`}
+							alt="TypeScript"
+							class="w-12 h-12 mb-2"
+						/>
+						<span class="text-sm">TypeScript</span>
+					</div>
+					<div class="flex flex-col items-center">
+						<img
+							src={`${baseUrl}/w3_html5-icon.svg`}
+							alt="HTML"
+							class="w-12 h-12 mb-2"
+						/>
+						<span class="text-sm">HTML</span>
+					</div>
+				</div>
+			</details>
 		</div>
-	</div>
 
-	<!-- Frameworks y Librerías -->
-	<div class="mb-8">
-		<h3 class="text-lg font-semibold mb-4 text-green-600 dark:text-green-400">
-			Frameworks y Librerías
-		</h3>
-		<div class="grid grid-cols-2 sm:grid-cols-4 gap-6 justify-items-center">
-			<div class="flex flex-col items-center">
-				<img
-					src={`${baseUrl}/reactjs-icon.svg`}
-					alt="React"
-					class="w-12 h-12 mb-2"
-				/>
-				<span class="text-sm">React</span>
-			</div>
-			<div class="flex flex-col items-center">
-				<img
-					src={`${baseUrl}/tailwindcss-icon.svg`}
-					alt="Tailwind CSS"
-					class="w-12 h-12 mb-2"
-				/>
-				<span class="text-sm">Tailwind CSS</span>
-			</div>
-			<div class="flex flex-col items-center">
-				<img
-					src={`${baseUrl}/laravel-icon.svg`}
-					alt="Laravel"
-					class="w-12 h-12 mb-2"
-				/>
-				<span class="text-sm">Laravel</span>
-			</div>
+		<!-- Frameworks y Librerías -->
+		<div
+			class="bg-white dark:bg-zinc-800 rounded-xl border border-zinc-200 dark:border-zinc-700 shadow-lg overflow-hidden"
+		>
+			<details class="group">
+				<summary
+					class="flex items-center justify-between p-4 cursor-pointer bg-green-50 dark:bg-green-900/20 hover:bg-green-100 dark:hover:bg-green-800/30 transition-colors"
+				>
+					<h3 class="text-lg font-semibold text-green-600 dark:text-green-400">
+						Frameworks
+					</h3>
+					<svg
+						class="w-5 h-5 transition-transform group-open:rotate-180"
+						fill="currentColor"
+						viewBox="0 0 20 20"
+					>
+						<path
+							fill-rule="evenodd"
+							d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+							clip-rule="evenodd"></path>
+					</svg>
+				</summary>
+				<div class="p-4 space-y-4">
+					<div class="flex flex-col items-center">
+						<img
+							src={`${baseUrl}/reactjs-icon.svg`}
+							alt="React"
+							class="w-12 h-12 mb-2"
+						/>
+						<span class="text-sm">React</span>
+					</div>
+					<div class="flex flex-col items-center">
+						<img
+							src={`${baseUrl}/tailwindcss-icon.svg`}
+							alt="Tailwind CSS"
+							class="w-12 h-12 mb-2"
+						/>
+						<span class="text-sm">Tailwind CSS</span>
+					</div>
+					<div class="flex flex-col items-center">
+						<img
+							src={`${baseUrl}/laravel-icon.svg`}
+							alt="Laravel"
+							class="w-12 h-12 mb-2"
+						/>
+						<span class="text-sm">Laravel</span>
+					</div>
+				</div>
+			</details>
 		</div>
-	</div>
 
-	<!-- Herramientas y DevOps -->
-	<div class="mb-8">
-		<h3 class="text-lg font-semibold mb-4 text-purple-600 dark:text-purple-400">
-			Herramientas y DevOps
-		</h3>
-		<div class="grid grid-cols-2 sm:grid-cols-4 gap-6 justify-items-center">
-			<div class="flex flex-col items-center">
-				<img
-					src={`${baseUrl}/git-scm-icon.svg`}
-					alt="Git"
-					class="w-12 h-12 mb-2"
-				/>
-				<span class="text-sm">Git & GitHub</span>
-			</div>
-			<div class="flex flex-col items-center">
-				<img
-					src={`${baseUrl}/vitejsdev-icon.svg`}
-					alt="Vite"
-					class="w-12 h-12 mb-2"
-				/>
-				<span class="text-sm">Vite</span>
-			</div>
-			<div class="flex flex-col items-center">
-				<img
-					src={`${baseUrl}/linux-icon.svg`}
-					alt="Linux"
-					class="w-12 h-12 mb-2"
-				/>
-				<span class="text-sm">Linux</span>
-			</div>
+		<!-- Herramientas y DevOps -->
+		<div
+			class="bg-white dark:bg-zinc-800 rounded-xl border border-zinc-200 dark:border-zinc-700 shadow-lg overflow-hidden"
+		>
+			<details class="group">
+				<summary
+					class="flex items-center justify-between p-4 cursor-pointer bg-purple-50 dark:bg-purple-900/20 hover:bg-purple-100 dark:hover:bg-purple-800/30 transition-colors"
+				>
+					<h3
+						class="text-lg font-semibold text-purple-600 dark:text-purple-400"
+					>
+						DevOps
+					</h3>
+					<svg
+						class="w-5 h-5 transition-transform group-open:rotate-180"
+						fill="currentColor"
+						viewBox="0 0 20 20"
+					>
+						<path
+							fill-rule="evenodd"
+							d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+							clip-rule="evenodd"></path>
+					</svg>
+				</summary>
+				<div class="p-4 space-y-4">
+					<div class="flex flex-col items-center">
+						<img
+							src={`${baseUrl}/git-scm-icon.svg`}
+							alt="Git"
+							class="w-12 h-12 mb-2"
+						/>
+						<span class="text-sm">Git & GitHub</span>
+					</div>
+					<div class="flex flex-col items-center">
+						<img
+							src={`${baseUrl}/vitejsdev-icon.svg`}
+							alt="Vite"
+							class="w-12 h-12 mb-2"
+						/>
+						<span class="text-sm">Vite</span>
+					</div>
+					<div class="flex flex-col items-center">
+						<img
+							src={`${baseUrl}/linux-icon.svg`}
+							alt="Linux"
+							class="w-12 h-12 mb-2"
+						/>
+						<span class="text-sm">Linux</span>
+					</div>
+				</div>
+			</details>
 		</div>
 	</div>
 </section>
