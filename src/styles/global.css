@@ -5,3 +5,8 @@
 html {
 	scroll-behavior: smooth;
 }
+
+.icono-borde-blanco {
+	filter: drop-shadow(1px 1px 0 #fff) drop-shadow(-1px -1px 0 #fff)
+		drop-shadow(1px -1px 0 #fff) drop-shadow(-1px 1px 0 #fff);
+}
