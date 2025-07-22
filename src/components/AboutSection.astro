@@ -64,8 +64,31 @@ const { baseUrl } = Astro.props;
 			</RedSocial>
 			<RedSocial>
 				<Phone class="size-4 sm:size-6 text-yellow-400" />
-				<span class="text-xs sm:text-sm">+34 643 684 541</span>
+				<span
+					id="phone-text"
+					class="text-xs sm:text-sm transition-opacity duration-300 inline-block min-w-[7.5rem] text-center"
+					>+34 643 684 541</span
+				>
 			</RedSocial>
 		</nav>
+
+		<script>
+			// Alternar entre el número y "Llámame..." cada 2 segundos
+			document.addEventListener("DOMContentLoaded", () => {
+				const phoneText = document.getElementById("phone-text");
+				if (!phoneText) return;
+				const number = "+34 643 684 541";
+				const callMe = "Llámame...";
+				let showingNumber = true;
+				setInterval(() => {
+					phoneText.style.opacity = "0";
+					setTimeout(() => {
+						phoneText.textContent = showingNumber ? callMe : number;
+						phoneText.style.opacity = "1";
+						showingNumber = !showingNumber;
+					}, 300);
+				}, 2000);
+			});
+		</script>
 	</div>
 </section>
