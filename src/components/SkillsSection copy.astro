@@ -21,31 +21,15 @@ const { baseUrl } = Astro.props;
 				<div
 					class="absolute w-full h-full backface-hidden bg-white dark:bg-zinc-800 rounded-xl shadow p-6 flex items-center justify-center"
 				>
-					<h3
-						class="text-lg text-center font-semibold text-amber-600 dark:text-amber-400"
-					>
+					<h3 class="text-lg font-semibold text-amber-600 dark:text-amber-400">
 						Bases de Datos
 					</h3>
 				</div>
 				<div
 					class="absolute w-full h-full backface-hidden [transform:rotateY(180deg)] bg-amber-100 dark:bg-amber-900 text-zinc-800 dark:text-white rounded-xl shadow p-6 flex flex-col gap-3 items-center justify-center"
 				>
-					<div class="flex flex-col items-center">
-						<img
-							src={`${baseUrl}/postgresql-icon.svg`}
-							alt="PostgreSQL"
-							class="w-12 h-12 mb-2"
-						/>
-						<span class="text-sm">PostgreSQL</span>
-					</div>
-					<div class="flex flex-col items-center">
-						<img
-							src={`${baseUrl}/mysql-icon.svg`}
-							alt="MySQL"
-							class="w-12 h-12 mb-2"
-						/>
-						<span class="text-sm">MySQL</span>
-					</div>
+					<div class="text-sm">PostgreSQL</div>
+					<div class="text-sm">MySQL</div>
 				</div>
 			</div>
 		</label>
@@ -59,47 +43,15 @@ const { baseUrl } = Astro.props;
 				<div
 					class="absolute w-full h-full backface-hidden bg-white dark:bg-zinc-800 rounded-xl shadow p-6 flex items-center justify-center"
 				>
-					<h3
-						class="text-lg text-center font-semibold text-cyan-600 dark:text-cyan-800"
-					>
-						Lenguajes de Desarrollo
+					<h3 class="text-lg font-semibold text-cyan-600 dark:text-cyan-400">
+						Programación
 					</h3>
 				</div>
 				<div
 					class="absolute w-full h-full backface-hidden [transform:rotateY(180deg)] bg-cyan-100 dark:bg-cyan-900 text-zinc-800 dark:text-white rounded-xl shadow p-6 flex flex-col gap-3 items-center justify-center"
 				>
-					<div class="flex flex-col items-center">
-						<img
-							src={`${baseUrl}/java-icon.svg`}
-							alt="Java"
-							class="size-6 mb-2"
-						/>
-						<span class="text-sm">Java</span>
-					</div>
-					<div class="flex flex-col items-center">
-						<img
-							src={`${baseUrl}/javascript-icon.svg`}
-							alt="JavaScript"
-							class="size-6 mb-2"
-						/>
-						<span class="text-sm">JavaScript</span>
-					</div>
-					<div class="flex flex-col items-center">
-						<img
-							src={`${baseUrl}/typescriptlang-icon.svg`}
-							alt="TypeScript"
-							class="size-6 mb-2"
-						/>
-						<span class="text-sm">TypeScript</span>
-					</div>
-					<div class="flex flex-col items-center">
-						<img
-							src={`${baseUrl}/w3_html5-icon.svg`}
-							alt="HTML"
-							class="size-6 mb-2"
-						/>
-						<span class="text-sm">HTML</span>
-					</div>
+					<div class="text-sm">Java</div>
+					<div class="text-sm">JavaScript</div>
 				</div>
 			</div>
 		</label>
@@ -114,46 +66,17 @@ const { baseUrl } = Astro.props;
 					class="absolute w-full h-full backface-hidden bg-white dark:bg-zinc-800 rounded-xl shadow p-6 flex items-center justify-center"
 				>
 					<h3
-						class="text-lg text-center font-semibold text-purple-600 dark:text-purple-400"
+						class="text-lg font-semibold text-purple-600 dark:text-purple-400"
 					>
-						Frameworks y Librerías
+						Frameworks
 					</h3>
 				</div>
 				<div
 					class="absolute w-full h-full backface-hidden [transform:rotateY(180deg)] bg-purple-100 dark:bg-purple-900 text-zinc-800 dark:text-white rounded-xl shadow p-6 flex flex-col gap-3 items-center justify-center"
 				>
-					<div class="flex flex-col items-center">
-						<img
-							src={`${baseUrl}/reactjs-icon.svg`}
-							alt="React"
-							class="size-6 mb-2"
-						/>
-						<span class="text-sm">React</span>
-					</div>
-					<div class="flex flex-col items-center">
-						<img
-							src={`${baseUrl}/tailwindcss-icon.svg`}
-							alt="Tailwind CSS"
-							class="size-6 mb-2"
-						/>
-						<span class="text-sm">Tailwind CSS</span>
-					</div>
-					<div class="flex flex-col items-center">
-						<img
-							src={`${baseUrl}/laravel-icon.svg`}
-							alt="Laravel"
-							class="size-6 mb-2"
-						/>
-						<span class="text-sm">Laravel</span>
-					</div>
-					<div class="flex flex-col items-center">
-						<img
-							src={`${baseUrl}/astro-icon.svg`}
-							alt="Astro"
-							class="size-6 mb-2"
-						/>
-						<span class="text-sm">Astro</span>
-					</div>
+					<div class="text-sm">React</div>
+					<div class="text-sm">Tailwind CSS</div>
+					<div class="text-sm">Astro</div>
 				</div>
 			</div>
 		</label>
@@ -168,30 +91,17 @@ const { baseUrl } = Astro.props;
 					class="absolute w-full h-full backface-hidden bg-white dark:bg-zinc-800 rounded-xl shadow p-6 flex items-center justify-center"
 				>
 					<h3
-						class="text-lg text-center font-semibold text-indigo-600 dark:text-indigo-400"
+						class="text-lg font-semibold text-indigo-600 dark:text-indigo-400"
 					>
-						Herramientas de Desarrollo
+						DevOps
 					</h3>
 				</div>
 				<div
 					class="absolute w-full h-full backface-hidden [transform:rotateY(180deg)] bg-indigo-100 dark:bg-indigo-900 text-zinc-800 dark:text-white rounded-xl shadow p-6 flex flex-col gap-3 items-center justify-center"
 				>
-					<div class="flex flex-col items-center">
-						<img
-							src={`${baseUrl}/git-scm-icon.svg`}
-							alt="Git"
-							class="w-12 h-12 mb-2"
-						/>
-						<span class="text-sm">Git & GitHub</span>
-					</div>
-					<div class="flex flex-col items-center">
-						<img
-							src={`${baseUrl}/vitejsdev-icon.svg`}
-							alt="Vite"
-							class="w-12 h-12 mb-2"
-						/>
-						<span class="text-sm">Vite</span>
-					</div>
+					<div class="text-sm">Linux</div>
+					<div class="text-sm">Active Directory</div>
+					<div class="text-sm">GitHub</div>
 				</div>
 			</div>
 		</label>
