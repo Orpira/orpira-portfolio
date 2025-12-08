@@ -17,10 +17,23 @@ const { title = "Orpira - Portfolio" } = Astro.props;
 
 		<style>
 			body {
-				background: #0b0f1a; /* brand.bg */
-				color: #e6eaf2; /* brand.text */
+				background-color: #0d1117;
+				color: #e6eaf2;
 			}
 		</style>
+
+		<script>
+			// Evitar flash al cargar la página
+			if (
+				localStorage.theme === "dark" ||
+				(!("theme" in localStorage) &&
+					window.matchMedia("(prefers-color-scheme: dark)").matches)
+			) {
+				document.documentElement.classList.add("dark");
+			} else {
+				document.documentElement.classList.remove("dark");
+			}
+		</script>
 	</head>
 
 	<body class="font-sans leading-relaxed antialiased">

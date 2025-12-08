@@ -31,3 +31,13 @@ html {
 	-webkit-transform: rotateY(180deg);
 	-ms-transform: rotateY(180deg);
 }
+
+/* Transiciones suaves para dark/light */
+* {
+	transition:
+		background-color 0.35s ease,
+		color 0.35s ease,
+		border-color 0.35s ease,
+		fill 0.35s ease,
+		stroke 0.35s ease;
+}

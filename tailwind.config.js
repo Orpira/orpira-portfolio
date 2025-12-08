@@ -10,11 +10,11 @@ export default {
 		extend: {
 			colors: {
 				brand: {
-					bg: "#0B0F1A", // Fondo principal
-					card: "#111827", // Tarjetas oscuras
-					text: "#E6EAF2", // Texto claro
-					muted: "#94A3B8", // Texto secundario
-					accent: "#F59E0B", // Acento profesional (ámbar)
+					bg: "#0D1117", // Fondo elegante (GitHub-like)
+					card: "#161B22", // Paneles
+					text: "#E6EAF2",
+					muted: "#8B97A8",
+					accent: "#F59E0B",
 				},
 			},
 			fontFamily: {
