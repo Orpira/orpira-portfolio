@@ -1,8 +1,10 @@
 ---
 // src/pages/index.astro
+
+import Footer from "../components/Footer.astro";
 import Layout from "../layouts/Layout.astro";
-import AboutSection from "../components/AboutSection.astro";
-import ExperienceSection from "../components/ExperienceSection.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import HeroSection from "../components/HeroSection.astro";
 import SkillsSection from "../components/SkillsSection.astro";
 import ProjectsSection from "../components/ProjectsSection.astro";
 import ServicesSection from "../components/ServicesSection.astro";
@@ -12,10 +14,11 @@ const baseUrl = "/orpira-portfolio";
 ---
 
 <Layout baseUrl={baseUrl}>
-	<AboutSection baseUrl={baseUrl} />
-	<ExperienceSection />
-	<SkillsSection baseUrl={baseUrl} />
-	<ProjectsSection />
-	<ServicesSection />
-	<!-- <ContactSection baseUrl={baseUrl} /> -->
+	<BaseLayout title="Orlando Pineda Portfolio">
+		<HeroSection baseUrl={baseUrl} />
+		<ServicesSection />
+		<ProjectsSection />
+		<SkillsSection baseUrl={baseUrl} />
+		<Footer />
+	</BaseLayout>
 </Layout>

@@ -1,13 +1,33 @@
----
-// src/components/ServicesSection.astro
----
-
-<section id="services" class="py-16">
-	<h2 class="text-5xl font-semibold mb-6 text-orange-500 text-center">
-		Servicios
+<section id="services" class="py-20 border-t border-zinc-800">
+	<h2
+		class="text-3xl md:text-4xl font-serif font-bold text-center mb-12 text-brand.accent"
+	>
+		Servicios Profesionales
 	</h2>
-	<ul class="list-disc ml-6 text-zinc-700 dark:text-zinc-400">
-		<li>Soporte IT (Instalación y configuración de software)</li>
-		<li>Desarrollo de interfaces modernas con tecnologías Web</li>
-	</ul>
+
+	<div class="grid md:grid-cols-3 gap-8">
+		<div class="p-8 rounded-xl bg-brand.card border border-zinc-700">
+			<h3 class="text-xl font-semibold mb-3">Desarrollo Web</h3>
+			<p class="text-brand.muted text-sm">
+				Aplicaciones modernas con Astro, React, Node, Firebase y Tailwind.
+				Interfaces rápidas, accesibles y optimizadas.
+			</p>
+		</div>
+
+		<div class="p-8 rounded-xl bg-brand.card border border-zinc-700">
+			<h3 class="text-xl font-semibold mb-3">Arquitectura & API</h3>
+			<p class="text-brand.muted text-sm">
+				Diseño de APIs, integración, autenticación, dashboards internos, bases
+				de datos SQL/NoSQL y procesos automatizados.
+			</p>
+		</div>
+
+		<div class="p-8 rounded-xl bg-brand.card border border-zinc-700">
+			<h3 class="text-xl font-semibold mb-3">Consultoría TI</h3>
+			<p class="text-brand.muted text-sm">
+				Asesoría técnica, optimización de procesos, soporte y despliegues para
+				equipos pequeños y pymes.
+			</p>
+		</div>
+	</div>
 </section>

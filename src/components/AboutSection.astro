@@ -1,96 +1,57 @@
----
-import Email from "./icons/Email.astro";
-import Github from "./icons/Github.astro";
-import LinkedIn from "./icons/LinkedIn.astro";
-import Phone from "./icons/Phone.astro";
-import RedSocial from "./RedSocial.astro";
-import Badge from "./Badge.astro";
+<section id="about" class="py-24">
+	<h2
+		class="text-3xl md:text-4xl font-serif font-bold text-center mb-12 text-brand.accent"
+	>
+		Sobre mí
+	</h2>
 
-// src/components/AboutSection.astro
-interface Props {
-	baseUrl: string;
-}
+	<div class="grid md:grid-cols-2 gap-12 items-center">
+		<!-- Imagen opcional -->
+		<div class="flex justify-center">
+			<img
+				src="/avatar.png"
+				alt="Foto profesional de Orlando"
+				class="w-48 h-48 rounded-full shadow-xl ring-4 ring-brand.accent object-cover"
+			/>
+		</div>
 
-const { baseUrl } = Astro.props;
----
+		<!-- Texto -->
+		<div>
+			<p class="text-brand.text/90 leading-relaxed mb-4">
+				Soy <strong>Orlando Pineda Raad</strong>, profesional en Tecnologías de
+				la Información con más de <strong>15 años de experiencia</strong> trabajando
+				en sistemas, desarrollo web, soporte técnico, gestión operativa y automatización
+				de procesos en empresas de diversos sectores.
+			</p>
 
-<section id="about" class="py-16 text-center">
-	<img
-		src={`${baseUrl}/orlando.png`}
-		alt="Avatar Orlando"
-		class="w-32 h-32 rounded-full mx-auto mb-4 shadow-md border-4 border-orange-500 dark:border-orange-400"
-	/>
-	<h1 class="text-4xl font-extrabold tracking-tight">
-		<span class="text-6xl text-orange-500 dark:text-orange-400">Or</span>lando
-		<span class="text-6xl text-orange-500 dark:text-orange-400">Pi</span>neda
-		<span class="text-6xl text-orange-500 dark:text-orange-400">Ra</span>ad
-	</h1>
-	<p class="text-lg text-amber-500 dark:text-amber-300 max-w-2xl mx-auto mb-6">
-		Profesional en Tecnologías de la Información con más de 15 años de
-		experiencia en gestión de sistemas, soporte técnico, bases de datos y
-		desarrollo web moderno.
-	</p>
+			<p class="text-brand.muted leading-relaxed mb-4">
+				En los últimos años me he especializado en el desarrollo de aplicaciones
+				modernas utilizando <strong
+					>Astro, React, Node.js, Laravel y Firebase</strong
+				>, enfocándome en plataformas educativas, herramientas internas, paneles
+				administrativos y sistemas diseñados para mejorar la productividad de
+				equipos y pequeñas empresas.
+			</p>
 
-	<!-- Botón para descargar CV -->
-	<Badge text="Disponibilidad inmediata para trabajar" />
-	<div class="mt-8 mb-6 flex items-center gap-4 justify-center">
-		<a
-			href={`${baseUrl}/CV_Orlando_Pineda_Raad.pdf`}
-			download="CV_Orlando_Pineda_Raad.pdf"
-			class="inline-flex items-center gap-3 bg-amber-500 hover:bg-amber-600 dark:bg-amber-600 dark:hover:bg-amber-700 text-white font-semibold px-6 py-3 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
-		>
-			<svg class="size-5" fill="currentColor" viewBox="0 0 24 24">
-				<path
-					d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"
-				></path>
-			</svg>
-			Descargar CV
-		</a>
-	</div>
+			<p class="text-brand.muted leading-relaxed mb-6">
+				Me apasiona crear soluciones claras, accesibles y eficientes, siempre
+				priorizando la experiencia de usuario, el rendimiento y las buenas
+				prácticas.
+			</p>
 
-	<div class="flex flex-wrap justify-center gap-4 sm:gap-6 mt-6 text-sm">
-		<nav class="flex flex-wrap justify-center gap-2 sm:gap-x-4 mt-8">
-			<RedSocial
-				href="https://www.linkedin.com/in/orlando-pineda-raad-273402257/"
+			<ul class="space-y-2 text-sm">
+				<li>✔ Desarrollo Frontend y Backend</li>
+				<li>✔ Diseño de API, autenticación y bases de datos</li>
+				<li>✔ Plataformas de formación y sistemas internos</li>
+				<li>✔ Consultoría y soporte IT especializado</li>
+			</ul>
+
+			<a
+				href="#contact"
+				class="inline-block mt-8 px-6 py-3 bg-brand.accent text-brand.bg font-semibold rounded-lg shadow hover:opacity-90 transition"
 			>
-				<LinkedIn class="size-4 sm:size-6" />
-				<span class="hidden sm:inline">LinkedIn</span>
-			</RedSocial>
-			<RedSocial href="https://github.com/orpira">
-				<Github class="size-4 sm:size-6" />
-				<span class="hidden sm:inline">GitHub</span>
-			</RedSocial>
-			<RedSocial href="mailto:orpira@icloud.com">
-				<Email class="size-4 sm:size-6" />
-				<span class="hidden sm:inline">orpira@icloud.com</span>
-			</RedSocial>
-			<RedSocial>
-				<Phone class="size-4 sm:size-6 text-yellow-400" />
-				<span
-					id="phone-text"
-					class="text-xs sm:text-sm transition-opacity duration-300 inline-block min-w-[7.5rem] text-center"
-					>+34 643 684 541</span
-				>
-			</RedSocial>
-		</nav>
-
-		<script>
-			// Alternar entre el número y "Llámame..." cada 2 segundos
-			document.addEventListener("DOMContentLoaded", () => {
-				const phoneText = document.getElementById("phone-text");
-				if (!phoneText) return;
-				const number = "+34 643 684 541";
-				const callMe = "Llámame...";
-				let showingNumber = true;
-				setInterval(() => {
-					phoneText.style.opacity = "0";
-					setTimeout(() => {
-						phoneText.textContent = showingNumber ? callMe : number;
-						phoneText.style.opacity = "1";
-						showingNumber = !showingNumber;
-					}, 300);
-				}, 2000);
-			});
-		</script>
+				Contactar
+			</a>
+		</div>
 	</div>
 </section>

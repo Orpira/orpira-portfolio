@@ -15,6 +15,7 @@ const { baseUrl } = Astro.props;
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>OrPiRa | Portfolio</title>
+		<link rel="icon" type="image/png" href={`${baseUrl}/opr.png`} />
 
 		<script>
 			if (
@@ -38,33 +39,32 @@ const { baseUrl } = Astro.props;
 	</head>
 
 	<body
-		class="bg-white dark:bg-zinc-900 text-zinc-900 dark:text-white font-sans"
+		class="bg-zinc-50 dark:bg-zinc-900 text-zinc-900 dark:text-white font-sans"
 	>
 		<header
-			class="fixed top-0 w-full bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md shadow z-50"
+			class="fixed top-0 w-full bg-zinc-50/80 dark:bg-zinc-900/80 backdrop-blur-md shadow z-50"
 		>
 			<nav
 				class="max-w-4xl mx-auto px-4 py-4 flex justify-between items-center"
 			>
 				<div class="text-2xl font-bold">
 					<!-- <a href="#top">OrPiRa</a> -->
-					<a href="#top" class="flex items-center"
-						><img
-							src={`${baseUrl}/opr.png`}
-							alt="OrPiRa"
-							class="size-14 inline"
-						/>
-						<p class="text-2xl text-amber-500 dark:text-amber-300">OrPiRa</p></a
-					>
+					<a href="#top" class="flex items-center gap-2">
+						<img src={`${baseUrl}/orpira.png`} alt="OrPiRa" class="size-12" />
+						<span
+							class="font-serif text-2xl font-bold tracking-wide text-brand.accent"
+						>
+							OrPiRa
+						</span>
+					</a>
 				</div>
 
 				<!-- Menú desktop -->
 				<ul class="hidden md:flex space-x-6 text-base">
 					<li><a href="#top" class="hover:underline">Inicio</a></li>
-					<li><a href="#experience" class="hover:underline">Experiencia</a></li>
-					<li><a href="#skills" class="hover:underline">Habilidades</a></li>
-					<li><a href="#projects" class="hover:underline">Proyectos</a></li>
 					<li><a href="#services" class="hover:underline">Servicios</a></li>
+					<li><a href="#projects" class="hover:underline">Proyectos</a></li>
+					<li><a href="#skills" class="hover:underline">Tecnología</a></li>
 				</ul>
 
 				<!-- Botones de la derecha -->
@@ -147,14 +147,8 @@ const { baseUrl } = Astro.props;
 				<ul class="px-4 py-2 space-y-2">
 					<li>
 						<a
-							href="#experience"
-							class="block py-2 hover:underline mobile-menu-link">Experiencia</a
-						>
-					</li>
-					<li>
-						<a
-							href="#skills"
-							class="block py-2 hover:underline mobile-menu-link">Habilidades</a
+							href="#services"
+							class="block py-2 hover:underline mobile-menu-link">Servicios</a
 						>
 					</li>
 					<li>
@@ -165,8 +159,8 @@ const { baseUrl } = Astro.props;
 					</li>
 					<li>
 						<a
-							href="#services"
-							class="block py-2 hover:underline mobile-menu-link">Servicios</a
+							href="#skills"
+							class="block py-2 hover:underline mobile-menu-link">Tecnología</a
 						>
 					</li>
 				</ul>
@@ -192,8 +186,6 @@ const { baseUrl } = Astro.props;
 				class="size-9 icono-borde-blanco"
 			/>
 		</a>
-
-		<Footer />
 
 		<script>
 			// Toggle de tema

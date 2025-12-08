@@ -1,84 +1,46 @@
-<section id="projects" class="py-16">
-	<h2 class="text-5xl font-semibold mb-6 text-orange-500 text-center">
+<section id="projects" class="py-20 border-t border-zinc-800">
+	<h2
+		class="text-3xl md:text-4xl font-serif font-bold text-center mb-12 text-brand.accent"
+	>
 		Proyectos Destacados
 	</h2>
-	<div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 perspective">
-		<!-- Proyecto 1 -->
-		<label class="relative block w-full h-64 cursor-pointer group perspective">
-			<input type="checkbox" class="peer hidden" />
-			<div
-				class="relative w-full h-full transition-transform duration-500 transform-style-preserve-3d peer-checked:[transform:rotateY(180deg)]"
-			>
-				<div
-					class="absolute w-full h-full backface-hidden bg-white dark:bg-zinc-800 rounded-xl shadow-lg p-6 border border-zinc-200 dark:border-zinc-700"
-				>
-					<h3 class="text-xl font-bold mb-1">Control Horario Laboral</h3>
-					<p class="text-sm text-zinc-600 dark:text-zinc-300">
-						Sistema web para fichaje de personal.
-					</p>
-				</div>
-				<div
-					class="absolute w-full h-full rotate-y-180 backface-hidden bg-orange-100 dark:bg-orange-900 text-zinc-800 dark:text-white rounded-xl shadow-lg p-6"
-				>
-					<h4 class="text-lg text-center font-semibold mb-2">Rol y logros</h4>
-					<p class="text-sm">
-						Desarrollé un sistema en Laravel con SQLite para el registro de
-						entradas y salidas del personal, permitiendo trazabilidad horaria,
-						cálculo de horas trabajadas y control de horas extra.
-					</p>
-				</div>
-			</div>
-		</label>
 
-		<!-- Proyecto 2 -->
-		<label class="relative block w-full h-64 cursor-pointer group perspective">
-			<input type="checkbox" class="peer hidden" />
-			<div
-				class="relative w-full h-full transition-transform duration-500 transform-style-preserve-3d peer-checked:[transform:rotateY(180deg)]"
-			>
-				<div
-					class="absolute w-full h-full backface-hidden bg-white dark:bg-zinc-800 rounded-xl shadow-lg p-6 border border-zinc-200 dark:border-zinc-700"
-				>
-					<h3 class="text-xl font-bold mb-2">Plataforma Educativa</h3>
-					<p class="text-sm text-zinc-600 dark:text-zinc-300 mb-3">
-						Frontend moderno en React con Vite y Firebase para quizzes
-						interactivos.
-					</p>
-				</div>
-				<div
-					class="absolute w-full h-full rotate-y-180 backface-hidden bg-orange-100 dark:bg-orange-900 text-zinc-800 dark:text-white rounded-xl shadow-lg p-6"
-				>
-					<h4 class="text-lg text-center font-semibold mb-2">Rol y logros</h4>
-					<p class="text-sm">
-						Diseñé la UI/UX y lógica de interacción educativa.
-					</p>
-				</div>
-			</div>
-		</label>
+	<div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+		<article
+			class="bg-brand.card p-6 rounded-xl border border-zinc-700 hover:border-brand.accent transition"
+		>
+			<h3 class="text-xl font-semibold mb-1">Control Horario Laboral</h3>
+			<p class="text-sm text-brand.muted mb-4">
+				Sistema web para fichaje y cálculo de horas.
+			</p>
+			<p class="text-sm">
+				✔ Backend en Laravel ✔ Base de datos SQLite ✔ Panel de control para
+				RRHH
+			</p>
+		</article>
 
-		<!-- Proyecto 3 -->
-		<label class="relative block w-full h-64 cursor-pointer group perspective">
-			<input type="checkbox" class="peer hidden" />
-			<div
-				class="relative w-full h-full transition-transform duration-500 transform-style-preserve-3d peer-checked:[transform:rotateY(180deg)]"
-			>
-				<div
-					class="absolute w-full h-full backface-hidden bg-white dark:bg-zinc-800 rounded-xl shadow-lg p-6 border border-zinc-200 dark:border-zinc-700"
-				>
-					<h3 class="text-xl font-bold mb-2">Portafolio Personal</h3>
-					<p class="text-sm text-zinc-600 dark:text-zinc-300 mb-3">
-						Sitio web hecho con Astro y Tailwind, desplegado en GitHub Pages.
-					</p>
-				</div>
-				<div
-					class="absolute w-full h-full rotate-y-180 backface-hidden bg-orange-100 dark:bg-orange-900 text-zinc-800 dark:text-white rounded-xl shadow-lg p-6"
-				>
-					<h4 class="text-lg text-center font-semibold mb-2">Rol y logros</h4>
-					<p class="text-sm">
-						Creación del branding personal y diseño adaptable con modo oscuro.
-					</p>
-				</div>
-			</div>
-		</label>
+		<article
+			class="bg-brand.card p-6 rounded-xl border border-zinc-700 hover:border-brand.accent transition"
+		>
+			<h3 class="text-xl font-semibold mb-1">Plataforma Educativa</h3>
+			<p class="text-sm text-brand.muted mb-4">
+				Quizzes interactivos con autenticación y progreso.
+			</p>
+			<p class="text-sm">
+				✔ React + Vite ✔ Firebase ✔ UI/UX para aprendizaje interactivo
+			</p>
+		</article>
+
+		<article
+			class="bg-brand.card p-6 rounded-xl border border-zinc-700 hover:border-brand.accent transition"
+		>
+			<h3 class="text-xl font-semibold mb-1">Portafolio Profesional</h3>
+			<p class="text-sm text-brand.muted mb-4">
+				Sitio personal con modo oscuro y branding propio.
+			</p>
+			<p class="text-sm">
+				✔ Astro + Tailwind ✔ Diseño visual ✔ Optimización SEO
+			</p>
+		</article>
 	</div>
 </section>
