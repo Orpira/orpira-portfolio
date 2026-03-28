@@ -4,20 +4,51 @@ interface Props {
 }
 const { baseUrl } = Astro.props;
 const siteBase = baseUrl ?? "";
+
+const binaryOrpira = "01001111 01110010 01010000 01101001 01010010 01100001";
 ---
 
 <section class="pt-20 pb-28 text-center">
 	<img
-		src={`${siteBase}/foto_new.png`}
+		src={`${siteBase}/foto_new.JPEG`}
 		alt="Foto de Orlando"
 		class="w-32 h-32 rounded-full mx-auto ring-4 ring-brand.accent mb-6"
 	/>
+
+	<!-- Marca OrPiRa destacada estilo hacking/tech -->
+	<div class="brand-container mb-6">
+		<h2 class="brand-glitch" data-text="OrPiRa">
+			<span class="brand-bracket">&lt;</span>OrPiRa<span class="brand-bracket"
+				>/&gt;</span
+			>
+		</h2>
+		<div class="binary-banner-wrapper" aria-hidden="true">
+			<div class="binary-banner">
+				<span class="binary-stream"
+					>{binaryOrpira}&nbsp;&nbsp;&bull;&nbsp;&nbsp;{
+						binaryOrpira
+					}&nbsp;&nbsp;&bull;&nbsp;&nbsp;{
+						binaryOrpira
+					}&nbsp;&nbsp;&bull;&nbsp;&nbsp;</span
+				>
+				<span class="binary-stream"
+					>{binaryOrpira}&nbsp;&nbsp;&bull;&nbsp;&nbsp;{
+						binaryOrpira
+					}&nbsp;&nbsp;&bull;&nbsp;&nbsp;{
+						binaryOrpira
+					}&nbsp;&nbsp;&bull;&nbsp;&nbsp;</span
+				>
+			</div>
+		</div>
+	</div>
 
 	<h1 class="font-serif text-4xl md:text-5xl font-bold mb-4">
 		Orlando Pineda Raad
 	</h1>
 
-	<p class="text-gray-600 dark:text-brand.muted max-w-xl mx-auto text-lg">
+	<p
+		class="text-gray-600 dark:text-brand.muted max-w-xl mx-auto text-lg text-justify"
+	>
 		Profesional en Ingeniería Informática con más de 15 años de experiencia
 		liderando el departamento de IT en empresa del sector logístico, brindando
 		soporte técnico avanzado y formación a usuarios tanto internos como
@@ -40,3 +71,182 @@ const siteBase = baseUrl ?? "";
 		</a>
 	</div>
 </section>
+
+<style>
+	/* Contenedor de marca */
+	.brand-container {
+		position: relative;
+	}
+
+	/* Texto principal OrPiRa con efecto glitch */
+	.brand-glitch {
+		font-family: "Courier New", "Fira Code", monospace;
+		font-size: 3.5rem;
+		font-weight: 900;
+		letter-spacing: 0.15em;
+		color: #00ff41;
+		text-shadow:
+			0 0 10px rgba(0, 255, 65, 0.7),
+			0 0 20px rgba(0, 255, 65, 0.4),
+			0 0 40px rgba(0, 255, 65, 0.2);
+		position: relative;
+		display: inline-block;
+		animation: glitchFlicker 4s infinite;
+	}
+
+	@media (min-width: 768px) {
+		.brand-glitch {
+			font-size: 5rem;
+		}
+	}
+
+	.brand-bracket {
+		color: #f59e0b;
+		opacity: 0.7;
+		font-weight: 400;
+	}
+
+	/* Pseudo-elementos para efecto glitch */
+	.brand-glitch::before,
+	.brand-glitch::after {
+		content: attr(data-text);
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		pointer-events: none;
+	}
+
+	.brand-glitch::before {
+		color: #ff004d;
+		animation: glitchLeft 3s infinite;
+		clip-path: inset(0 0 65% 0);
+		opacity: 0.8;
+	}
+
+	.brand-glitch::after {
+		color: #00d4ff;
+		animation: glitchRight 2.5s infinite;
+		clip-path: inset(60% 0 0 0);
+		opacity: 0.8;
+	}
+
+	/* Banner binario con scroll infinito */
+	.binary-banner-wrapper {
+		overflow: hidden;
+		width: 100%;
+		max-width: 600px;
+		margin: 0.5rem auto 0;
+		mask-image: linear-gradient(
+			to right,
+			transparent,
+			black 15%,
+			black 85%,
+			transparent
+		);
+		-webkit-mask-image: linear-gradient(
+			to right,
+			transparent,
+			black 15%,
+			black 85%,
+			transparent
+		);
+	}
+
+	.binary-banner {
+		display: flex;
+		width: max-content;
+		animation: binaryScroll 12s linear infinite;
+	}
+
+	.binary-stream {
+		font-family: "Courier New", monospace;
+		font-size: 0.85rem;
+		color: #00ff41;
+		opacity: 0.5;
+		white-space: nowrap;
+		letter-spacing: 0.1em;
+	}
+
+	/* Animaciones */
+	@keyframes binaryScroll {
+		0% {
+			transform: translateX(0);
+		}
+		100% {
+			transform: translateX(-50%);
+		}
+	}
+
+	@keyframes glitchFlicker {
+		0%,
+		92%,
+		94%,
+		96%,
+		100% {
+			opacity: 1;
+			text-shadow:
+				0 0 10px rgba(0, 255, 65, 0.7),
+				0 0 20px rgba(0, 255, 65, 0.4),
+				0 0 40px rgba(0, 255, 65, 0.2);
+		}
+		93% {
+			opacity: 0.8;
+			text-shadow:
+				0 0 15px rgba(0, 255, 65, 0.9),
+				0 0 30px rgba(0, 255, 65, 0.6);
+		}
+		95% {
+			opacity: 0.9;
+			text-shadow: 0 0 5px rgba(0, 255, 65, 0.5);
+		}
+	}
+
+	@keyframes glitchLeft {
+		0%,
+		89%,
+		91%,
+		93%,
+		100% {
+			transform: translate(0);
+		}
+		90% {
+			transform: translate(-3px, 1px);
+		}
+		92% {
+			transform: translate(2px, -1px);
+		}
+	}
+
+	@keyframes glitchRight {
+		0%,
+		84%,
+		86%,
+		88%,
+		100% {
+			transform: translate(0);
+		}
+		85% {
+			transform: translate(3px, -1px);
+		}
+		87% {
+			transform: translate(-2px, 1px);
+		}
+	}
+
+	/* Respetar preferencia de movimiento reducido */
+	@media (prefers-reduced-motion: reduce) {
+		.binary-banner {
+			animation: none;
+		}
+		.brand-glitch {
+			animation: none;
+		}
+		.brand-glitch::before,
+		.brand-glitch::after {
+			animation: none;
+			display: none;
+		}
+	}
+</style>
