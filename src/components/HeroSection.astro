@@ -9,11 +9,13 @@ const binaryOrpira = "01001111 01110010 01010000 01101001 01010010 01100001";
 ---
 
 <section class="pt-20 pb-28 text-center">
-	<img
-		src={`${siteBase}/foto_new.JPEG`}
-		alt="Foto de Orlando"
-		class="w-32 h-32 rounded-full mx-auto ring-4 ring-brand.accent mb-6"
-	/>
+	<div class="photo-wrapper mx-auto mb-6">
+		<img
+			src={`${siteBase}/foto_new.JPEG`}
+			alt="Foto de Orlando"
+			class="w-32 h-32 rounded-full"
+		/>
+	</div>
 
 	<!-- Marca OrPiRa destacada estilo hacking/tech -->
 	<div class="brand-container mb-6">
@@ -239,6 +241,64 @@ const binaryOrpira = "01001111 01110010 01010000 01101001 01010010 01100001";
 		}
 	}
 
+	/* === Efecto brillo sutil en contorno de foto === */
+	.photo-wrapper {
+		position: relative;
+		width: 8rem;
+		height: 8rem;
+		border-radius: 9999px;
+		padding: 4px;
+		background: black;
+		box-shadow:
+			0 0 8px rgba(0, 0, 0, 0.3),
+			0 0 2px rgba(255, 255, 255, 0.1);
+		animation: glowPulseLight 3s ease-in-out infinite;
+	}
+
+	:global(.dark) .photo-wrapper {
+		background: #f59e0b;
+		box-shadow:
+			0 0 8px rgba(245, 158, 11, 0.4),
+			0 0 2px rgba(255, 255, 255, 0.2);
+		animation: glowPulseDark 3s ease-in-out infinite;
+	}
+
+	.photo-wrapper img {
+		position: relative;
+		z-index: 1;
+		border-radius: 9999px;
+	}
+
+	@keyframes glowPulseLight {
+		0%,
+		100% {
+			box-shadow:
+				0 0 6px rgba(0, 0, 0, 0.2),
+				0 0 1px rgba(255, 255, 255, 0.05);
+		}
+		50% {
+			box-shadow:
+				0 0 14px rgba(0, 0, 0, 0.4),
+				0 0 28px rgba(0, 0, 0, 0.15),
+				0 0 4px rgba(255, 255, 255, 0.15);
+		}
+	}
+
+	@keyframes glowPulseDark {
+		0%,
+		100% {
+			box-shadow:
+				0 0 6px rgba(245, 158, 11, 0.3),
+				0 0 1px rgba(255, 255, 255, 0.1);
+		}
+		50% {
+			box-shadow:
+				0 0 14px rgba(245, 158, 11, 0.6),
+				0 0 28px rgba(245, 158, 11, 0.2),
+				0 0 4px rgba(255, 255, 255, 0.25);
+		}
+	}
+
 	/* Respetar preferencia de movimiento reducido */
 	@media (prefers-reduced-motion: reduce) {
 		.binary-banner {
@@ -251,6 +311,9 @@ const binaryOrpira = "01001111 01110010 01010000 01101001 01010010 01100001";
 		.brand-glitch::after {
 			animation: none;
 			display: none;
+		}
+		.photo-wrapper {
+			animation: none;
 		}
 	}
 </style>
