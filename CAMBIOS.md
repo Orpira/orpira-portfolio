@@ -140,11 +140,140 @@ Las tres animaciones de glitch usan **ciclos desfasados** para que los efectos n
 
 ---
 
-## Archivos sin cambios
+## Archivos sin cambios (sesión HeroSection)
 
-Los siguientes archivos **no fueron modificados** en esta sesión:
+Los siguientes archivos **no fueron modificados** en la sesión anterior:
 
 - `src/styles/global.css`
 - `src/layouts/BaseLayout.astro`
 - `tailwind.config.js`
 - Resto de componentes y páginas
+
+---
+
+---
+
+## Ofuscación de datos de contacto
+
+**Fecha:** 28 de marzo de 2026
+
+---
+
+### Resumen
+
+Se ofuscaron los datos personales sensibles (número de teléfono, email) en todo el portfolio para que **no aparezcan como texto plano en "Ver código fuente"** del navegador. Los datos se codificaron en Base64 y se decodifican en tiempo de ejecución con JavaScript (`atob()`), protegiendo contra bots y scrapers que rastrean HTML estático.
+
+---
+
+### Archivos modificados
+
+| Archivo                               | Dato ofuscado                                              |
+| ------------------------------------- | ---------------------------------------------------------- |
+| `src/layouts/Layout.astro`            | Enlace de WhatsApp (`wa.me/34643684541`)                   |
+| `src/components/ContactSection.astro` | Email (`orpira@icloud.com`) y teléfono (`+34 643 684 541`) |
+| `src/components/Footer.astro`         | Email (`mailto:orpira@icloud.com`)                         |
+
+---
+
+### Detalle de las modificaciones
+
+#### 1. `src/layouts/Layout.astro` — Botón flotante de WhatsApp
+
+**Antes:**
+
+```html
+<a href="https://wa.me/34643684541" target="_blank" ...></a>
+```
+
+**Después:**
+
+```html
+<a id="wa-float-btn" href="#" target="_blank" ...></a>
+```
+
+```js
+const _w = document.getElementById("wa-float-btn") as HTMLAnchorElement | null;
+if (_w) _w.href = atob("aHR0cHM6Ly93YS5tZS8zNDY0MzY4NDU0MQ==");
+```
+
+- Se eliminó la URL del atributo `href` en el HTML estático y se reemplazó por `#`.
+- Se asignó el `id="wa-float-btn"` al enlace.
+- Un bloque `<script>` decodifica la URL en Base64 y la asigna al `href` en runtime.
+
+---
+
+#### 2. `src/components/ContactSection.astro` — Email y teléfono
+
+**Antes:**
+
+```html
+<a href="mailto:orpira@icloud.com">orpira@icloud.com</a>
+<p>📱 +34 643 684 541</p>
+```
+
+**Después:**
+
+```html
+<a id="contact-email" href="#" class="underline"></a>
+<span id="contact-phone"></span>
+```
+
+```js
+const _ce = document.getElementById("contact-email") as HTMLAnchorElement | null;
+if (_ce) {
+    const _e = atob("b3JwaXJhQGljbG91ZC5jb20=");
+    _ce.href = "mailto:" + _e;
+    _ce.textContent = _e;
+}
+const _cp = document.getElementById("contact-phone");
+if (_cp) _cp.textContent = atob("KzM0IDY0MyA2ODQgNTQx");
+```
+
+- El email y teléfono se eliminaron del HTML y se insertan mediante JavaScript.
+- Ambos valores usan `atob()` para decodificar desde Base64.
+
+---
+
+#### 3. `src/components/Footer.astro` — Enlace de email
+
+**Antes:**
+
+```html
+<a href="mailto:orpira@icloud.com" ...></a>
+```
+
+**Después:**
+
+```html
+<a id="footer-email" href="#" ...></a>
+```
+
+```js
+const _fe = document.getElementById("footer-email") as HTMLAnchorElement | null;
+if (_fe) _fe.href = "mailto:" + atob("b3JwaXJhQGljbG91ZC5jb20=");
+```
+
+- Mismo patrón: `href="#"` en HTML, URL real inyectada con JS.
+
+---
+
+### Valores Base64 utilizados
+
+| Valor original              | Base64                                 |
+| --------------------------- | -------------------------------------- |
+| `https://wa.me/34643684541` | `aHR0cHM6Ly93YS5tZS8zNDY0MzY4NDU0MQ==` |
+| `orpira@icloud.com`         | `b3JwaXJhQGljbG91ZC5jb20=`             |
+| `+34 643 684 541`           | `KzM0IDY0MyA2ODQgNTQx`                 |
+
+---
+
+### Nivel de protección
+
+| Protege contra                            | ¿Sí/No?                                       |
+| ----------------------------------------- | --------------------------------------------- |
+| Bots/scrapers que leen HTML estático      | ✅ Sí                                         |
+| "Ver código fuente" del navegador         | ✅ Sí (los datos no aparecen en texto plano)  |
+| DevTools / Inspector del navegador        | ❌ No (el DOM renderizado contiene los datos) |
+| Usuarios determinados que conozcan Base64 | ❌ No                                         |
+
+> **Nota:** Esta técnica es una capa de ofuscación, no cifrado. Para máxima protección, se recomienda usar formularios de contacto server-side.

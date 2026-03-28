@@ -13,11 +13,20 @@ const siteBase = baseUrl ?? "";
 		Contacto
 	</h2>
 	<p class="mb-2">
-		Puedes escribirme a <a href="mailto:orpira@icloud.com" class="underline"
-			>orpira@icloud.com</a
-		>
+		Puedes escribirme a <a id="contact-email" href="#" class="underline"></a>
 	</p>
-	<p class="mb-6">📱 +34 643 684 541</p>
+	<p class="mb-6">📱 <span id="contact-phone"></span></p>
+
+	<script>
+		const _ce = document.getElementById("contact-email") as HTMLAnchorElement | null;
+		if (_ce) {
+			const _e = atob("b3JwaXJhQGljbG91ZC5jb20=");
+			_ce.href = "mailto:" + _e;
+			_ce.textContent = _e;
+		}
+		const _cp = document.getElementById("contact-phone");
+		if (_cp) _cp.textContent = atob("KzM0IDY0MyA2ODQgNTQx");
+	</script>
 
 	<!-- Enlace alternativo para descargar CV -->
 	<div class="mt-6">

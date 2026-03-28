@@ -18,7 +18,8 @@ import Location from "./icons/Location.astro";
 
 	<div class="flex justify-center gap-8 mb-8">
 		<a
-			href="mailto:orpira@icloud.com"
+			id="footer-email"
+			href="#"
 			class="flex flex-col items-center text-gray-600 dark:text-brand.muted hover:text-brand.accent transition"
 		>
 			<Email />
@@ -50,3 +51,8 @@ import Location from "./icons/Location.astro";
 		Bilbao, España
 	</p>
 </footer>
+
+<script>
+	const _fe = document.getElementById("footer-email") as HTMLAnchorElement | null;
+	if (_fe) _fe.href = "mailto:" + atob("b3JwaXJhQGljbG91ZC5jb20=");
+</script>

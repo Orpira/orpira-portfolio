@@ -183,7 +183,8 @@ const siteBase = baseUrl ?? "";
 
 		<!-- Botón flotante de WhatsApp -->
 		<a
-			href="https://wa.me/34643684541"
+			id="wa-float-btn"
+			href="#"
 			target="_blank"
 			rel="noopener noreferrer"
 			class="fixed bottom-6 right-6 z-50 transition-all duration-300 flex items-center justify-center"
@@ -198,6 +199,10 @@ const siteBase = baseUrl ?? "";
 		</a>
 
 		<script>
+			// Ofuscación de datos de contacto
+			const _w = document.getElementById("wa-float-btn") as HTMLAnchorElement | null;
+			if (_w) _w.href = atob("aHR0cHM6Ly93YS5tZS8zNDY0MzY4NDU0MQ==");
+
 			// Toggle de tema
 			const themeToggle = document.getElementById("theme-toggle");
 			if (themeToggle) {
