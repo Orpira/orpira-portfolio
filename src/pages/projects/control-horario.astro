@@ -1,0 +1,25 @@
+---
+import ProjectLayout from "../../layouts/ProjectLayout.astro";
+import ProjectDetail from "../../components/ProjectDetail.astro";
+---
+
+<ProjectLayout
+	title="Control Horario Laboral"
+	description="Sistema web para fichaje de personal con trazabilidad horaria, estadísticas y gestión de horas trabajadas."
+>
+	<ProjectDetail
+		title="Control Horario Laboral"
+		description="Aplicación web que permite a los empleados registrar entradas y salidas, mientras los administradores pueden generar informes automáticos."
+		year="2024"
+		role="Desarrollador Fullstack"
+		tech={["Laravel", "SQLite", "Tailwind", "Astro"]}
+		features={[
+			"Registro de entradas y salidas",
+			"Cálculo automático de horas trabajadas",
+			"Control de ausencias y horas extra",
+			"Panel administrativo para RRHH",
+		]}
+		result="El sistema mejoró la exactitud de los registros horarios y redujo en un 40% los errores producidos por formularios manuales."
+		image="/projects/control-horario.jpg"
+	/>
+</ProjectLayout>

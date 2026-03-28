@@ -1,3 +1,11 @@
+---
+interface Props {
+	baseUrl: string;
+}
+const { baseUrl } = Astro.props;
+const siteBase = baseUrl ?? "";
+---
+
 <section id="projects" class="py-20 border-t border-zinc-800">
 	<h2
 		class="text-3xl md:text-4xl font-serif font-bold text-center mb-12 text-brand.accent"
@@ -9,21 +17,23 @@
 		<article
 			class="bg-brand.card p-6 rounded-xl border border-zinc-700 hover:border-brand.accent transition"
 		>
-			<h3 class="text-xl font-semibold mb-1">Control Horario Laboral</h3>
-			<p class="text-sm text-brand.muted mb-4">
-				Sistema web para fichaje y cálculo de horas.
-			</p>
-			<p class="text-sm">
-				✔ Backend en Laravel ✔ Base de datos SQLite ✔ Panel de control para
-				RRHH
-			</p>
+			<a href={`${siteBase}/projects/control-horario`} class="block">
+				<h3 class="text-xl font-semibold mb-1">Control Horario Laboral</h3>
+				<p class="text-sm text-gray-600 dark:text-brand.muted mb-4">
+					Sistema web para fichaje y cálculo de horas.
+				</p>
+				<p class="text-sm">
+					✔ Backend en Laravel ✔ Base de datos SQLite ✔ Panel de control para
+					RRHH
+				</p>
+			</a>
 		</article>
 
 		<article
 			class="bg-brand.card p-6 rounded-xl border border-zinc-700 hover:border-brand.accent transition"
 		>
 			<h3 class="text-xl font-semibold mb-1">Plataforma Educativa</h3>
-			<p class="text-sm text-brand.muted mb-4">
+			<p class="text-sm text-gray-600 dark:text-brand.muted mb-4">
 				Quizzes interactivos con autenticación y progreso.
 			</p>
 			<p class="text-sm">
@@ -35,7 +45,7 @@
 			class="bg-brand.card p-6 rounded-xl border border-zinc-700 hover:border-brand.accent transition"
 		>
 			<h3 class="text-xl font-semibold mb-1">Portafolio Profesional</h3>
-			<p class="text-sm text-brand.muted mb-4">
+			<p class="text-sm text-gray-600 dark:text-brand.muted mb-4">
 				Sitio personal con modo oscuro y branding propio.
 			</p>
 			<p class="text-sm">

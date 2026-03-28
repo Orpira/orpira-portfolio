@@ -2,6 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+	--text-muted: #6b7280;
+	--text-muted-light: #9ca3af;
+}
+
+.dark {
+	--text-muted: #8b97a8;
+	--text-muted-light: #6b7280;
+}
+
 html {
 	scroll-behavior: smooth;
 }

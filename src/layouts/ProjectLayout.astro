@@ -1,0 +1,32 @@
+---
+const { title, description } = Astro.props;
+---
+
+<!doctype html>
+<html lang="es" class="dark">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+		<title>{title}</title>
+		<meta name="description" content={description} />
+
+		<link
+			href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Merriweather:wght@700&display=swap"
+			rel="stylesheet"
+		/>
+
+		<style>
+			body {
+				background-color: #0d1117;
+				color: #e6eaf2;
+			}
+		</style>
+	</head>
+
+	<body class="font-sans antialiased">
+		<main class="max-w-4xl mx-auto px-6 py-20">
+			<slot />
+		</main>
+	</body>
+</html>

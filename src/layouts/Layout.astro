@@ -8,6 +8,7 @@ interface Props {
 }
 
 const { baseUrl } = Astro.props;
+const siteBase = baseUrl ?? "";
 ---
 
 <html lang="es" class="dark">
@@ -15,7 +16,7 @@ const { baseUrl } = Astro.props;
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>OrPiRa | Portfolio</title>
-		<link rel="icon" type="image/png" href={`${baseUrl}/opr.png`} />
+		<link rel="icon" type="image/png" href={`${siteBase}/opr.png`} />
 
 		<script>
 			if (
@@ -50,7 +51,7 @@ const { baseUrl } = Astro.props;
 				<div class="text-2xl font-bold">
 					<!-- <a href="#top">OrPiRa</a> -->
 					<a href="#top" class="flex items-center gap-2">
-						<img src={`${baseUrl}/orpira.png`} alt="OrPiRa" class="size-12" />
+						<img src={`${siteBase}/orpira.png`} alt="OrPiRa" class="size-12" />
 						<span
 							class="font-serif text-2xl font-bold tracking-wide text-brand.accent"
 						>
@@ -181,7 +182,7 @@ const { baseUrl } = Astro.props;
 		>
 			{/** Icono WhatsApp */}
 			<img
-				src={`${baseUrl}/whatsapp-icon.svg`}
+				src={`${siteBase}/whatsapp-icon.svg`}
 				alt="WhatsApp"
 				class="size-9 icono-borde-blanco"
 			/>

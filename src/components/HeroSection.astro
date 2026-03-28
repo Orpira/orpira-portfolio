@@ -3,11 +3,12 @@ interface Props {
 	baseUrl: string;
 }
 const { baseUrl } = Astro.props;
+const siteBase = baseUrl ?? "";
 ---
 
 <section class="pt-20 pb-28 text-center">
 	<img
-		src={`${baseUrl}/foto_new.png`}
+		src={`${siteBase}/foto_new.png`}
 		alt="Foto de Orlando"
 		class="w-32 h-32 rounded-full mx-auto ring-4 ring-brand.accent mb-6"
 	/>
@@ -16,7 +17,7 @@ const { baseUrl } = Astro.props;
 		Orlando Pineda Raad
 	</h1>
 
-	<p class="text-brand.muted max-w-xl mx-auto text-lg">
+	<p class="text-gray-600 dark:text-brand.muted max-w-xl mx-auto text-lg">
 		Profesional en Ingeniería Informática con más de 15 años de experiencia
 		liderando el departamento de IT en empresa del sector logístico, brindando
 		soporte técnico avanzado y formación a usuarios tanto internos como
@@ -26,14 +27,14 @@ const { baseUrl } = Astro.props;
 
 	<div class="flex justify-center gap-4 mt-8">
 		<a
-			href={`${baseUrl}/CV_OrlandoPinedaRaad.pdf`}
+			href={`${siteBase}/CV_OrlandoPinedaRaad.pdf`}
 			class="px-6 py-3 bg-brand.accent text-brand.bg rounded-lg font-semibold"
 		>
 			Descargar CV
 		</a>
 		<a
 			href="#projects"
-			class="px-6 py-3 border border-brand.accent text-brand.muted rounded-lg"
+			class="px-6 py-3 border border-brand.accent text-gray-600 dark:text-brand.muted rounded-lg"
 		>
 			Ver proyectos
 		</a>

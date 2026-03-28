@@ -1,0 +1,93 @@
+---
+interface Props {
+	title: string;
+	description: string;
+	year: string;
+	tech: string[];
+	role: string;
+	features: string[];
+	result?: string;
+	image?: string;
+}
+
+const { title, description, year, tech, role, features, result, image } =
+	Astro.props;
+---
+
+<article class="space-y-10">
+	<!-- Header -->
+	<header class="text-center">
+		<h1
+			class="text-3xl md:text-4xl font-serif font-bold text-brand.accent mb-4"
+		>
+			{title}
+		</h1>
+
+		<p class="text-brand.muted max-w-2xl mx-auto">
+			{description}
+		</p>
+	</header>
+
+	<!-- Imagen principal opcional -->
+	{
+		image && (
+			<div class="flex justify-center">
+				<img
+					src={image}
+					class="rounded-xl shadow-lg max-h-80 object-cover"
+					alt={title}
+				/>
+			</div>
+		)
+	}
+
+	<!-- Info general -->
+	<section
+		class="grid md:grid-cols-3 gap-8 bg-brand.card border border-zinc-800 rounded-xl p-6"
+	>
+		<div>
+			<h3 class="font-semibold text-brand.accent">Año</h3>
+			<p>{year}</p>
+		</div>
+
+		<div>
+			<h3 class="font-semibold text-brand.accent">Rol</h3>
+			<p>{role}</p>
+		</div>
+
+		<div>
+			<h3 class="font-semibold text-brand.accent">Tecnologías</h3>
+			<ul class="text-sm mt-1 space-y-1">
+				{tech.map((t) => <li>• {t}</li>)}
+			</ul>
+		</div>
+	</section>
+
+	<!-- Funcionalidades -->
+	<section>
+		<h3 class="text-xl font-semibold mb-4">Funciones principales</h3>
+		<ul class="list-disc ml-6 space-y-1">
+			{features.map((f) => <li>{f}</li>)}
+		</ul>
+	</section>
+
+	<!-- Resultados -->
+	{
+		result && (
+			<section>
+				<h3 class="text-xl font-semibold mb-4">Resultados / Impacto</h3>
+				<p class="text-brand.muted leading-relaxed">{result}</p>
+			</section>
+		)
+	}
+
+	<!-- Volver -->
+	<div class="text-center mt-10">
+		<a
+			href="/#projects"
+			class="px-6 py-3 border border-brand.accent rounded-lg text-brand.text hover:bg-brand.accent hover:text-brand.bg transition"
+		>
+			← Volver a proyectos
+		</a>
+	</div>
+</article>

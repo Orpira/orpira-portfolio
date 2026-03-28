@@ -5,6 +5,7 @@ interface Props {
 }
 
 const { baseUrl } = Astro.props;
+const siteBase = baseUrl ?? "";
 ---
 
 <section id="contact" class="py-16 text-center">
@@ -21,7 +22,7 @@ const { baseUrl } = Astro.props;
 	<!-- Enlace alternativo para descargar CV -->
 	<div class="mt-6">
 		<a
-			href={`${baseUrl}/CV_OrlandoPinedaRaad.pdf`}
+			href={`${siteBase}/CV_OrlandoPinedaRaad.pdf`}
 			download="CV_Orlando_Pineda_Raad.pdf"
 			class="inline-flex items-center gap-2 text-amber-600 dark:text-amber-400 hover:text-amber-700 dark:hover:text-amber-300 font-medium transition-colors"
 		>
