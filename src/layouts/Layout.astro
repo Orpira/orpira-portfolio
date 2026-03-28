@@ -51,7 +51,16 @@ const siteBase = baseUrl ?? "";
 				<div class="text-2xl font-bold">
 					<!-- <a href="#top">OrPiRa</a> -->
 					<a href="#top" class="flex items-center gap-2">
-						<img src={`${siteBase}/orpira.png`} alt="OrPiRa" class="size-12" />
+						<img
+							src={`${siteBase}/orpira.png`}
+							alt="OrPiRa"
+							class="size-12 block dark:hidden"
+						/>
+						<img
+							src={`${siteBase}/opr_white.png`}
+							alt="OrPiRa"
+							class="size-12 hidden dark:block"
+						/>
 						<span
 							class="font-serif text-2xl font-bold tracking-wide text-brand.accent"
 						>
