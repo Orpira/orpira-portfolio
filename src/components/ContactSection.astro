@@ -6,34 +6,95 @@ interface Props {
 
 const { baseUrl } = Astro.props;
 const siteBase = baseUrl ?? "";
+
+// Reemplaza con tu Access Key de https://web3forms.com (es gratis)
+const WEB3FORMS_KEY = "aa6e8316-5807-4bc6-aa8b-c266d225146a";
 ---
 
-<section id="contact" class="py-16 text-center">
-	<h2 class="text-5xl font-semibold mb-6 text-orange-500 text-center">
+<section id="contact" class="py-16 section-divider">
+	<h3
+		class="text-3xl md:text-4xl font-serif font-bold text-center mb-12 text-brand.accent"
+	>
 		Contacto
-	</h2>
-	<p class="mb-2">
-		Puedes escribirme a <a id="contact-email" href="#" class="underline"></a>
+	</h3>
+	<p
+		class="text-gray-600 dark:text-brand.muted mb-8 max-w-xl mx-auto text-center"
+	>
+		¿Tienes un proyecto en mente? <br />Envíame un mensaje y te responderé lo
+		antes posible. <br />Disponible para nuevos proyectos, colaboraciones o
+		propuestas profesionales. <br />
 	</p>
-	<p class="mb-6">📱 <span id="contact-phone"></span></p>
+	<!-- <h3 class="text-2xl font-serif font-bold text-brand.accent mb-4">Contacto</h3> -->
 
-	<script>
-		const _ce = document.getElementById("contact-email") as HTMLAnchorElement | null;
-		if (_ce) {
-			const _e = atob("b3JwaXJhQGljbG91ZC5jb20=");
-			_ce.href = "mailto:" + _e;
-			_ce.textContent = _e;
-		}
-		const _cp = document.getElementById("contact-phone");
-		if (_cp) _cp.textContent = atob("KzM0IDY0MyA2ODQgNTQx");
-	</script>
+	<form id="contact-form" class="max-w-lg mx-auto space-y-5" novalidate>
+		<input type="hidden" name="access_key" value={WEB3FORMS_KEY} />
+		<input
+			type="hidden"
+			name="subject"
+			value="Nuevo mensaje desde OrPiRa Portfolio"
+		/>
+		<input type="checkbox" name="botcheck" class="hidden" />
+
+		<div>
+			<label for="name" class="block text-sm font-medium mb-1 text-left"
+				>Nombre</label
+			>
+			<input
+				type="text"
+				id="name"
+				name="name"
+				required
+				placeholder="Tu nombre"
+				class="w-full px-4 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition"
+			/>
+		</div>
+
+		<div>
+			<label for="email" class="block text-sm font-medium mb-1 text-left"
+				>Email</label
+			>
+			<input
+				type="email"
+				id="email"
+				name="email"
+				required
+				placeholder="tu@email.com"
+				class="w-full px-4 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition"
+			/>
+		</div>
+
+		<div>
+			<label for="message" class="block text-sm font-medium mb-1 text-left"
+				>Mensaje</label
+			>
+			<textarea
+				id="message"
+				name="message"
+				required
+				rows="5"
+				placeholder="Cuéntame sobre tu proyecto..."
+				class="w-full px-4 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition resize-none"
+			></textarea>
+		</div>
+
+		<button
+			type="submit"
+			id="contact-submit"
+			class="w-full py-3 px-6 bg-zinc-900 hover:bg-zinc-800 dark:bg-white dark:hover:bg-zinc-200 text-white dark:text-zinc-900 font-semibold rounded-lg transition-colors focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2 dark:focus:ring-offset-zinc-900 disabled:opacity-50 disabled:cursor-not-allowed"
+		>
+			Enviar mensaje
+		</button>
+
+		<div id="form-status" class="hidden text-center text-sm py-2 rounded-lg">
+		</div>
+	</form>
 
 	<!-- Enlace alternativo para descargar CV -->
-	<div class="mt-6">
+	<div class="mt-8 text-center">
 		<a
 			href={`${siteBase}/CV_OrlandoPinedaRaad.pdf`}
 			download="CV_Orlando_Pineda_Raad.pdf"
-			class="inline-flex items-center gap-2 text-amber-600 dark:text-amber-400 hover:text-amber-700 dark:hover:text-amber-300 font-medium transition-colors"
+			class="inline-flex items-center gap-2 text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white font-medium transition-colors"
 		>
 			<svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
 				<path
@@ -44,3 +105,56 @@ const siteBase = baseUrl ?? "";
 		</a>
 	</div>
 </section>
+
+<script>
+	const form = document.getElementById(
+		"contact-form",
+	) as HTMLFormElement | null;
+	const statusDiv = document.getElementById("form-status");
+	const submitBtn = document.getElementById(
+		"contact-submit",
+	) as HTMLButtonElement | null;
+
+	if (form && statusDiv && submitBtn) {
+		form.addEventListener("submit", async (e) => {
+			e.preventDefault();
+
+			// Validación básica
+			if (!form.checkValidity()) {
+				form.reportValidity();
+				return;
+			}
+
+			submitBtn.disabled = true;
+			submitBtn.textContent = "Enviando...";
+			statusDiv.classList.add("hidden");
+
+			try {
+				const formData = new FormData(form);
+				const res = await fetch("https://api.web3forms.com/submit", {
+					method: "POST",
+					body: formData,
+				});
+				const data = await res.json();
+
+				if (data.success) {
+					statusDiv.textContent = "✅ ¡Mensaje enviado! Te responderé pronto.";
+					statusDiv.className =
+						"text-center text-sm py-2 rounded-lg bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400";
+					form.reset();
+				} else {
+					statusDiv.textContent = "❌ Error al enviar. Inténtalo de nuevo.";
+					statusDiv.className =
+						"text-center text-sm py-2 rounded-lg bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400";
+				}
+			} catch {
+				statusDiv.textContent = "❌ Error de conexión. Inténtalo más tarde.";
+				statusDiv.className =
+					"text-center text-sm py-2 rounded-lg bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400";
+			} finally {
+				submitBtn.disabled = false;
+				submitBtn.textContent = "Enviar mensaje";
+			}
+		});
+	}
+</script>

@@ -5,22 +5,18 @@ import Email from "./icons/Email.astro";
 import Location from "./icons/Location.astro";
 ---
 
-<footer id="contact" class="mt-12 py-12 border-t border-zinc-800 text-center">
-	<h3 class="text-2xl font-serif font-bold text-brand.accent mb-4">Contacto</h3>
-
+<footer id="contact" class="mt-12 py-12 section-divider text-center">
 	<p
 		class="text-gray-600 dark:text-brand.muted mb-6 max-w-xl mx-auto text-justify"
 	>
-		Estoy disponible para nuevos proyectos, colaboraciones o propuestas
-		profesionales. Puedes contactarme directamente a través de los siguientes
-		medios:
+		Puedes contactarme directamente a través de los siguientes medios:
 	</p>
 
 	<div class="flex justify-center gap-8 mb-8">
 		<a
-			id="footer-email"
-			href="#"
+			href="#contact"
 			class="flex flex-col items-center text-gray-600 dark:text-brand.muted hover:text-brand.accent transition"
+			title="Formulario de contacto"
 		>
 			<Email />
 		</a>
@@ -51,8 +47,3 @@ import Location from "./icons/Location.astro";
 		Bilbao, España
 	</p>
 </footer>
-
-<script>
-	const _fe = document.getElementById("footer-email") as HTMLAnchorElement | null;
-	if (_fe) _fe.href = "mailto:" + atob("b3JwaXJhQGljbG91ZC5jb20=");
-</script>

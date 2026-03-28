@@ -153,7 +153,7 @@ Los siguientes archivos **no fueron modificados** en la sesión anterior:
 
 ---
 
-## Ofuscación de datos de contacto
+## Formulario de contacto (reemplaza ofuscación Base64)
 
 **Fecha:** 28 de marzo de 2026
 
@@ -161,119 +161,121 @@ Los siguientes archivos **no fueron modificados** en la sesión anterior:
 
 ### Resumen
 
-Se ofuscaron los datos personales sensibles (número de teléfono, email) en todo el portfolio para que **no aparezcan como texto plano en "Ver código fuente"** del navegador. Los datos se codificaron en Base64 y se decodifican en tiempo de ejecución con JavaScript (`atob()`), protegiendo contra bots y scrapers que rastrean HTML estático.
+Se **revirtió la ofuscación Base64** implementada anteriormente y en su lugar se adoptó un enfoque más seguro: un **formulario de contacto** que envía mensajes a través de [Web3Forms](https://web3forms.com/). Con este enfoque, el email del destinatario **nunca aparece en el código fuente** — está configurado únicamente en el panel de Web3Forms.
 
 ---
 
 ### Archivos modificados
 
-| Archivo                               | Dato ofuscado                                              |
-| ------------------------------------- | ---------------------------------------------------------- |
-| `src/layouts/Layout.astro`            | Enlace de WhatsApp (`wa.me/34643684541`)                   |
-| `src/components/ContactSection.astro` | Email (`orpira@icloud.com`) y teléfono (`+34 643 684 541`) |
-| `src/components/Footer.astro`         | Email (`mailto:orpira@icloud.com`)                         |
+| Archivo                               | Cambio realizado                                                           |
+| ------------------------------------- | -------------------------------------------------------------------------- |
+| `src/components/ContactSection.astro` | Se reemplazó email/teléfono por formulario de contacto                     |
+| `src/components/Footer.astro`         | Se eliminó el enlace `mailto:`, icono de email ahora apunta a `#contact`   |
+| `src/layouts/Layout.astro`            | Se revirtió la ofuscación del botón WhatsApp (vuelve a su estado original) |
 
 ---
 
 ### Detalle de las modificaciones
 
-#### 1. `src/layouts/Layout.astro` — Botón flotante de WhatsApp
+#### 1. `src/components/ContactSection.astro` — Formulario de contacto
+
+**Antes (ofuscación Base64):**
+
+```html
+<p>Puedes escribirme a <a id="contact-email" href="#">...</a></p>
+<p>📱 <span id="contact-phone"></span></p>
+<script>
+	/* decodificación con atob() */
+</script>
+```
+
+**Después (formulario):**
+
+```html
+<form id="contact-form" novalidate>
+	<input type="hidden" name="access_key" value="{WEB3FORMS_KEY}" />
+	<input type="text" name="name" required placeholder="Tu nombre" />
+	<input type="email" name="email" required placeholder="tu@email.com" />
+	<textarea
+		name="message"
+		required
+		placeholder="Cuéntame sobre tu proyecto..."
+	></textarea>
+	<button type="submit">Enviar mensaje</button>
+</form>
+```
+
+**Características del formulario:**
+
+- Campos: nombre, email del remitente, mensaje
+- Validación HTML5 nativa + `checkValidity()`
+- Honeypot anti-spam (`botcheck` hidden checkbox)
+- Envío vía `fetch()` a la API de Web3Forms
+- Estados visuales: enviando (botón deshabilitado), éxito (verde), error (rojo)
+- Estilizado con Tailwind CSS, compatible con modo claro/oscuro
+- El enlace de descarga de CV se mantiene debajo del formulario
+
+---
+
+#### 2. `src/components/Footer.astro` — Icono de email redirige al formulario
 
 **Antes:**
 
 ```html
-<a href="https://wa.me/34643684541" target="_blank" ...></a>
+<a id="footer-email" href="#">
+	<Email />
+</a>
+<script>
+	/* inyección de mailto: con atob() */
+</script>
 ```
 
 **Después:**
 
 ```html
-<a id="wa-float-btn" href="#" target="_blank" ...></a>
+<a href="#contact" title="Formulario de contacto">
+	<Email />
+</a>
 ```
 
-```js
-const _w = document.getElementById("wa-float-btn") as HTMLAnchorElement | null;
-if (_w) _w.href = atob("aHR0cHM6Ly93YS5tZS8zNDY0MzY4NDU0MQ==");
-```
-
-- Se eliminó la URL del atributo `href` en el HTML estático y se reemplazó por `#`.
-- Se asignó el `id="wa-float-btn"` al enlace.
-- Un bloque `<script>` decodifica la URL en Base64 y la asigna al `href` en runtime.
+- El icono de email ahora navega al formulario de contacto (`#contact`) en lugar de abrir un `mailto:`.
+- Se eliminó el `<script>` de ofuscación.
+- LinkedIn y GitHub permanecen sin cambios.
 
 ---
 
-#### 2. `src/components/ContactSection.astro` — Email y teléfono
+#### 3. `src/layouts/Layout.astro` — WhatsApp restaurado
 
-**Antes:**
+- Se revirtió el botón flotante de WhatsApp a su estado original con la URL directa `https://wa.me/34643684541`.
+- Se eliminó el script de ofuscación Base64.
 
-```html
-<a href="mailto:orpira@icloud.com">orpira@icloud.com</a>
-<p>📱 +34 643 684 541</p>
-```
-
-**Después:**
-
-```html
-<a id="contact-email" href="#" class="underline"></a>
-<span id="contact-phone"></span>
-```
-
-```js
-const _ce = document.getElementById("contact-email") as HTMLAnchorElement | null;
-if (_ce) {
-    const _e = atob("b3JwaXJhQGljbG91ZC5jb20=");
-    _ce.href = "mailto:" + _e;
-    _ce.textContent = _e;
-}
-const _cp = document.getElementById("contact-phone");
-if (_cp) _cp.textContent = atob("KzM0IDY0MyA2ODQgNTQx");
-```
-
-- El email y teléfono se eliminaron del HTML y se insertan mediante JavaScript.
-- Ambos valores usan `atob()` para decodificar desde Base64.
+> **Nota:** El número de WhatsApp permanece visible en el código fuente. Si se desea ocultar también, se puede eliminar el botón flotante y agregar WhatsApp como campo adicional en Web3Forms.
 
 ---
 
-#### 3. `src/components/Footer.astro` — Enlace de email
+### Configuración necesaria (Web3Forms)
 
-**Antes:**
+Para que el formulario funcione, sigue estos pasos:
 
-```html
-<a href="mailto:orpira@icloud.com" ...></a>
-```
+1. Ve a [web3forms.com](https://web3forms.com/)
+2. Introduce tu email (`orpira@icloud.com`) para recibir la Access Key
+3. Revisa tu correo y copia la Access Key
+4. En `src/components/ContactSection.astro`, reemplaza:
+   ```js
+   const WEB3FORMS_KEY = "TU_ACCESS_KEY_AQUI";
+   ```
+   por tu Access Key real.
 
-**Después:**
-
-```html
-<a id="footer-email" href="#" ...></a>
-```
-
-```js
-const _fe = document.getElementById("footer-email") as HTMLAnchorElement | null;
-if (_fe) _fe.href = "mailto:" + atob("b3JwaXJhQGljbG91ZC5jb20=");
-```
-
-- Mismo patrón: `href="#"` en HTML, URL real inyectada con JS.
-
----
-
-### Valores Base64 utilizados
-
-| Valor original              | Base64                                 |
-| --------------------------- | -------------------------------------- |
-| `https://wa.me/34643684541` | `aHR0cHM6Ly93YS5tZS8zNDY0MzY4NDU0MQ==` |
-| `orpira@icloud.com`         | `b3JwaXJhQGljbG91ZC5jb20=`             |
-| `+34 643 684 541`           | `KzM0IDY0MyA2ODQgNTQx`                 |
+> **Importante:** La Access Key es segura de exponer en el frontend. Web3Forms la usa para saber a qué email enviar, pero el email en sí **nunca aparece en tu código**.
 
 ---
 
 ### Nivel de protección
 
-| Protege contra                            | ¿Sí/No?                                       |
-| ----------------------------------------- | --------------------------------------------- |
-| Bots/scrapers que leen HTML estático      | ✅ Sí                                         |
-| "Ver código fuente" del navegador         | ✅ Sí (los datos no aparecen en texto plano)  |
-| DevTools / Inspector del navegador        | ❌ No (el DOM renderizado contiene los datos) |
-| Usuarios determinados que conozcan Base64 | ❌ No                                         |
-
-> **Nota:** Esta técnica es una capa de ofuscación, no cifrado. Para máxima protección, se recomienda usar formularios de contacto server-side.
+| Protege contra                    | ¿Sí/No?                                 |
+| --------------------------------- | --------------------------------------- |
+| Email visible en código fuente    | ✅ Sí (el email solo está en Web3Forms) |
+| Teléfono visible en código fuente | ✅ Sí (eliminado del HTML)              |
+| Bots/scrapers de email            | ✅ Sí                                   |
+| Spam en el formulario             | ✅ Parcial (honeypot anti-bot incluido) |
+| WhatsApp visible en código fuente | ❌ No (se mantiene como enlace directo) |

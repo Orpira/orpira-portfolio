@@ -76,4 +76,64 @@ html {
 	.tap-pulse {
 		animation: none;
 	}
+	.section-divider::before {
+		animation: none;
+	}
+}
+
+/* Línea divisora con efecto destello */
+.section-divider {
+	position: relative;
+}
+
+.section-divider::before {
+	content: "";
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	height: 1px;
+	background: linear-gradient(
+		90deg,
+		transparent 0%,
+		#3f3f46 20%,
+		#3f3f46 80%,
+		transparent 100%
+	);
+}
+
+.section-divider::after {
+	content: "";
+	position: absolute;
+	top: -1px;
+	right: 0;
+	width: 80px;
+	height: 3px;
+	border-radius: 9999px;
+	background: linear-gradient(
+		90deg,
+		transparent,
+		#c0c0c0,
+		#e8e8e8,
+		transparent
+	);
+	filter: blur(1px);
+	animation: shimmerSlide 6s ease-in-out infinite;
+}
+
+@keyframes shimmerSlide {
+	0% {
+		right: -80px;
+		opacity: 0;
+	}
+	10% {
+		opacity: 1;
+	}
+	90% {
+		opacity: 1;
+	}
+	100% {
+		right: calc(100% + 80px);
+		opacity: 0;
+	}
 }

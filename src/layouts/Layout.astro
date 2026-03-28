@@ -75,6 +75,7 @@ const siteBase = baseUrl ?? "";
 					<li><a href="#services" class="hover:underline">Servicios</a></li>
 					<li><a href="#projects" class="hover:underline">Proyectos</a></li>
 					<li><a href="#skills" class="hover:underline">Tecnología</a></li>
+					<li><a href="#contact" class="hover:underline">Contacto</a></li>
 				</ul>
 
 				<!-- Botones de la derecha -->
@@ -183,8 +184,7 @@ const siteBase = baseUrl ?? "";
 
 		<!-- Botón flotante de WhatsApp -->
 		<a
-			id="wa-float-btn"
-			href="#"
+			href="https://wa.me/34643684541"
 			target="_blank"
 			rel="noopener noreferrer"
 			class="fixed bottom-6 right-6 z-50 transition-all duration-300 flex items-center justify-center"
@@ -198,10 +198,49 @@ const siteBase = baseUrl ?? "";
 			/>
 		</a>
 
+		<!-- Botón flotante para ir arriba -->
+		<button
+			id="scroll-top-btn"
+			class="fixed bottom-6 left-6 z-50 hidden w-10 h-10 rounded-full bg-zinc-800 dark:bg-zinc-200 text-white dark:text-zinc-900 shadow-lg items-center justify-center transition-all duration-300 hover:scale-110 opacity-0"
+			aria-label="Ir arriba"
+		>
+			<svg
+				class="w-5 h-5"
+				fill="none"
+				stroke="currentColor"
+				viewBox="0 0 24 24"
+			>
+				<path
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					stroke-width="2"
+					d="M5 15l7-7 7 7"></path>
+			</svg>
+		</button>
+
 		<script>
-			// Ofuscación de datos de contacto
-			const _w = document.getElementById("wa-float-btn") as HTMLAnchorElement | null;
-			if (_w) _w.href = atob("aHR0cHM6Ly93YS5tZS8zNDY0MzY4NDU0MQ==");
+			// Botón ir arriba
+			const scrollTopBtn = document.getElementById("scroll-top-btn");
+			if (scrollTopBtn) {
+				window.addEventListener("scroll", () => {
+					if (window.scrollY > 300) {
+						scrollTopBtn.classList.remove("hidden");
+						scrollTopBtn.classList.add("flex");
+						requestAnimationFrame(() => {
+							scrollTopBtn.style.opacity = "1";
+						});
+					} else {
+						scrollTopBtn.style.opacity = "0";
+						setTimeout(() => {
+							scrollTopBtn.classList.add("hidden");
+							scrollTopBtn.classList.remove("flex");
+						}, 300);
+					}
+				});
+				scrollTopBtn.addEventListener("click", () => {
+					window.scrollTo({ top: 0, behavior: "smooth" });
+				});
+			}
 
 			// Toggle de tema
 			const themeToggle = document.getElementById("theme-toggle");
