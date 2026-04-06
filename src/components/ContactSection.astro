@@ -27,12 +27,45 @@ const WEB3FORMS_KEY = "aa6e8316-5807-4bc6-aa8b-c266d225146a";
 	<!-- <h3 class="text-2xl font-serif font-bold text-brand.accent mb-4">Contacto</h3> -->
 
 	<form id="contact-form" class="max-w-lg mx-auto space-y-5" novalidate>
+		<!-- Configuración Web3Forms -->
 		<input type="hidden" name="access_key" value={WEB3FORMS_KEY} />
 		<input
 			type="hidden"
 			name="subject"
 			value="Nuevo mensaje desde OrPiRa Portfolio"
 		/>
+		<input
+			type="hidden"
+			name="from_name"
+			value="Orlando Pineda Raad — OrPiRa"
+		/>
+
+		<!-- Auto-respuesta al remitente -->
+		<input type="hidden" name="autoresponse" value="true" />
+		<input
+			type="hidden"
+			name="autoresponse_subject"
+			value="✅ He recibido tu mensaje — Orlando Pineda Raad"
+		/>
+		<input type="hidden" name="autoresponse_from" value="Orlando Pineda Raad" />
+		<input
+			type="hidden"
+			name="autoresponse_message"
+			value="¡Hola! 👋
+
+Gracias por contactarme a través de mi portfolio. He recibido tu mensaje correctamente y lo revisaré lo antes posible.
+
+Te responderé en un plazo máximo de 24-48 horas.
+
+Mientras tanto, puedes revisar mis proyectos en: https://orpira.github.io/orpira-portfolio
+
+Un cordial saludo,
+Orlando Pineda Raad
+Desarrollador Full Stack
+Bilbao, España"
+		/>
+
+		<!-- Anti-spam -->
 		<input type="checkbox" name="botcheck" class="hidden" />
 
 		<div>
@@ -87,6 +120,12 @@ const WEB3FORMS_KEY = "aa6e8316-5807-4bc6-aa8b-c266d225146a";
 
 		<div id="form-status" class="hidden text-center text-sm py-2 rounded-lg">
 		</div>
+		<p
+			id="form-autoresponse-note"
+			class="hidden text-center text-xs text-gray-500 dark:text-gray-400 mt-1"
+		>
+			📬 Revisa tu bandeja de entrada — recibirás una confirmación automática.
+		</p>
 	</form>
 
 	<!-- Enlace alternativo para descargar CV -->
@@ -107,6 +146,12 @@ const WEB3FORMS_KEY = "aa6e8316-5807-4bc6-aa8b-c266d225146a";
 </section>
 
 <script>
+	import { createClient } from "@supabase/supabase-js";
+
+	const SUPABASE_URL = "TU_SUPABASE_URL";
+	const SUPABASE_ANON_KEY = "TU_SUPABASE_ANON_KEY";
+	const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
 	const form = document.getElementById(
 		"contact-form",
 	) as HTMLFormElement | null;
@@ -114,12 +159,12 @@ const WEB3FORMS_KEY = "aa6e8316-5807-4bc6-aa8b-c266d225146a";
 	const submitBtn = document.getElementById(
 		"contact-submit",
 	) as HTMLButtonElement | null;
+	const autoResponseNote = document.getElementById("form-autoresponse-note");
 
 	if (form && statusDiv && submitBtn) {
 		form.addEventListener("submit", async (e) => {
 			e.preventDefault();
 
-			// Validación básica
 			if (!form.checkValidity()) {
 				form.reportValidity();
 				return;
@@ -128,20 +173,48 @@ const WEB3FORMS_KEY = "aa6e8316-5807-4bc6-aa8b-c266d225146a";
 			submitBtn.disabled = true;
 			submitBtn.textContent = "Enviando...";
 			statusDiv.classList.add("hidden");
+			if (autoResponseNote) autoResponseNote.classList.add("hidden");
+
+			const name = (form.elements.namedItem("name") as HTMLInputElement).value;
+			const email = (form.elements.namedItem("email") as HTMLInputElement)
+				.value;
+			const message = (
+				form.elements.namedItem("message") as HTMLTextAreaElement
+			).value;
 
 			try {
+				// 1. Enviar a Web3Forms (email + autorespuesta)
 				const formData = new FormData(form);
-				const res = await fetch("https://api.web3forms.com/submit", {
+				const web3Promise = fetch("https://api.web3forms.com/submit", {
 					method: "POST",
 					body: formData,
 				});
-				const data = await res.json();
 
-				if (data.success) {
+				// 2. Guardar en Supabase (Dashboard CRM)
+				const supaPromise = supabase.from("messages").insert({
+					name,
+					email,
+					message,
+					status: "nuevo",
+				});
+
+				// Ejecutar ambos en paralelo
+				const [web3Res, supaRes] = await Promise.all([
+					web3Promise,
+					supaPromise,
+				]);
+				const web3Data = await web3Res.json();
+
+				if (web3Data.success) {
 					statusDiv.textContent = "✅ ¡Mensaje enviado! Te responderé pronto.";
 					statusDiv.className =
 						"text-center text-sm py-2 rounded-lg bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400";
+					if (autoResponseNote) autoResponseNote.classList.remove("hidden");
 					form.reset();
+
+					if (supaRes.error) {
+						console.warn("Supabase backup falló:", supaRes.error.message);
+					}
 				} else {
 					statusDiv.textContent = "❌ Error al enviar. Inténtalo de nuevo.";
 					statusDiv.className =

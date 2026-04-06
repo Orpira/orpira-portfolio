@@ -1,0 +1,475 @@
+---
+// src/pages/dashboard.astro
+import "../styles/global.css";
+
+const baseUrl = "/orpira-portfolio";
+---
+
+<html lang="es" class="dark">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>OrPiRa | Dashboard de Mensajes</title>
+		<link rel="icon" type="image/png" href={`${baseUrl}/opr.png`} />
+		<script>
+			if (
+				localStorage.theme === "dark" ||
+				(!("theme" in localStorage) &&
+					window.matchMedia("(prefers-color-scheme: dark)").matches)
+			) {
+				document.documentElement.classList.add("dark");
+			} else {
+				document.documentElement.classList.remove("dark");
+			}
+		</script>
+	</head>
+
+	<body
+		class="bg-zinc-50 dark:bg-zinc-900 text-zinc-900 dark:text-white font-sans min-h-screen"
+	>
+		<!-- Login -->
+		<div
+			id="login-section"
+			class="flex items-center justify-center min-h-screen"
+		>
+			<div
+				class="max-w-sm w-full mx-4 p-8 bg-white dark:bg-zinc-800 rounded-2xl shadow-lg"
+			>
+				<h1
+					class="text-2xl font-serif font-bold text-center text-brand.accent mb-6"
+				>
+					🔐 Dashboard OrPiRa
+				</h1>
+				<form id="login-form" class="space-y-4">
+					<div>
+						<label for="login-email" class="block text-sm font-medium mb-1"
+							>Email</label
+						>
+						<input
+							type="email"
+							id="login-email"
+							required
+							placeholder="tu@email.com"
+							class="w-full px-4 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-zinc-900 dark:text-white focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition"
+						/>
+					</div>
+					<div>
+						<label for="login-password" class="block text-sm font-medium mb-1"
+							>Contraseña</label
+						>
+						<input
+							type="password"
+							id="login-password"
+							required
+							placeholder="••••••••"
+							class="w-full px-4 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-zinc-900 dark:text-white focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition"
+						/>
+					</div>
+					<button
+						type="submit"
+						id="login-btn"
+						class="w-full py-3 px-6 bg-zinc-900 hover:bg-zinc-800 dark:bg-white dark:hover:bg-zinc-200 text-white dark:text-zinc-900 font-semibold rounded-lg transition-colors disabled:opacity-50"
+					>
+						Iniciar sesión
+					</button>
+					<p id="login-error" class="hidden text-center text-sm text-red-500">
+					</p>
+				</form>
+				<p class="text-center text-xs text-gray-500 dark:text-gray-400 mt-4">
+					<a href={`${baseUrl}/`} class="underline hover:text-brand.accent"
+						>← Volver al portfolio</a
+					>
+				</p>
+			</div>
+		</div>
+
+		<!-- Dashboard -->
+		<div id="dashboard-section" class="hidden">
+			<header
+				class="bg-white dark:bg-zinc-800 shadow px-6 py-4 flex justify-between items-center"
+			>
+				<div class="flex items-center gap-3">
+					<h1 class="text-xl font-serif font-bold text-brand.accent">
+						📬 Mensajes recibidos
+					</h1>
+					<span
+						id="msg-count"
+						class="text-xs bg-orange-500 text-white px-2 py-0.5 rounded-full"
+						>0</span
+					>
+				</div>
+				<div class="flex items-center gap-3">
+					<select
+						id="filter-status"
+						class="text-sm px-3 py-1.5 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-zinc-900 dark:text-white"
+					>
+						<option value="todos">Todos</option>
+						<option value="nuevo">🟢 Nuevos</option>
+						<option value="leído">🔵 Leídos</option>
+						<option value="respondido">✅ Respondidos</option>
+						<option value="archivado">📁 Archivados</option>
+					</select>
+					<button
+						id="logout-btn"
+						class="text-sm px-4 py-1.5 border border-zinc-300 dark:border-zinc-700 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-700 transition"
+					>
+						Cerrar sesión
+					</button>
+				</div>
+			</header>
+
+			<!-- Stats -->
+			<div
+				class="max-w-6xl mx-auto px-6 py-6 grid grid-cols-2 md:grid-cols-4 gap-4"
+			>
+				<div
+					class="bg-white dark:bg-zinc-800 rounded-xl p-4 text-center shadow-sm"
+				>
+					<p class="text-2xl font-bold" id="stat-total">0</p>
+					<p class="text-xs text-gray-500 dark:text-gray-400">Total</p>
+				</div>
+				<div
+					class="bg-white dark:bg-zinc-800 rounded-xl p-4 text-center shadow-sm"
+				>
+					<p class="text-2xl font-bold text-green-500" id="stat-nuevo">0</p>
+					<p class="text-xs text-gray-500 dark:text-gray-400">Nuevos</p>
+				</div>
+				<div
+					class="bg-white dark:bg-zinc-800 rounded-xl p-4 text-center shadow-sm"
+				>
+					<p class="text-2xl font-bold text-blue-500" id="stat-leido">0</p>
+					<p class="text-xs text-gray-500 dark:text-gray-400">Leídos</p>
+				</div>
+				<div
+					class="bg-white dark:bg-zinc-800 rounded-xl p-4 text-center shadow-sm"
+				>
+					<p class="text-2xl font-bold text-orange-500" id="stat-respondido">
+						0
+					</p>
+					<p class="text-xs text-gray-500 dark:text-gray-400">Respondidos</p>
+				</div>
+			</div>
+
+			<!-- Tabla de mensajes -->
+			<div class="max-w-6xl mx-auto px-6 pb-12">
+				<div
+					class="bg-white dark:bg-zinc-800 rounded-xl shadow-sm overflow-hidden"
+				>
+					<table class="w-full text-sm">
+						<thead>
+							<tr
+								class="border-b border-zinc-200 dark:border-zinc-700 text-left"
+							>
+								<th class="px-4 py-3 font-medium">Estado</th>
+								<th class="px-4 py-3 font-medium">Nombre</th>
+								<th class="px-4 py-3 font-medium hidden md:table-cell">Email</th
+								>
+								<th class="px-4 py-3 font-medium hidden lg:table-cell"
+									>Mensaje</th
+								>
+								<th class="px-4 py-3 font-medium">Fecha</th>
+								<th class="px-4 py-3 font-medium">Acciones</th>
+							</tr>
+						</thead>
+						<tbody id="messages-body">
+							<tr>
+								<td colspan="6" class="px-4 py-8 text-center text-gray-500">
+									Cargando mensajes...
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+
+			<!-- Modal detalle -->
+			<div
+				id="msg-modal"
+				class="hidden fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4"
+			>
+				<div
+					class="bg-white dark:bg-zinc-800 rounded-2xl max-w-lg w-full p-6 relative max-h-[80vh] overflow-y-auto"
+				>
+					<button
+						id="modal-close"
+						class="absolute top-4 right-4 text-gray-500 hover:text-gray-700 dark:hover:text-white text-xl"
+						>✕</button
+					>
+					<h3 id="modal-name" class="text-lg font-bold mb-1"></h3>
+					<p
+						id="modal-email"
+						class="text-sm text-gray-500 dark:text-gray-400 mb-1"
+					>
+					</p>
+					<p id="modal-date" class="text-xs text-gray-400 mb-4"></p>
+					<div
+						id="modal-message"
+						class="bg-zinc-50 dark:bg-zinc-900 p-4 rounded-lg whitespace-pre-wrap text-sm mb-4"
+					>
+					</div>
+					<div class="flex gap-2 flex-wrap">
+						<button
+							data-action="leído"
+							class="modal-status-btn px-3 py-1.5 text-xs rounded-lg bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 hover:opacity-80"
+							>🔵 Marcar leído</button
+						>
+						<button
+							data-action="respondido"
+							class="modal-status-btn px-3 py-1.5 text-xs rounded-lg bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 hover:opacity-80"
+							>✅ Respondido</button
+						>
+						<button
+							data-action="archivado"
+							class="modal-status-btn px-3 py-1.5 text-xs rounded-lg bg-gray-100 dark:bg-gray-900/30 text-gray-700 dark:text-gray-400 hover:opacity-80"
+							>📁 Archivar</button
+						>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<script>
+			import { createClient } from "@supabase/supabase-js";
+
+			const SUPABASE_URL = "https://wdaayllemxoubseukcxm.supabase.co";
+			const SUPABASE_ANON_KEY =
+				"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndkYWF5bGxlbXhvdWJzZXVrY3htIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ3MzQ1MzEsImV4cCI6MjA5MDMxMDUzMX0.4dcBlfEyoajW9nfi5ap0WfruV0yL0cNaWVqXmmO4PFo";
+			const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+			// === Elementos del DOM ===
+			const loginSection = document.getElementById("login-section")!;
+			const dashboardSection = document.getElementById("dashboard-section")!;
+			const loginForm = document.getElementById(
+				"login-form",
+			) as HTMLFormElement;
+			const loginError = document.getElementById("login-error")!;
+			const logoutBtn = document.getElementById("logout-btn")!;
+			const messagesBody = document.getElementById("messages-body")!;
+			const msgCount = document.getElementById("msg-count")!;
+			const filterStatus = document.getElementById(
+				"filter-status",
+			) as HTMLSelectElement;
+			const modal = document.getElementById("msg-modal")!;
+			const modalClose = document.getElementById("modal-close")!;
+			const modalName = document.getElementById("modal-name")!;
+			const modalEmail = document.getElementById("modal-email")!;
+			const modalDate = document.getElementById("modal-date")!;
+			const modalMessage = document.getElementById("modal-message")!;
+
+			// Stats
+			const statTotal = document.getElementById("stat-total")!;
+			const statNuevo = document.getElementById("stat-nuevo")!;
+			const statLeido = document.getElementById("stat-leido")!;
+			const statRespondido = document.getElementById("stat-respondido")!;
+
+			let currentMsgId: string | null = null;
+
+			const statusEmoji: Record<string, string> = {
+				nuevo: "🟢",
+				leído: "🔵",
+				respondido: "✅",
+				archivado: "📁",
+			};
+
+			// === Auth ===
+			async function checkSession() {
+				const { data } = await supabase.auth.getSession();
+				if (data.session) {
+					showDashboard();
+				}
+			}
+
+			loginForm.addEventListener("submit", async (e) => {
+				e.preventDefault();
+				const email = (
+					document.getElementById("login-email") as HTMLInputElement
+				).value;
+				const password = (
+					document.getElementById("login-password") as HTMLInputElement
+				).value;
+				const loginBtn = document.getElementById(
+					"login-btn",
+				) as HTMLButtonElement;
+
+				loginBtn.disabled = true;
+				loginBtn.textContent = "Verificando...";
+				loginError.classList.add("hidden");
+
+				const { error } = await supabase.auth.signInWithPassword({
+					email,
+					password,
+				});
+
+				if (error) {
+					loginError.textContent = "❌ Credenciales incorrectas";
+					loginError.classList.remove("hidden");
+					loginBtn.disabled = false;
+					loginBtn.textContent = "Iniciar sesión";
+				} else {
+					showDashboard();
+				}
+			});
+
+			logoutBtn.addEventListener("click", async () => {
+				await supabase.auth.signOut();
+				loginSection.classList.remove("hidden");
+				dashboardSection.classList.add("hidden");
+			});
+
+			// === Dashboard ===
+			function showDashboard() {
+				loginSection.classList.add("hidden");
+				dashboardSection.classList.remove("hidden");
+				loadMessages();
+			}
+
+			async function loadMessages(filter = "todos") {
+				let query = supabase
+					.from("messages")
+					.select("*")
+					.order("created_at", { ascending: false });
+
+				if (filter !== "todos") {
+					query = query.eq("status", filter);
+				}
+
+				const { data, error } = await query;
+
+				if (error) {
+					messagesBody.innerHTML = `<tr><td colspan="6" class="px-4 py-8 text-center text-red-500">Error: ${error.message}</td></tr>`;
+					return;
+				}
+
+				const messages = data || [];
+				msgCount.textContent = String(messages.length);
+
+				// Actualizar stats (siempre total)
+				const { data: allMsgs } = await supabase
+					.from("messages")
+					.select("status");
+				const all = allMsgs || [];
+				statTotal.textContent = String(all.length);
+				statNuevo.textContent = String(
+					all.filter((m) => m.status === "nuevo").length,
+				);
+				statLeido.textContent = String(
+					all.filter((m) => m.status === "leído").length,
+				);
+				statRespondido.textContent = String(
+					all.filter((m) => m.status === "respondido").length,
+				);
+
+				if (messages.length === 0) {
+					messagesBody.innerHTML = `<tr><td colspan="6" class="px-4 py-8 text-center text-gray-500">No hay mensajes</td></tr>`;
+					return;
+				}
+
+				messagesBody.innerHTML = messages
+					.map(
+						(msg) => `
+					<tr class="border-b border-zinc-100 dark:border-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-700/30 cursor-pointer transition" data-id="${msg.id}">
+						<td class="px-4 py-3">${statusEmoji[msg.status] || "⚪"} <span class="text-xs">${msg.status}</span></td>
+						<td class="px-4 py-3 font-medium">${escapeHtml(msg.name)}</td>
+						<td class="px-4 py-3 hidden md:table-cell text-gray-500 dark:text-gray-400">${escapeHtml(msg.email)}</td>
+						<td class="px-4 py-3 hidden lg:table-cell text-gray-500 dark:text-gray-400 truncate max-w-xs">${escapeHtml(msg.message.substring(0, 60))}${msg.message.length > 60 ? "…" : ""}</td>
+						<td class="px-4 py-3 text-xs text-gray-400">${formatDate(msg.created_at)}</td>
+						<td class="px-4 py-3">
+							<button class="view-msg-btn text-xs text-orange-500 hover:underline" data-id="${msg.id}">Ver</button>
+						</td>
+					</tr>
+				`,
+					)
+					.join("");
+
+				// Añadir eventos a botones "Ver"
+				document.querySelectorAll(".view-msg-btn").forEach((btn) => {
+					btn.addEventListener("click", (e) => {
+						e.stopPropagation();
+						const id = (btn as HTMLElement).dataset.id!;
+						const msg = messages.find((m) => m.id === id);
+						if (msg) openModal(msg);
+					});
+				});
+
+				// Clic en fila
+				messagesBody.querySelectorAll("tr[data-id]").forEach((row) => {
+					row.addEventListener("click", () => {
+						const id = (row as HTMLElement).dataset.id!;
+						const msg = messages.find((m) => m.id === id);
+						if (msg) openModal(msg);
+					});
+				});
+			}
+
+			// === Modal ===
+			function openModal(msg: {
+				id: string;
+				name: string;
+				email: string;
+				message: string;
+				created_at: string;
+				status: string;
+			}) {
+				currentMsgId = msg.id;
+				modalName.textContent = msg.name;
+				modalEmail.textContent = msg.email;
+				modalDate.textContent = new Date(msg.created_at).toLocaleString(
+					"es-ES",
+				);
+				modalMessage.textContent = msg.message;
+				modal.classList.remove("hidden");
+			}
+
+			modalClose.addEventListener("click", () => {
+				modal.classList.add("hidden");
+				currentMsgId = null;
+			});
+
+			modal.addEventListener("click", (e) => {
+				if (e.target === modal) {
+					modal.classList.add("hidden");
+					currentMsgId = null;
+				}
+			});
+
+			// Botones de cambio de estado en modal
+			document.querySelectorAll(".modal-status-btn").forEach((btn) => {
+				btn.addEventListener("click", async () => {
+					if (!currentMsgId) return;
+					const newStatus = (btn as HTMLElement).dataset.action!;
+					await supabase
+						.from("messages")
+						.update({ status: newStatus })
+						.eq("id", currentMsgId);
+					modal.classList.add("hidden");
+					currentMsgId = null;
+					loadMessages(filterStatus.value);
+				});
+			});
+
+			// === Filtro ===
+			filterStatus.addEventListener("change", () => {
+				loadMessages(filterStatus.value);
+			});
+
+			// === Utilidades ===
+			function escapeHtml(text: string): string {
+				const div = document.createElement("div");
+				div.textContent = text;
+				return div.innerHTML;
+			}
+
+			function formatDate(iso: string): string {
+				const d = new Date(iso);
+				return (
+					d.toLocaleDateString("es-ES", { day: "2-digit", month: "short" }) +
+					" " +
+					d.toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" })
+				);
+			}
+
+			// === Init ===
+			checkSession();
+		</script>
+	</body>
+</html>

@@ -14,43 +14,268 @@ const siteBase = baseUrl ?? "";
 	</h2>
 
 	<div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-		<article
-			class="bg-brand.card p-6 rounded-xl border border-zinc-700 hover:border-brand.accent transition"
-		>
-			<a href={`${siteBase}/projects/control-horario`} class="block">
-				<h3 class="text-xl font-semibold mb-1">Control Horario Laboral</h3>
-				<p class="text-sm text-gray-600 dark:text-brand.muted mb-4">
-					Sistema web para fichaje y cálculo de horas.
-				</p>
-				<p class="text-sm">
-					✔ Backend en Laravel ✔ Base de datos SQLite ✔ Panel de control para
-					RRHH
-				</p>
-			</a>
-		</article>
+		<!-- Control Horario Laboral -->
+		<div class="perspective h-72 cursor-pointer" data-flip-card>
+			<div
+				class="relative w-full h-full transform-style-preserve-3d transition-transform duration-700"
+				data-flip-inner
+			>
+				<!-- Frente -->
+				<div
+					class="absolute inset-0 backface-hidden bg-brand.card p-6 rounded-xl border border-zinc-700 hover:border-brand.accent flex flex-col justify-between"
+				>
+					<div>
+						<h3 class="text-xl font-serif font-bold mb-2 text-brand.accent">
+							Control Horario Laboral
+						</h3>
+						<p class="text-sm text-brand.muted mb-2">
+							Gestión eficiente de fichaje y control horario para empresas.
+						</p>
+						<ul class="text-xs text-brand.muted mb-4 space-y-1">
+							<li>• Registro de entradas y salidas</li>
+							<li>• Informes automáticos para RRHH</li>
+							<li>• Backend Laravel · SQLite · Tailwind</li>
+						</ul>
+					</div>
+					<div class="flex items-center justify-between">
+						<span class="text-xs italic">Haz clic para más detalles</span>
+						<a
+							href={`${siteBase}/projects/control-horario`}
+							target="_blank"
+							rel="noopener noreferrer"
+							class="text-brand.accent underline underline-offset-2 text-xs"
+							>Ver proyecto</a
+						>
+					</div>
+				</div>
+				<!-- Reverso -->
+				<div
+					class="absolute inset-0 backface-hidden rotate-y-180 bg-brand.card p-6 rounded-xl border border-zinc-700 flex flex-col justify-between"
+				>
+					<div>
+						<h3 class="text-lg font-serif font-bold text-brand.accent mb-2">
+							Control Horario Laboral
+						</h3>
+						<p class="text-sm leading-relaxed text-brand.muted">
+							Sistema web para registrar jornadas laborales, generar reportes y
+							optimizar la gestión de personal. Redujo un 40% los errores
+							manuales y mejoró la trazabilidad horaria.
+						</p>
+					</div>
+					<div class="flex justify-end mt-4">
+						<span
+							class="text-xs text-brand.muted italic cursor-pointer"
+							data-flip-back>← Volver</span
+						>
+					</div>
+				</div>
+			</div>
+		</div>
 
-		<article
-			class="bg-brand.card p-6 rounded-xl border border-zinc-700 hover:border-brand.accent transition"
-		>
-			<h3 class="text-xl font-semibold mb-1">Plataforma Educativa</h3>
-			<p class="text-sm text-gray-600 dark:text-brand.muted mb-4">
-				Quizzes interactivos con autenticación y progreso.
-			</p>
-			<p class="text-sm">
-				✔ React + Vite ✔ Firebase ✔ UI/UX para aprendizaje interactivo
-			</p>
-		</article>
+		<!-- Test Interactivo – Dashboard de Evaluación -->
+		<div class="perspective h-72 cursor-pointer" data-flip-card>
+			<div
+				class="relative w-full h-full transform-style-preserve-3d transition-transform duration-700"
+				data-flip-inner
+			>
+				<!-- Frente -->
+				<div
+					class="absolute inset-0 backface-hidden bg-brand.card p-6 rounded-xl border border-zinc-700 hover:border-brand.accent flex flex-col justify-between"
+				>
+					<div>
+						<div class="flex items-center gap-2 mb-2">
+							<img
+								src={`${siteBase}/webwiz-logo.png`}
+								alt="WebWiz Quiz Logo"
+								class="w-8 h-8 rounded-full border border-brand.accent bg-white"
+								loading="lazy"
+							/>
+							<h3 class="text-xl font-serif font-bold text-brand.accent mb-0">
+								WebWiz Quiz
+							</h3>
+						</div>
+						<p class="text-sm text-brand.muted mb-2">
+							Quizzes y retos interactivos de <span
+								class="font-bold text-orange-400">HTML</span
+							>, <span class="font-bold text-cyan-400">CSS</span>, <span
+								class="font-bold text-yellow-300">JavaScript</span
+							>.
+						</p>
+						<ul class="text-xs text-brand.muted mb-4 space-y-1">
+							<li>• Aprende y diviértete resolviendo desafíos reales</li>
+							<li>• Evalúa, valida y comparte tus soluciones</li>
+							<li>• Progreso visual y feedback instantáneo</li>
+						</ul>
+					</div>
+					<div class="flex items-center justify-between">
+						<span class="text-xs italic">Haz clic para más detalles</span>
+						<a
+							href="https://test-interactivo.vercel.app/"
+							target="_blank"
+							rel="noopener noreferrer"
+							class="text-brand.accent underline underline-offset-2 text-xs font-semibold flex items-center gap-1"
+						>
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								class="w-4 h-4 inline"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke="currentColor"
+								><path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									stroke-width="2"
+									d="M14 3h7m0 0v7m0-7L10 14m-7 7h7a2 2 0 002-2v-7"></path></svg
+							>
+							Ver proyecto
+						</a>
+					</div>
+				</div>
+				<!-- Reverso -->
+				<div
+					class="absolute inset-0 backface-hidden rotate-y-180 bg-brand.card p-6 rounded-xl border border-zinc-700 flex flex-col justify-between"
+				>
+					<div>
+						<div class="flex items-center gap-2 mb-2">
+							<img
+								src={`${siteBase}/webwiz-logo.png`}
+								alt="Test Interactivo Logo"
+								class="w-8 h-8 rounded-full border border-brand.accent bg-white"
+								loading="lazy"
+							/>
+							<h3 class="text-lg font-serif font-bold text-brand.accent mb-0">
+								Test Interactivo
+							</h3>
+						</div>
+						<p class="text-sm leading-relaxed text-brand.muted">
+							Plataforma gamificada para aprender y practicar desarrollo web.
+							Crea, resuelve y comparte quizzes de HTML, CSS y JavaScript.
+							Interfaz moderna, experiencia divertida y resultados en tiempo
+							real.
+							<span class="block mt-2 italic text-orange-300"
+								>“Domina la magia del código, un quiz a la vez.”</span
+							>
+						</p>
+					</div>
+					<div class="flex justify-between items-center mt-4">
+						<a
+							href="https://test-interactivo.vercel.app/"
+							target="_blank"
+							rel="noopener noreferrer"
+							class="text-brand.accent underline underline-offset-2 text-xs font-semibold flex items-center gap-1"
+						>
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								class="w-4 h-4 inline"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke="currentColor"
+								><path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									stroke-width="2"
+									d="M14 3h7m0 0v7m0-7L10 14m-7 7h7a2 2 0 002-2v-7"></path></svg
+							>
+							Ver proyecto
+						</a>
+						<span
+							class="text-xs text-brand.muted italic cursor-pointer"
+							data-flip-back>← Volver</span
+						>
+					</div>
+				</div>
+			</div>
+		</div>
 
-		<article
-			class="bg-brand.card p-6 rounded-xl border border-zinc-700 hover:border-brand.accent transition"
-		>
-			<h3 class="text-xl font-semibold mb-1">Portafolio Profesional</h3>
-			<p class="text-sm text-gray-600 dark:text-brand.muted mb-4">
-				Sitio personal con modo oscuro y branding propio.
-			</p>
-			<p class="text-sm">
-				✔ Astro + Tailwind ✔ Diseño visual ✔ Optimización SEO
-			</p>
-		</article>
+		<!-- Portafolio Profesional -->
+		<div class="perspective h-72 cursor-pointer" data-flip-card>
+			<div
+				class="relative w-full h-full transform-style-preserve-3d transition-transform duration-700"
+				data-flip-inner
+			>
+				<!-- Frente -->
+				<div
+					class="absolute inset-0 backface-hidden bg-brand.card p-6 rounded-xl border border-zinc-700 hover:border-brand.accent flex flex-col justify-between"
+				>
+					<div>
+						<div class="flex items-center gap-2 mb-2">
+							<img
+								src={`${siteBase}/orpira.png`}
+								alt="Logo Portafolio"
+								class="w-8 h-8 rounded-full border border-brand.accent bg-white"
+								loading="lazy"
+							/>
+							<h3 class="text-xl font-serif font-bold text-brand.accent mb-0">
+								Portafolio Profesional
+							</h3>
+						</div>
+						<p class="text-sm text-brand.muted mb-2">
+							Mi carta de presentación digital.
+						</p>
+						<ul class="text-xs text-brand.muted mb-4 space-y-1">
+							<li>• Diseño visual cuidado</li>
+							<li>• Modo oscuro y branding propio</li>
+							<li>• Astro · Tailwind · SEO</li>
+						</ul>
+					</div>
+					<div class="flex items-center justify-between">
+						<span class="text-xs italic text-brand.accent font-semibold"
+							>Estás navegando este portafolio</span
+						>
+					</div>
+				</div>
+				<!-- Reverso -->
+				<div
+					class="absolute inset-0 backface-hidden rotate-y-180 bg-brand.card p-6 rounded-xl border border-zinc-700 flex flex-col justify-between"
+				>
+					<div>
+						<div class="flex items-center gap-2 mb-2">
+							<img
+								src={`${siteBase}/orpira.png`}
+								alt="Logo Portafolio"
+								class="w-8 h-8 rounded-full border border-brand.accent bg-white"
+								loading="lazy"
+							/>
+							<h3 class="text-lg font-serif font-bold text-brand.accent mb-0">
+								Portafolio Profesional
+							</h3>
+						</div>
+						<p class="text-sm leading-relaxed text-brand.muted">
+							Sitio web personal con enfoque en experiencia de usuario,
+							identidad visual y optimización para buscadores. Cada detalle
+							refleja mi pasión por el desarrollo y el diseño.
+						</p>
+					</div>
+					<div class="flex justify-end mt-4">
+						<span
+							class="text-xs text-brand.muted italic cursor-pointer"
+							data-flip-back>← Volver</span
+						>
+					</div>
+				</div>
+			</div>
+		</div>
 	</div>
+
+	<script is:inline>
+		document.querySelectorAll("[data-flip-card]").forEach((card) => {
+			const inner = card.querySelector("[data-flip-inner]");
+			if (!inner) return;
+
+			card.addEventListener("click", (e) => {
+				const target = e.target;
+				// No voltear si se hace clic en un enlace externo
+				if (target.closest("a")) return;
+				inner.classList.toggle("rotate-y-180");
+			});
+
+			// Soporte para volver desde el reverso
+			card.querySelectorAll("[data-flip-back]").forEach((btn) => {
+				btn.addEventListener("click", (e) => {
+					e.stopPropagation();
+					inner.classList.remove("rotate-y-180");
+				});
+			});
+		});
+	</script>
 </section>

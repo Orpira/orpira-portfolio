@@ -1,0 +1,26 @@
+---
+import ProjectLayout from "../../layouts/ProjectLayout.astro";
+import ProjectDetail from "../../components/ProjectDetail.astro";
+---
+
+<ProjectLayout
+	title="Test Interactivo – Dashboard de Evaluación"
+	description="Herramienta interactiva para crear tests, practicar conceptos y visualizar el progreso de aprendizaje."
+>
+	<ProjectDetail
+		title="Test Interactivo – Dashboard de Evaluación"
+		description="Una herramienta creada para aprender, medir y mejorar. Aplicación con autenticación, almacenamiento de datos y un flujo completo de usuario para evaluar conocimientos de forma visual y organizada."
+		year="2024"
+		role="Desarrollador Fullstack"
+		tech={["React", "Vite", "Supabase", "Tailwind", "Vercel"]}
+		features={[
+			"Autenticación de usuarios con Supabase",
+			"Creación y gestión de quizzes interactivos",
+			"Visualización de resultados en panel claro y organizado",
+			"Interfaz limpia y moderna con Tailwind",
+			"Despliegue optimizado en Vercel",
+		]}
+		result="Este proyecto representa una experiencia completa de usuario, desde la arquitectura hasta el diseño visual. Fue construido como herramienta personal de aprendizaje, enfrentando problemas concretos y mejorando con cada iteración."
+		image="/projects/dashboard-evaluacion.jpg"
+	/>
+</ProjectLayout>

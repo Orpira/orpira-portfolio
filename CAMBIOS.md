@@ -279,3 +279,386 @@ Para que el formulario funcione, sigue estos pasos:
 | Bots/scrapers de email            | ✅ Sí                                   |
 | Spam en el formulario             | ✅ Parcial (honeypot anti-bot incluido) |
 | WhatsApp visible en código fuente | ❌ No (se mantiene como enlace directo) |
+
+---
+
+---
+
+## Efecto shimmer en divisores de sección
+
+**Fecha:** 28 de marzo de 2026
+
+---
+
+### Resumen
+
+Se añadió un **efecto de destello plateado animado** en las líneas divisorias entre secciones del portfolio, reemplazando los simples bordes estáticos por una animación sutil y elegante.
+
+---
+
+### Archivos modificados
+
+| Archivo                                | Cambio realizado                                                         |
+| -------------------------------------- | ------------------------------------------------------------------------ |
+| `src/styles/global.css`                | Clase `.section-divider` con pseudo-elementos y animación `shimmerSlide` |
+| `src/components/ServicesSection.astro` | Reemplazado `border-t border-zinc-800` por `section-divider`             |
+| `src/components/ProjectsSection.astro` | Reemplazado `border-t border-zinc-800` por `section-divider`             |
+| `src/components/SkillsSection.astro`   | Reemplazado `border-t border-zinc-800` por `section-divider`             |
+
+---
+
+### Detalle técnico
+
+#### Clase `.section-divider` en `global.css`
+
+```css
+.section-divider {
+	position: relative;
+	overflow: hidden;
+}
+
+.section-divider::before {
+	content: "";
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	height: 1px;
+	background: rgba(161, 161, 170, 0.3); /* zinc sutil */
+}
+
+.section-divider::after {
+	content: "";
+	position: absolute;
+	top: 0;
+	width: 80px;
+	height: 1px;
+	background: linear-gradient(
+		90deg,
+		transparent,
+		#c0c0c0,
+		#e8e8e8,
+		transparent
+	);
+	animation: shimmerSlide 6s ease-in-out infinite;
+}
+```
+
+#### Animación `shimmerSlide`
+
+```css
+@keyframes shimmerSlide {
+	0% {
+		right: -80px;
+	}
+	100% {
+		right: calc(100% + 80px);
+	}
+}
+```
+
+- **Dirección:** derecha a izquierda
+- **Color:** plateado (`#c0c0c0` → `#e8e8e8`)
+- **Velocidad:** 6 segundos por ciclo
+- **Accesibilidad:** Se desactiva con `@media (prefers-reduced-motion: reduce)`
+
+---
+
+### Evolución del efecto
+
+1. **Versión inicial:** verde Matrix (`#00ff41`), 4s, izquierda a derecha
+2. **Primera iteración:** se cambió a derecha a izquierda, verde mantenido
+3. **Versión final:** color plateado, velocidad reducida a 6s, dirección derecha a izquierda
+
+---
+
+---
+
+## Estilos de botones adaptados al tema claro/oscuro
+
+**Fecha:** 28 de marzo de 2026
+
+---
+
+### Resumen
+
+Se actualizaron los estilos del **botón de envío** del formulario de contacto y del **enlace de descarga de CV** para que se adapten al tema seleccionado (claro/oscuro), usando fondo negro con texto blanco en tema claro y fondo blanco con texto negro en tema oscuro.
+
+---
+
+### Archivo modificado
+
+| Archivo                               | Cambio realizado                                 |
+| ------------------------------------- | ------------------------------------------------ |
+| `src/components/ContactSection.astro` | Clases del botón submit y enlace CV actualizadas |
+
+---
+
+### Detalle
+
+**Botón de envío:**
+
+```html
+<button
+	class="... bg-black text-white dark:bg-white dark:text-black ..."
+></button>
+```
+
+**Enlace de descarga de CV:**
+
+```html
+<a class="... bg-black text-white dark:bg-white dark:text-black ..."></a>
+```
+
+Ambos elementos mantienen hover con opacidad reducida y transiciones suaves.
+
+---
+
+---
+
+## Botón flotante de scroll-to-top
+
+**Fecha:** 28 de marzo de 2026
+
+---
+
+### Resumen
+
+Se añadió un **botón flotante con flecha hacia arriba** que aparece cuando el usuario hace scroll más allá de 300px, permitiendo volver al inicio de la página con un desplazamiento suave.
+
+---
+
+### Archivo modificado
+
+| Archivo                    | Cambio realizado                                       |
+| -------------------------- | ------------------------------------------------------ |
+| `src/layouts/Layout.astro` | Botón `#scroll-top-btn` con listener de scroll y click |
+
+---
+
+### Detalle técnico
+
+```html
+<button
+	id="scroll-top-btn"
+	class="fixed bottom-6 left-6 z-50 hidden ..."
+	aria-label="Ir arriba"
+>
+	↑
+</button>
+```
+
+**Comportamiento JavaScript:**
+
+- Se muestra (`classList.remove("hidden")`) cuando `window.scrollY > 300`
+- Se oculta (`classList.add("hidden")`) cuando `window.scrollY <= 300`
+- Al hacer clic: `window.scrollTo({ top: 0, behavior: "smooth" })`
+
+**Estilos:**
+
+- Posición fija en esquina inferior izquierda
+- Adaptado a tema claro/oscuro (fondo negro/blanco)
+- Sombra, bordes redondeados, transición de opacidad
+
+---
+
+---
+
+## Auto-respuesta de Web3Forms
+
+**Fecha:** 28 de marzo de 2026
+
+---
+
+### Resumen
+
+Se configuraron **campos ocultos** en el formulario de contacto para que Web3Forms envíe automáticamente un correo de confirmación al remitente después de enviar un mensaje.
+
+---
+
+### Archivo modificado
+
+| Archivo                               | Cambio realizado                                       |
+| ------------------------------------- | ------------------------------------------------------ |
+| `src/components/ContactSection.astro` | Campos hidden para autoresponse añadidos al formulario |
+
+---
+
+### Campos añadidos
+
+```html
+<input
+	type="hidden"
+	name="autoresponse"
+	value="¡Gracias por contactarme! He recibido tu mensaje y te responderé lo antes posible. — Orlando (OrPiRa)"
+/>
+<input
+	type="hidden"
+	name="autoresponse_subject"
+	value="Gracias por contactar a OrPiRa"
+/>
+<input type="hidden" name="autoresponse_from" value="OrPiRa Portfolio" />
+```
+
+**Funcionamiento:**
+
+- Cuando un visitante envía el formulario, Web3Forms le envía automáticamente un email de confirmación
+- El asunto del email es "Gracias por contactar a OrPiRa"
+- El remitente aparece como "OrPiRa Portfolio"
+- El cuerpo incluye un mensaje de agradecimiento personalizado
+
+---
+
+---
+
+## Integración con Supabase + Dashboard CRM
+
+**Fecha:** 28 de marzo de 2026
+
+---
+
+### Resumen
+
+Se integró **Supabase** como backend para almacenar los mensajes del formulario de contacto en una base de datos PostgreSQL, y se creó un **panel de administración (CRM)** privado para gestionar los mensajes recibidos.
+
+---
+
+### Archivos creados/modificados
+
+| Archivo                               | Cambio realizado                                                           |
+| ------------------------------------- | -------------------------------------------------------------------------- |
+| `src/lib/supabase.ts`                 | **Nuevo** — Configuración del cliente Supabase con esquema SQL documentado |
+| `src/components/ContactSection.astro` | Dual-submit: envío en paralelo a Web3Forms + Supabase                      |
+| `src/pages/dashboard.astro`           | **Nuevo** — Panel CRM completo con autenticación                           |
+| `package.json`                        | Dependencia `@supabase/supabase-js` añadida                                |
+
+---
+
+### 1. Configuración Supabase (`src/lib/supabase.ts`)
+
+```ts
+import { createClient } from "@supabase/supabase-js";
+
+const supabaseUrl = "TU_SUPABASE_URL";
+const supabaseAnonKey = "TU_SUPABASE_ANON_KEY";
+
+export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+```
+
+**Esquema SQL para crear la tabla:**
+
+```sql
+CREATE TABLE messages (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  name TEXT NOT NULL,
+  email TEXT NOT NULL,
+  message TEXT NOT NULL,
+  status TEXT NOT NULL DEFAULT 'nuevo'
+    CHECK (status IN ('nuevo', 'leído', 'respondido', 'archivado')),
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- Row Level Security
+ALTER TABLE messages ENABLE ROW LEVEL SECURITY;
+
+-- Política de inserción pública (para el formulario)
+CREATE POLICY "Permitir inserción pública"
+  ON messages FOR INSERT
+  WITH CHECK (true);
+
+-- Política de lectura para usuarios autenticados
+CREATE POLICY "Solo usuarios autenticados leen"
+  ON messages FOR SELECT
+  USING (auth.role() = 'authenticated');
+
+-- Política de actualización para usuarios autenticados
+CREATE POLICY "Solo usuarios autenticados actualizan"
+  ON messages FOR UPDATE
+  USING (auth.role() = 'authenticated');
+```
+
+---
+
+### 2. Dual-submit en `ContactSection.astro`
+
+El formulario ahora envía los datos **en paralelo** a dos destinos:
+
+```js
+const [web3Result, supaResult] = await Promise.all([
+	web3Promise, // Web3Forms (notificación por email)
+	supaPromise, // Supabase (almacenamiento en BD)
+]);
+```
+
+- **Web3Forms:** envía el email de notificación al propietario + auto-respuesta al visitante
+- **Supabase:** inserta el mensaje en la tabla `messages` con estado `nuevo`
+- Si Supabase falla, se muestra un warning en consola pero el formulario sigue funcionando (Web3Forms es el canal principal)
+
+---
+
+### 3. Dashboard CRM (`src/pages/dashboard.astro`)
+
+Página completa de administración accesible en `/dashboard` con las siguientes funcionalidades:
+
+#### Autenticación
+
+- Login con email/password mediante `supabase.auth.signInWithPassword()`
+- Verificación de sesión existente al cargar con `supabase.auth.getSession()`
+- Botón de cerrar sesión con `supabase.auth.signOut()`
+
+#### Panel de estadísticas
+
+- **Total** de mensajes
+- **Nuevos** (🟢) — sin leer
+- **Leídos** (🔵) — revisados
+- **Respondidos** (✅) — con respuesta enviada
+
+#### Tabla de mensajes
+
+- Columnas: Estado, Nombre, Email, Mensaje (truncado), Fecha, Acciones
+- Filtro por estado (Todos / Nuevo / Leído / Respondido / Archivado)
+- Clic en fila o botón "Ver" abre modal de detalle
+- Responsiva: columnas Email y Mensaje se ocultan en móvil
+
+#### Modal de detalle
+
+- Muestra nombre, email, fecha completa y mensaje íntegro
+- Botones de acción: Marcar leído, Respondido, Archivar
+- Cierre con botón ✕ o clic fuera del modal
+
+#### Seguridad
+
+- `escapeHtml()` para prevenir XSS al renderizar datos de usuarios
+- Las políticas RLS de Supabase protegen la lectura/actualización (solo autenticados)
+- La inserción es pública (necesaria para el formulario del portfolio)
+
+---
+
+### Configuración necesaria (Supabase)
+
+1. Crear cuenta en [supabase.com](https://supabase.com/)
+2. Crear un proyecto nuevo
+3. En SQL Editor, ejecutar el esquema SQL documentado arriba
+4. En Authentication → Users, crear un usuario administrador
+5. Copiar la **URL del proyecto** y la **anon key** desde Settings → API
+6. Reemplazar en `src/lib/supabase.ts` y `src/pages/dashboard.astro`:
+   ```
+   TU_SUPABASE_URL → https://xxxxx.supabase.co
+   TU_SUPABASE_ANON_KEY → eyJhbGciOiJI...
+   ```
+
+---
+
+### Arquitectura del flujo
+
+```
+Visitante envía formulario
+        ↓
+  ┌─────┴─────┐
+  ↓            ↓
+Web3Forms    Supabase
+(email)      (BD PostgreSQL)
+  ↓            ↓
+Notificación  Dashboard CRM
++ Auto-resp   /dashboard
+```
