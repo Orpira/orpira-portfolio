@@ -5,10 +5,12 @@ interface Props {
 }
 
 const { class: className = "size-4" } = Astro.props;
+const baseUrl = import.meta.env.BASE_URL;
+const postgreSqlIconSrc = `${baseUrl}postgresql-icon.svg`;
 ---
 
 <img
-	src="/orpira-portfolio/postgresql-icon.svg"
+	src={postgreSqlIconSrc}
 	alt="PostgreSQL"
 	class={`inline-block ${className}`}
 	{...Astro.props}
