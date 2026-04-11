@@ -5,315 +5,278 @@ interface Props {
 const { baseUrl } = Astro.props;
 const siteBase = baseUrl ?? "";
 
-const binaryOrpira = "01001111 01110010 01010000 01101001 01010010 01100001";
+const impactCards = [
+	{ value: "15+", label: "años liderando equipos IT" },
+	{ value: "30+", label: "proyectos y mejoras ejecutadas" },
+	{ value: "24h", label: "respuesta media a oportunidades" },
+	{ value: "100%", label: "foco en producto útil" },
+];
 ---
 
-<section class="pt-20 pb-28 text-center">
-	<div class="photo-wrapper mx-auto mb-6">
-		<img
-			src={`${siteBase}/foto_new.JPEG`}
-			alt="Foto de Orlando"
-			class="w-32 h-32 rounded-full"
-		/>
-	</div>
+<section id="top" class="relative py-14 md:py-20">
+	<div
+		class="grid items-center lg:items-start gap-12 lg:grid-cols-[1.25fr_0.9fr]"
+	>
+		<div class="space-y-7">
+			<p class="editorial-kicker micro-label" data-reveal style="--delay: 0ms;">
+				Orpira Portfolio
+			</p>
 
-	<!-- Marca OrPiRa destacada estilo hacking/tech -->
-	<div class="brand-container mb-6">
-		<h2 class="brand-glitch" data-text="OrPiRa">
-			<span class="brand-bracket">&lt;</span>OrPiRa<span class="brand-bracket"
-				>/&gt;</span
+			<h1
+				class="hero-title font-display text-4xl sm:text-5xl lg:text-7xl leading-[0.95] tracking-tight"
+				data-reveal
+				style="--delay: 90ms;"
 			>
-		</h2>
-		<div class="binary-banner-wrapper" aria-hidden="true">
-			<div class="binary-banner">
-				<span class="binary-stream"
-					>{binaryOrpira}&nbsp;&nbsp;&bull;&nbsp;&nbsp;{
-						binaryOrpira
-					}&nbsp;&nbsp;&bull;&nbsp;&nbsp;{
-						binaryOrpira
-					}&nbsp;&nbsp;&bull;&nbsp;&nbsp;</span
+				Construyo plataformas digitales que combinan precisión técnica y
+				presencia humana.
+			</h1>
+
+			<p
+				class="text-base md:text-lg text-zinc-700 dark:text-brand.muted max-w-2xl leading-relaxed"
+				data-reveal
+				style="--delay: 170ms;"
+			>
+				Soy Orlando Pineda Raad. Ingeniero informático con experiencia real en
+				desarrollo, operaciones IT y liderazgo técnico. Este portfolio no es un
+				CV — es prueba de ejecución: proyectos vivos, desplegados, en constante
+				evolución.
+			</p>
+
+			<div class="flex flex-wrap gap-3" data-reveal style="--delay: 250ms;">
+				<a
+					href="#projects"
+					class="hero-cta hero-cta-primary rounded-full px-6 py-3 text-sm font-semibold uppercase tracking-[0.1em]"
 				>
-				<span class="binary-stream"
-					>{binaryOrpira}&nbsp;&nbsp;&bull;&nbsp;&nbsp;{
-						binaryOrpira
-					}&nbsp;&nbsp;&bull;&nbsp;&nbsp;{
-						binaryOrpira
-					}&nbsp;&nbsp;&bull;&nbsp;&nbsp;</span
+					Explorar proyectos
+				</a>
+				<a
+					href={`${siteBase}/CV_OrlandoPinedaRaad.pdf`}
+					class="hero-cta hero-cta-secondary rounded-full border px-6 py-3 text-sm font-semibold uppercase tracking-[0.1em]"
 				>
+					Descargar CV
+				</a>
 			</div>
 		</div>
-	</div>
 
-	<h1 class="font-serif text-4xl md:text-5xl font-bold mb-4">
-		Orlando Pineda Raad
-	</h1>
-
-	<p
-		class="text-gray-600 dark:text-brand.muted max-w-xl mx-auto text-lg text-justify"
-	>
-		Profesional en Ingeniería Informática con más de 15 años de experiencia
-		liderando el departamento de IT en empresa del sector logístico, brindando
-		soporte técnico avanzado y formación a usuarios tanto internos como
-		externos, resolviendo problemas de infraestructura y proporcionando
-		soluciones eficientes alineadas con los objetivos del negocio.
-	</p>
-
-	<div class="flex justify-center gap-4 mt-8">
-		<a
-			href={`${siteBase}/CV_OrlandoPinedaRaad.pdf`}
-			class="px-6 py-3 bg-brand.accent text-brand.bg rounded-lg font-semibold"
+		<div
+			class="hero-visual lg:mt-8 space-y-5"
+			data-reveal
+			style="--delay: 220ms;"
 		>
-			Descargar CV
-		</a>
-		<a
-			href="#projects"
-			class="px-6 py-3 border border-brand.accent text-gray-600 dark:text-brand.muted rounded-lg"
-		>
-			Ver proyectos
-		</a>
+			<div class="hero-portrait-wrap relative">
+				<div class="portrait-shell">
+					<img
+						src={`${siteBase}/foto_new.JPEG`}
+						alt="Foto de Orlando"
+						class="portrait-image"
+					/>
+				</div>
+				<div class="hero-quote">De la idea al deploy.</div>
+				<div class="hero-orbit" aria-hidden="true"></div>
+			</div>
+
+			<dl class="hero-impact-grid grid grid-cols-2 gap-3 pt-1">
+				{
+					impactCards.map((item) => (
+						<div class="hero-impact-card editorial-panel rounded-2xl px-4 py-4">
+							<dt class="hero-impact-value font-display text-2xl md:text-3xl">
+								{item.value}
+							</dt>
+							<dd class="hero-impact-label micro-label text-[0.72rem] uppercase tracking-[0.12em] mt-1">
+								{item.label}
+							</dd>
+						</div>
+					))
+				}
+			</dl>
+		</div>
 	</div>
 </section>
 
 <style>
-	/* Contenedor de marca */
-	.brand-container {
-		position: relative;
+	.hero-cta {
+		transition:
+			background-color 0.22s ease,
+			color 0.22s ease,
+			border-color 0.22s ease,
+			transform 0.22s ease,
+			box-shadow 0.22s ease;
 	}
 
-	/* Texto principal OrPiRa con efecto glitch */
-	.brand-glitch {
-		font-family: "Courier New", "Fira Code", monospace;
-		font-size: 3.5rem;
-		font-weight: 900;
-		letter-spacing: 0.15em;
-		color: #00ff41;
+	.hero-cta:hover {
+		transform: translateY(-1px);
+	}
+
+	.hero-cta-primary {
+		background: #ff9b53;
+		color: #18130f;
+		box-shadow: 0 10px 24px rgba(255, 155, 83, 0.25);
+	}
+
+	.hero-cta-primary:hover {
+		background: #ffab6f;
+	}
+
+	.hero-cta-secondary {
+		color: #1f2937;
+		border-color: rgba(31, 41, 55, 0.28);
+		background: rgba(255, 255, 255, 0.68);
+	}
+
+	.hero-cta-secondary:hover {
+		color: #111827;
+		border-color: rgba(255, 155, 83, 0.7);
+	}
+
+	.hero-impact-value {
+		color: #ff9b53;
+		font-weight: 700;
+	}
+
+	.hero-impact-label {
+		color: #4b5563;
+		font-weight: 600;
+	}
+
+	:global(.dark) .hero-cta-primary {
+		background: linear-gradient(145deg, #ffb27b, #ff9b53);
+		color: #19120e;
+		border: 1px solid rgba(255, 184, 133, 0.6);
+		box-shadow:
+			0 10px 28px rgba(255, 155, 83, 0.34),
+			0 0 0 1px rgba(255, 255, 255, 0.08) inset;
+	}
+
+	:global(.dark) .hero-cta-secondary {
+		color: #f8f6f1;
+		border-color: rgba(255, 255, 255, 0.4);
+		background: rgba(248, 246, 241, 0.06);
+		box-shadow: 0 10px 24px rgba(6, 8, 14, 0.35);
+	}
+
+	:global(.dark) .hero-cta-secondary:hover {
+		border-color: rgba(255, 155, 83, 0.78);
+		color: #ffd9c2;
+	}
+
+	:global(.dark) .hero-impact-card {
+		background: linear-gradient(
+			135deg,
+			rgba(255, 255, 255, 0.08),
+			rgba(255, 255, 255, 0.035)
+		);
+		border-color: rgba(255, 255, 255, 0.2);
+	}
+
+	:global(.dark) .hero-impact-value {
+		color: #ffd9c2;
+		text-shadow: 0 6px 16px rgba(255, 155, 83, 0.18);
+	}
+
+	:global(.dark) .hero-impact-label {
+		color: #d8e0ef;
+	}
+
+	.hero-title {
+		color: #111827;
+		font-weight: 700;
+	}
+
+	:global(.dark) .hero-title {
+		color: #f8f6f1;
 		text-shadow:
-			0 0 10px rgba(0, 255, 65, 0.7),
-			0 0 20px rgba(0, 255, 65, 0.4),
-			0 0 40px rgba(0, 255, 65, 0.2);
+			0 1px 0 rgba(0, 0, 0, 0.45),
+			0 8px 22px rgba(0, 0, 0, 0.28);
+	}
+
+	.portrait-shell {
 		position: relative;
-		display: inline-block;
-		animation: glitchFlicker 4s infinite;
+		max-width: 26rem;
+		margin-inline: auto;
+		padding: 0.85rem;
+		border-radius: 1.8rem;
+		background: linear-gradient(
+			145deg,
+			rgba(255, 155, 83, 0.28),
+			rgba(77, 136, 255, 0.08),
+			rgba(255, 155, 83, 0.2)
+		);
+		box-shadow:
+			0 22px 38px rgba(6, 8, 14, 0.45),
+			inset 0 0 0 1px rgba(255, 255, 255, 0.16);
 	}
 
-	@media (min-width: 768px) {
-		.brand-glitch {
-			font-size: 5rem;
-		}
+	.portrait-image {
+		border-radius: 1.35rem;
+		width: 100%;
+		height: clamp(21rem, 44vw, 31rem);
+		object-fit: cover;
+		object-position: 50% 16%;
+		filter: saturate(0.94) contrast(1.02);
 	}
 
-	.brand-bracket {
-		color: #f59e0b;
-		opacity: 0.7;
-		font-weight: 400;
-	}
-
-	/* Pseudo-elementos para efecto glitch */
-	.brand-glitch::before,
-	.brand-glitch::after {
-		content: attr(data-text);
+	.hero-quote {
 		position: absolute;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
-		pointer-events: none;
+		left: -1rem;
+		bottom: 1.2rem;
+		padding: 0.75rem 1rem;
+		border-radius: 9999px;
+		font-family: "JetBrains Mono", monospace;
+		font-size: 0.66rem;
+		text-transform: uppercase;
+		letter-spacing: 0.16em;
+		color: #111827;
+		background: rgba(255, 237, 221, 0.94);
+		box-shadow: 0 8px 22px rgba(0, 0, 0, 0.22);
 	}
 
-	.brand-glitch::before {
-		color: #ff004d;
-		animation: glitchLeft 3s infinite;
-		clip-path: inset(0 0 65% 0);
-		opacity: 0.8;
+	:global(.dark) .hero-quote {
+		color: #fef2e8;
+		background: rgba(19, 23, 35, 0.88);
+		border: 1px solid rgba(255, 255, 255, 0.15);
 	}
 
-	.brand-glitch::after {
-		color: #00d4ff;
-		animation: glitchRight 2.5s infinite;
-		clip-path: inset(60% 0 0 0);
-		opacity: 0.8;
+	.hero-orbit {
+		position: absolute;
+		right: -1.6rem;
+		top: -1.4rem;
+		width: 6rem;
+		height: 6rem;
+		border-radius: 9999px;
+		border: 1px solid rgba(255, 255, 255, 0.24);
+		box-shadow: inset 0 0 0 1px rgba(255, 155, 83, 0.35);
+		animation: orbitSpin 11s linear infinite;
 	}
 
-	/* Banner binario con scroll infinito */
-	.binary-banner-wrapper {
-		overflow: hidden;
-		width: 100%;
-		max-width: 600px;
-		margin: 0.5rem auto 0;
-		mask-image: linear-gradient(
-			to right,
-			transparent,
-			black 15%,
-			black 85%,
-			transparent
-		);
-		-webkit-mask-image: linear-gradient(
-			to right,
-			transparent,
-			black 15%,
-			black 85%,
-			transparent
-		);
+	.hero-orbit::after {
+		content: "";
+		position: absolute;
+		inset: 0.9rem;
+		border-radius: 9999px;
+		border: 1px dashed rgba(255, 155, 83, 0.6);
 	}
 
-	.binary-banner {
-		display: flex;
-		width: max-content;
-		animation: binaryScroll 12s linear infinite;
-	}
-
-	.binary-stream {
-		font-family: "Courier New", monospace;
-		font-size: 0.85rem;
-		color: #1a1a2e;
-		opacity: 0.5;
-		white-space: nowrap;
-		letter-spacing: 0.1em;
-	}
-
-	:global(.dark) .binary-stream {
-		color: #00ff41;
-	}
-
-	/* Animaciones */
-	@keyframes binaryScroll {
-		0% {
-			transform: translateX(0);
+	@keyframes orbitSpin {
+		from {
+			transform: rotate(0deg);
 		}
-		100% {
+		to {
+			transform: rotate(360deg);
+		}
+	}
+
+	@media (max-width: 1023px) {
+		.hero-quote {
+			left: 50%;
 			transform: translateX(-50%);
+			bottom: -1rem;
 		}
 	}
 
-	@keyframes glitchFlicker {
-		0%,
-		92%,
-		94%,
-		96%,
-		100% {
-			opacity: 1;
-			text-shadow:
-				0 0 10px rgba(0, 255, 65, 0.7),
-				0 0 20px rgba(0, 255, 65, 0.4),
-				0 0 40px rgba(0, 255, 65, 0.2);
-		}
-		93% {
-			opacity: 0.8;
-			text-shadow:
-				0 0 15px rgba(0, 255, 65, 0.9),
-				0 0 30px rgba(0, 255, 65, 0.6);
-		}
-		95% {
-			opacity: 0.9;
-			text-shadow: 0 0 5px rgba(0, 255, 65, 0.5);
-		}
-	}
-
-	@keyframes glitchLeft {
-		0%,
-		89%,
-		91%,
-		93%,
-		100% {
-			transform: translate(0);
-		}
-		90% {
-			transform: translate(-3px, 1px);
-		}
-		92% {
-			transform: translate(2px, -1px);
-		}
-	}
-
-	@keyframes glitchRight {
-		0%,
-		84%,
-		86%,
-		88%,
-		100% {
-			transform: translate(0);
-		}
-		85% {
-			transform: translate(3px, -1px);
-		}
-		87% {
-			transform: translate(-2px, 1px);
-		}
-	}
-
-	/* === Efecto brillo sutil en contorno de foto === */
-	.photo-wrapper {
-		position: relative;
-		width: 8rem;
-		height: 8rem;
-		border-radius: 9999px;
-		padding: 4px;
-		background: black;
-		box-shadow:
-			0 0 8px rgba(0, 0, 0, 0.3),
-			0 0 2px rgba(255, 255, 255, 0.1);
-		animation: glowPulseLight 3s ease-in-out infinite;
-	}
-
-	:global(.dark) .photo-wrapper {
-		background: #f59e0b;
-		box-shadow:
-			0 0 8px rgba(245, 158, 11, 0.4),
-			0 0 2px rgba(255, 255, 255, 0.2);
-		animation: glowPulseDark 3s ease-in-out infinite;
-	}
-
-	.photo-wrapper img {
-		position: relative;
-		z-index: 1;
-		border-radius: 9999px;
-	}
-
-	@keyframes glowPulseLight {
-		0%,
-		100% {
-			box-shadow:
-				0 0 6px rgba(0, 0, 0, 0.2),
-				0 0 1px rgba(255, 255, 255, 0.05);
-		}
-		50% {
-			box-shadow:
-				0 0 14px rgba(0, 0, 0, 0.4),
-				0 0 28px rgba(0, 0, 0, 0.15),
-				0 0 4px rgba(255, 255, 255, 0.15);
-		}
-	}
-
-	@keyframes glowPulseDark {
-		0%,
-		100% {
-			box-shadow:
-				0 0 6px rgba(245, 158, 11, 0.3),
-				0 0 1px rgba(255, 255, 255, 0.1);
-		}
-		50% {
-			box-shadow:
-				0 0 14px rgba(245, 158, 11, 0.6),
-				0 0 28px rgba(245, 158, 11, 0.2),
-				0 0 4px rgba(255, 255, 255, 0.25);
-		}
-	}
-
-	/* Respetar preferencia de movimiento reducido */
 	@media (prefers-reduced-motion: reduce) {
-		.binary-banner {
-			animation: none;
-		}
-		.brand-glitch {
-			animation: none;
-		}
-		.brand-glitch::before,
-		.brand-glitch::after {
+		.hero-orbit {
 			animation: none;
 			display: none;
-		}
-		.photo-wrapper {
-			animation: none;
 		}
 	}
 </style>

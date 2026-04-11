@@ -1,287 +1,145 @@
 ---
-interface Props {
-	baseUrl: string;
-}
-const { baseUrl } = Astro.props;
-const siteBase = baseUrl ?? "";
+const skillGroups = [
+	{
+		title: "Frontend Engineering",
+		level: "Avanzado",
+		summary:
+			"Interfaces robustas y mantenibles con foco en UX, accesibilidad y performance.",
+		stack: [
+			"React",
+			"Astro",
+			"TypeScript",
+			"Tailwind",
+			"JavaScript",
+			"HTML/CSS",
+		],
+	},
+	{
+		title: "Backend & Data",
+		level: "Avanzado",
+		summary:
+			"Servicios y capas de datos orientadas a flujos reales de negocio y trazabilidad.",
+		stack: [
+			"Node.js",
+			"Express",
+			"Laravel",
+			"PostgreSQL",
+			"Supabase",
+			"Firebase",
+		],
+	},
+	{
+		title: "Productividad Técnica",
+		level: "Alto",
+		summary:
+			"Automatización, versionado y despliegue continuo para iterar rápido sin perder calidad.",
+		stack: ["Git", "GitHub", "Vercel", "Linux", "VS Code", "Vite"],
+	},
+	{
+		title: "IT Leadership",
+		level: "Senior",
+		summary:
+			"Experiencia operativa en soporte avanzado, coordinación de equipos y resolución crítica.",
+		stack: [
+			"Soporte IT",
+			"Diagnóstico",
+			"Documentación",
+			"Formación",
+			"Procesos",
+			"Escalado",
+		],
+	},
+];
+
+const timeline = [
+	"15+ años en tecnología aplicada a negocio",
+	"Experiencia full stack en producto y operaciones",
+	"Capacidad de ejecución desde idea hasta despliegue",
+];
 ---
 
 <section id="skills" class="py-20 section-divider">
-	<h2
-		class="text-3xl md:text-4xl font-serif font-bold text-center mb-12 text-brand.accent"
-	>
-		Tecnologías y Herramientas
-	</h2>
-
-	<div class="max-w-4xl mx-auto mb-12">
-		<div
-			class="bg-brand.card border border-zinc-700 rounded-xl p-6 md:p-8 shadow flex flex-col gap-3 text-sm md:text-base"
+	<div class="text-center mb-12 md:mb-14">
+		<p class="editorial-kicker micro-label" data-reveal style="--delay: 40ms;">
+			Technology stack
+		</p>
+		<h2
+			class="section-title-contrast font-display font-semibold text-4xl md:text-5xl mt-3"
+			data-reveal
+			style="--delay: 120ms;"
 		>
-			<div>
-				<span class="font-semibold text-brand.accent">Frontend:</span>
-				<span class="ml-2"
-					>React · TypeScript · JavaScript · Astro · Tailwind · HTML · CSS</span
-				>
-			</div>
-			<div>
-				<span class="font-semibold text-brand.accent">Backend:</span>
-				<span class="ml-2"
-					>Node.js · Express · PHP · Laravel · PostgreSQL · Firebase · Supabase</span
-				>
-			</div>
-			<div>
-				<span class="font-semibold text-brand.accent">Herramientas:</span>
-				<span class="ml-2">Git · GitHub · VSCode · Linux · Vercel</span>
-			</div>
-			<div>
-				<span class="font-semibold text-brand.accent">Metodologías:</span>
-				<span class="ml-2"
-					>Buenas prácticas · Testing · Arquitectura básica · Trabajo
-					colaborativo</span
-				>
-			</div>
-		</div>
+			Herramientas para construir y escalar.
+		</h2>
+		<p
+			class="mt-4 max-w-3xl mx-auto text-zinc-700 dark:text-brand.muted"
+			data-reveal
+			style="--delay: 200ms;"
+		>
+			Stack orientado a resultados: desde experiencia de usuario hasta operación
+			técnica y despliegue continuo.
+		</p>
 	</div>
 
-	<div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-10">
-		<!-- Bases de datos -->
-		<div class="relative w-full h-56 perspective group">
-			<!-- Indicador para tocar en mobile -->
-			<div
-				class="flex sm:hidden items-center gap-1 absolute top-3 right-3 px-2 py-0.5 bg-zinc-900/75 text-white text-xs rounded"
-			>
-				<svg
-					class="w-5 h-5 tap-pulse"
-					viewBox="0 0 24 24"
-					fill="currentColor"
-					xmlns="http://www.w3.org/2000/svg"
-					aria-hidden="true"
-				>
-					<path
-						d="M17.65 6.35A7.95 7.95 0 0 0 12 4V1L8 5l4 4V6c2.76 0 5 2.24 5 5a5 5 0 0 1-5 5 5 5 0 0 1-4.9-4H5.1A7 7 0 0 0 12 18c3.87 0 7-3.13 7-7 0-1.86-.67-3.56-1.85-4.9z"
-					></path>
-				</svg>
-				<span class="sr-only">Toca para girar</span>
-			</div>
-			<div
-				class="relative w-full h-full transition-transform duration-500 transform-style-preserve-3d group-hover:[transform:rotateY(180deg)]"
-			>
-				<div
-					class="absolute w-full h-full backface-hidden bg-brand.card rounded-xl border border-zinc-700 flex items-center justify-center"
-				>
-					<h3 class="text-lg font-semibold">Bases de Datos</h3>
-				</div>
-				<div
-					class="absolute w-full h-full [transform:rotateY(180deg)] backface-hidden bg-brand.card rounded-xl border border-brand.accent p-6 flex items-center justify-center"
-				>
-					<div class="grid grid-cols-2 gap-4 w-full">
-						<div class="flex flex-col items-center">
-							<img
-								src={`${siteBase}/postgresql-icon.svg`}
-								alt="PostgreSQL"
-								class="w-10 h-10 mb-2"
-							/>
-							<span class="text-sm">PostgreSQL</span>
+	<div class="grid lg:grid-cols-[1.15fr_0.85fr] gap-6 items-start">
+		<div class="grid sm:grid-cols-2 gap-5">
+			{
+				skillGroups.map((group, index) => (
+					<article
+						class="skill-card editorial-panel rounded-2xl p-5"
+						data-reveal
+						style={`--delay: ${280 + index * 85}ms;`}
+					>
+						<div class="flex items-center justify-between gap-3">
+							<h3 class="skill-card-title font-display text-2xl leading-tight">
+								{group.title}
+							</h3>
+							<span class="micro-accent text-[0.64rem] uppercase tracking-[0.14em] rounded-full border border-brand.accent/35 px-3 py-1 text-brand.accent">
+								{group.level}
+							</span>
 						</div>
-						<div class="flex flex-col items-center">
-							<img
-								src={`${siteBase}/mysql-icon.svg`}
-								alt="MySQL"
-								class="w-10 h-10 mb-2"
-							/>
-							<span class="text-sm">MySQL</span>
+						<p class="skill-card-copy mt-3 text-sm leading-relaxed">
+							{group.summary}
+						</p>
+						<div class="project-stack mt-4">
+							{group.stack.map((tool) => (
+								<span>{tool}</span>
+							))}
 						</div>
-					</div>
-				</div>
-			</div>
+					</article>
+				))
+			}
 		</div>
 
-		<!-- Desarrollo -->
-		<div class="relative w-full h-56 perspective group">
-			<!-- Indicador para tocar en mobile -->
-			<div
-				class="flex sm:hidden items-center gap-1 absolute top-3 right-3 px-2 py-0.5 bg-zinc-900/75 text-white text-xs rounded"
+		<aside
+			class="skill-card editorial-panel rounded-2xl p-6"
+			data-reveal
+			style="--delay: 420ms;"
+		>
+			<p class="editorial-kicker micro-label !text-[0.66rem]">
+				Profile snapshot
+			</p>
+			<h3 class="skill-card-title font-display text-3xl mt-3">
+				Base técnica con visión de producto.
+			</h3>
+			<ul class="skill-card-copy mt-5 space-y-3 text-sm">
+				{
+					timeline.map((item) => (
+						<li class="flex items-start gap-3">
+							<span
+								class="mt-1.5 h-2 w-2 rounded-full bg-brand.accent"
+								aria-hidden="true"
+							/>
+							<span>{item}</span>
+						</li>
+					))
+				}
+			</ul>
+			<p
+				class="skill-card-copy micro-label mt-6 text-xs uppercase tracking-[0.16em]"
 			>
-				<svg
-					class="w-5 h-5 tap-pulse"
-					viewBox="0 0 24 24"
-					fill="currentColor"
-					xmlns="http://www.w3.org/2000/svg"
-					aria-hidden="true"
-				>
-					<path
-						d="M17.65 6.35A7.95 7.95 0 0 0 12 4V1L8 5l4 4V6c2.76 0 5 2.24 5 5a5 5 0 0 1-5 5 5 5 0 0 1-4.9-4H5.1A7 7 0 0 0 12 18c3.87 0 7-3.13 7-7 0-1.86-.67-3.56-1.85-4.9z"
-					></path>
-				</svg>
-				<span class="sr-only">Toca para girar</span>
-			</div>
-			<div
-				class="relative w-full h-full transition-transform duration-500 transform-style-preserve-3d group-hover:[transform:rotateY(180deg)]"
-			>
-				<div
-					class="absolute w-full h-full backface-hidden bg-brand.card rounded-xl border border-zinc-700 flex items-center justify-center"
-				>
-					<h3 class="text-lg font-semibold">Lenguajes</h3>
-				</div>
-				<div
-					class="absolute w-full h-full [transform:rotateY(180deg)] backface-hidden bg-brand.card rounded-xl border border-brand.accent p-6 flex items-center justify-center"
-				>
-					<div class="grid grid-cols-2 gap-4 w-full">
-						<div class="flex flex-col items-center">
-							<img
-								src={`${siteBase}/javascript-icon.svg`}
-								alt="JavaScript"
-								class="w-8 h-8 mb-2"
-							/>
-							<span class="text-sm">JavaScript</span>
-						</div>
-						<div class="flex flex-col items-center">
-							<img
-								src={`${siteBase}/typescriptlang-icon.svg`}
-								alt="TypeScript"
-								class="w-8 h-8 mb-2"
-							/>
-							<span class="text-sm">TypeScript</span>
-						</div>
-						<div class="flex flex-col items-center">
-							<img
-								src={`${siteBase}/java-icon.svg`}
-								alt="Java"
-								class="w-8 h-8 mb-2"
-							/>
-							<span class="text-sm">Java</span>
-						</div>
-						<div class="flex flex-col items-center">
-							<img
-								src={`${siteBase}/w3_html5-icon.svg`}
-								alt="HTML/CSS"
-								class="w-8 h-8 mb-2"
-							/>
-							<span class="text-sm">HTML/CSS</span>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-
-		<!-- Frameworks -->
-		<div class="relative w-full h-56 perspective group">
-			<!-- Indicador para tocar en mobile -->
-			<div
-				class="flex sm:hidden items-center gap-1 absolute top-3 right-3 px-2 py-0.5 bg-zinc-900/75 text-white text-xs rounded"
-			>
-				<svg
-					class="w-5 h-5 tap-pulse"
-					viewBox="0 0 24 24"
-					fill="currentColor"
-					xmlns="http://www.w3.org/2000/svg"
-					aria-hidden="true"
-				>
-					<path
-						d="M17.65 6.35A7.95 7.95 0 0 0 12 4V1L8 5l4 4V6c2.76 0 5 2.24 5 5a5 5 0 0 1-5 5 5 5 0 0 1-4.9-4H5.1A7 7 0 0 0 12 18c3.87 0 7-3.13 7-7 0-1.86-.67-3.56-1.85-4.9z"
-					></path>
-				</svg>
-				<span class="sr-only">Toca para girar</span>
-			</div>
-			<div
-				class="relative w-full h-full transition-transform duration-500 transform-style-preserve-3d group-hover:[transform:rotateY(180deg)]"
-			>
-				<div
-					class="absolute w-full h-full backface-hidden bg-brand.card rounded-xl border border-zinc-700 flex items-center justify-center"
-				>
-					<h3 class="text-lg font-semibold">Frameworks</h3>
-				</div>
-				<div
-					class="absolute w-full h-full [transform:rotateY(180deg)] backface-hidden bg-brand.card rounded-xl border border-brand.accent p-6 flex items-center justify-center"
-				>
-					<div class="grid grid-cols-2 gap-4 w-full">
-						<div class="flex flex-col items-center">
-							<img
-								src={`${siteBase}/reactjs-icon.svg`}
-								alt="React"
-								class="w-8 h-8 mb-2"
-							/>
-							<span class="text-sm">React</span>
-						</div>
-						<div class="flex flex-col items-center">
-							<img
-								src={`${siteBase}/tailwindcss-icon.svg`}
-								alt="Tailwind"
-								class="w-8 h-8 mb-2"
-							/>
-							<span class="text-sm">Tailwind</span>
-						</div>
-						<div class="flex flex-col items-center">
-							<img
-								src={`${siteBase}/laravel-icon.svg`}
-								alt="Laravel"
-								class="w-8 h-8 mb-2"
-							/>
-							<span class="text-sm">Laravel</span>
-						</div>
-						<div class="flex flex-col items-center">
-							<img
-								src={`${siteBase}/astro-icon.svg`}
-								alt="Astro"
-								class="w-8 h-8 mb-2"
-							/>
-							<span class="text-sm">Astro</span>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-
-		<!-- DevOps -->
-		<div class="relative w-full h-56 perspective group">
-			<!-- Indicador para tocar en mobile -->
-			<div
-				class="flex sm:hidden items-center gap-1 absolute top-3 right-3 px-2 py-0.5 bg-zinc-900/75 text-white text-xs rounded"
-			>
-				<svg
-					class="w-5 h-5 tap-pulse"
-					viewBox="0 0 24 24"
-					fill="currentColor"
-					xmlns="http://www.w3.org/2000/svg"
-					aria-hidden="true"
-				>
-					<path
-						d="M17.65 6.35A7.95 7.95 0 0 0 12 4V1L8 5l4 4V6c2.76 0 5 2.24 5 5a5 5 0 0 1-5 5 5 5 0 0 1-4.9-4H5.1A7 7 0 0 0 12 18c3.87 0 7-3.13 7-7 0-1.86-.67-3.56-1.85-4.9z"
-					></path>
-				</svg>
-				<span class="sr-only">Toca para girar</span>
-			</div>
-			<div
-				class="relative w-full h-full transition-transform duration-500 transform-style-preserve-3d group-hover:[transform:rotateY(180deg)]"
-			>
-				<div
-					class="absolute w-full h-full backface-hidden bg-brand.card rounded-xl border border-zinc-700 flex items-center justify-center"
-				>
-					<h3 class="text-lg font-semibold">DevTools</h3>
-				</div>
-				<div
-					class="absolute w-full h-full [transform:rotateY(180deg)] backface-hidden bg-brand.card rounded-xl border border-brand.accent p-6 flex items-center justify-center"
-				>
-					<div class="grid grid-cols-2 gap-4 w-full">
-						<div class="flex flex-col items-center">
-							<img
-								src={`${siteBase}/git-scm-icon.svg`}
-								alt="Git"
-								class="w-10 h-10 mb-2"
-							/>
-							<span class="text-sm">Git / GitHub</span>
-						</div>
-						<div class="flex flex-col items-center">
-							<img
-								src={`${siteBase}/vitejsdev-icon.svg`}
-								alt="Vite"
-								class="w-10 h-10 mb-2"
-							/>
-							<span class="text-sm">Vite</span>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
+				Disponible para proyectos web, plataformas internas y evolución técnica
+				de producto.
+			</p>
+		</aside>
 	</div>
 </section>

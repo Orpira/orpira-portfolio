@@ -3,7 +3,6 @@
 
 import Footer from "../components/Footer.astro";
 import Layout from "../layouts/Layout.astro";
-import BaseLayout from "../layouts/BaseLayout.astro";
 import HeroSection from "../components/HeroSection.astro";
 import SkillsSection from "../components/SkillsSection.astro";
 import ProjectsSection from "../components/ProjectsSection.astro";
@@ -18,12 +17,10 @@ const baseUrl =
 ---
 
 <Layout baseUrl={baseUrl}>
-	<BaseLayout title="Orlando Pineda Portfolio">
-		<HeroSection baseUrl={baseUrl} />
-		<ServicesSection />
-		<ProjectsSection baseUrl={baseUrl} />
-		<SkillsSection baseUrl={baseUrl} />
-		<ContactSection baseUrl={baseUrl} />
-		<Footer />
-	</BaseLayout>
+	<HeroSection baseUrl={baseUrl} />
+	<ServicesSection />
+	<ProjectsSection baseUrl={baseUrl} />
+	<SkillsSection baseUrl={baseUrl} />
+	<ContactSection baseUrl={baseUrl} />
+	<Footer />
 </Layout>

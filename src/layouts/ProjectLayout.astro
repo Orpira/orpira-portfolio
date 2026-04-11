@@ -1,5 +1,14 @@
 ---
+import "../styles/global.css";
+
 const { title, description } = Astro.props;
+const canonical = Astro.site
+	? new URL(Astro.url.pathname, Astro.site).toString()
+	: Astro.url.toString();
+const basePrefix =
+	import.meta.env.BASE_URL === "/"
+		? ""
+		: import.meta.env.BASE_URL.replace(/\/$/, "");
 ---
 
 <!doctype html>
@@ -10,22 +19,89 @@ const { title, description } = Astro.props;
 
 		<title>{title}</title>
 		<meta name="description" content={description} />
-
+		<link rel="canonical" href={canonical} />
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 		<link
-			href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Merriweather:wght@700&display=swap"
+			href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,500&family=JetBrains+Mono:wght@400;600&family=Manrope:wght@400;500;600;700;800&family=Syne:wght@400;600;700;800&display=swap"
 			rel="stylesheet"
 		/>
+		<link rel="icon" type="image/png" href={`${basePrefix}/opr.png`} />
 
-		<style>
-			body {
-				background-color: #0d1117;
-				color: #e6eaf2;
+		<script>
+			if (
+				localStorage.theme === "dark" ||
+				(!("theme" in localStorage) &&
+					window.matchMedia("(prefers-color-scheme: dark)").matches)
+			) {
+				document.documentElement.classList.add("dark");
+			} else {
+				document.documentElement.classList.remove("dark");
 			}
-		</style>
+
+			const BRAND_METRICS_KEY = "orpira_brand_metrics_v1";
+			const BRAND_SESSION_KEY = "orpira_brand_session_id";
+
+			try {
+				const rawMetrics = localStorage.getItem(BRAND_METRICS_KEY);
+				const metrics = rawMetrics
+					? JSON.parse(rawMetrics)
+					: { views: [], sessions: [] };
+
+				let sessionId = sessionStorage.getItem(BRAND_SESSION_KEY);
+				if (!sessionId) {
+					sessionId = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+					sessionStorage.setItem(BRAND_SESSION_KEY, sessionId);
+				}
+
+				if (!Array.isArray(metrics.sessions)) metrics.sessions = [];
+				if (!Array.isArray(metrics.views)) metrics.views = [];
+
+				const hasSession = metrics.sessions.some(
+					(session: { id?: string }) => session.id === sessionId,
+				);
+				if (!hasSession) {
+					metrics.sessions.push({
+						id: sessionId,
+						startedAt: new Date().toISOString(),
+					});
+				}
+
+				metrics.views.push({
+					path: window.location.pathname || "/",
+					at: new Date().toISOString(),
+					sessionId,
+				});
+
+				if (metrics.views.length > 2000) {
+					metrics.views = metrics.views.slice(-2000);
+				}
+				if (metrics.sessions.length > 500) {
+					metrics.sessions = metrics.sessions.slice(-500);
+				}
+
+				localStorage.setItem(BRAND_METRICS_KEY, JSON.stringify(metrics));
+			} catch (error) {
+				console.warn("No se pudo registrar metricas locales de marca", error);
+			}
+		</script>
 	</head>
 
-	<body class="font-sans antialiased">
-		<main class="max-w-4xl mx-auto px-6 py-20">
+	<body
+		class="relative bg-zinc-100 dark:bg-brand.bg text-zinc-900 dark:text-brand.text font-sans antialiased"
+	>
+		<div aria-hidden="true" class="pointer-events-none fixed inset-0 -z-10">
+			<div
+				class="absolute -top-24 left-[20%] h-72 w-72 rounded-full bg-brand.accent/20 blur-3xl"
+			>
+			</div>
+			<div
+				class="absolute top-20 -right-12 h-72 w-72 rounded-full bg-cyan-400/15 blur-3xl"
+			>
+			</div>
+		</div>
+
+		<main class="max-w-4xl mx-auto px-6 py-20 md:py-24">
 			<slot />
 		</main>
 	</body>

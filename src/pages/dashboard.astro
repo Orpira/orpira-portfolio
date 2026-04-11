@@ -1,6 +1,7 @@
 ---
 // src/pages/dashboard.astro
 import "../styles/global.css";
+import { brandProjectStats } from "../data/projects";
 
 const baseUrl =
 	import.meta.env.BASE_URL === "/"
@@ -78,7 +79,7 @@ const baseUrl =
 					<p id="login-error" class="hidden text-center text-sm text-red-500">
 					</p>
 				</form>
-				<p class="text-center text-xs text-gray-500 dark:text-gray-400 mt-4">
+				<p class="text-center text-xs text-gray-500 dark:text-gray-300 mt-4">
 					<a href={`${baseUrl}/`} class="underline hover:text-brand.accent"
 						>← Volver al portfolio</a
 					>
@@ -129,19 +130,19 @@ const baseUrl =
 					class="bg-white dark:bg-zinc-800 rounded-xl p-4 text-center shadow-sm"
 				>
 					<p class="text-2xl font-bold" id="stat-total">0</p>
-					<p class="text-xs text-gray-500 dark:text-gray-400">Total</p>
+					<p class="text-xs text-gray-500 dark:text-gray-300">Total</p>
 				</div>
 				<div
 					class="bg-white dark:bg-zinc-800 rounded-xl p-4 text-center shadow-sm"
 				>
 					<p class="text-2xl font-bold text-green-500" id="stat-nuevo">0</p>
-					<p class="text-xs text-gray-500 dark:text-gray-400">Nuevos</p>
+					<p class="text-xs text-gray-500 dark:text-gray-300">Nuevos</p>
 				</div>
 				<div
 					class="bg-white dark:bg-zinc-800 rounded-xl p-4 text-center shadow-sm"
 				>
 					<p class="text-2xl font-bold text-blue-500" id="stat-leido">0</p>
-					<p class="text-xs text-gray-500 dark:text-gray-400">Leídos</p>
+					<p class="text-xs text-gray-500 dark:text-gray-300">Leídos</p>
 				</div>
 				<div
 					class="bg-white dark:bg-zinc-800 rounded-xl p-4 text-center shadow-sm"
@@ -149,7 +150,134 @@ const baseUrl =
 					<p class="text-2xl font-bold text-orange-500" id="stat-respondido">
 						0
 					</p>
-					<p class="text-xs text-gray-500 dark:text-gray-400">Respondidos</p>
+					<p class="text-xs text-gray-500 dark:text-gray-300">Respondidos</p>
+				</div>
+			</div>
+
+			<div class="max-w-6xl mx-auto px-6 pb-6">
+				<div class="bg-white dark:bg-zinc-800 rounded-2xl shadow-sm p-5 md:p-6">
+					<div class="flex flex-wrap items-center justify-between gap-3">
+						<div>
+							<h2 class="text-lg md:text-xl font-semibold text-brand.accent">
+								📈 Métricas de Marca y SEO
+							</h2>
+							<p class="text-xs text-zinc-500 dark:text-zinc-300 mt-1">
+								Tracking local de visitas + estado del ecosistema de proyectos.
+							</p>
+						</div>
+						<button
+							id="brand-metrics-refresh"
+							class="text-xs uppercase tracking-[0.14em] px-3 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-700 transition"
+						>
+							Actualizar métricas
+						</button>
+					</div>
+
+					<div class="mt-5 grid grid-cols-2 md:grid-cols-4 gap-4">
+						<div
+							class="rounded-xl border border-zinc-200 dark:border-zinc-700 p-4"
+						>
+							<p class="text-xs text-zinc-500 dark:text-zinc-300">
+								Vistas acumuladas
+							</p>
+							<p id="brand-views-total" class="text-2xl font-bold mt-1">0</p>
+						</div>
+						<div
+							class="rounded-xl border border-zinc-200 dark:border-zinc-700 p-4"
+						>
+							<p class="text-xs text-zinc-500 dark:text-zinc-300">
+								Sesiones únicas
+							</p>
+							<p id="brand-sessions-total" class="text-2xl font-bold mt-1">0</p>
+						</div>
+						<div
+							class="rounded-xl border border-zinc-200 dark:border-zinc-700 p-4"
+						>
+							<p class="text-xs text-zinc-500 dark:text-zinc-300">
+								Vistas últimos 7 días
+							</p>
+							<p id="brand-views-7d" class="text-2xl font-bold mt-1">0</p>
+						</div>
+						<div
+							class="rounded-xl border border-zinc-200 dark:border-zinc-700 p-4"
+						>
+							<p class="text-xs text-zinc-500 dark:text-zinc-300">
+								Página más vista
+							</p>
+							<p
+								id="brand-top-page"
+								class="text-sm font-semibold mt-2 truncate"
+							>
+								--
+							</p>
+						</div>
+					</div>
+
+					<div class="mt-6 grid md:grid-cols-[1.25fr_0.75fr] gap-4">
+						<div
+							class="rounded-xl border border-zinc-200 dark:border-zinc-700 overflow-hidden"
+						>
+							<div
+								class="px-4 py-3 border-b border-zinc-200 dark:border-zinc-700"
+							>
+								<h3 class="text-sm font-semibold">Top páginas visitadas</h3>
+							</div>
+							<table class="w-full text-sm">
+								<thead>
+									<tr
+										class="text-left text-xs uppercase tracking-[0.08em] text-zinc-500 dark:text-zinc-300"
+									>
+										<th class="px-4 py-2">Ruta</th>
+										<th class="px-4 py-2">Vistas</th>
+									</tr>
+								</thead>
+								<tbody id="brand-paths-body">
+									<tr>
+										<td
+											colspan="2"
+											class="px-4 py-4 text-zinc-500 dark:text-zinc-300"
+										>
+											Sin datos todavía.
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+
+						<div
+							class="rounded-xl border border-zinc-200 dark:border-zinc-700 p-4 space-y-4"
+						>
+							<div>
+								<p
+									class="text-xs uppercase tracking-[0.12em] text-zinc-500 dark:text-zinc-300"
+								>
+									Ecosistema
+								</p>
+								<p class="text-2xl font-bold mt-1">{brandProjectStats.total}</p>
+								<p class="text-xs text-zinc-500 dark:text-zinc-300">
+									proyectos en roadmap de marca
+								</p>
+							</div>
+							<div class="grid grid-cols-2 gap-3 text-sm">
+								<div class="rounded-lg bg-zinc-100 dark:bg-zinc-900 p-3">
+									<p class="text-zinc-500 dark:text-zinc-300 text-xs">
+										Activos
+									</p>
+									<p class="font-semibold">{brandProjectStats.live}</p>
+								</div>
+								<div class="rounded-lg bg-zinc-100 dark:bg-zinc-900 p-3">
+									<p class="text-zinc-500 dark:text-zinc-300 text-xs">
+										Roadmap
+									</p>
+									<p class="font-semibold">{brandProjectStats.roadmap}</p>
+								</div>
+							</div>
+							<p class="text-xs text-zinc-500 dark:text-zinc-300">
+								SEO técnico base: canonical + OG + Twitter configurados en
+								layouts.
+							</p>
+						</div>
+					</div>
 				</div>
 			</div>
 
@@ -176,7 +304,10 @@ const baseUrl =
 						</thead>
 						<tbody id="messages-body">
 							<tr>
-								<td colspan="6" class="px-4 py-8 text-center text-gray-500">
+								<td
+									colspan="6"
+									class="px-4 py-8 text-center text-gray-500 dark:text-gray-300"
+								>
 									Cargando mensajes...
 								</td>
 							</tr>
@@ -201,10 +332,14 @@ const baseUrl =
 					<h3 id="modal-name" class="text-lg font-bold mb-1"></h3>
 					<p
 						id="modal-email"
-						class="text-sm text-gray-500 dark:text-gray-400 mb-1"
+						class="text-sm text-gray-500 dark:text-gray-300 mb-1"
 					>
 					</p>
-					<p id="modal-date" class="text-xs text-gray-400 mb-4"></p>
+					<p
+						id="modal-date"
+						class="text-xs text-gray-400 dark:text-gray-300 mb-4"
+					>
+					</p>
 					<div
 						id="modal-message"
 						class="bg-zinc-50 dark:bg-zinc-900 p-4 rounded-lg whitespace-pre-wrap text-sm mb-4"
@@ -223,7 +358,7 @@ const baseUrl =
 						>
 						<button
 							data-action="archivado"
-							class="modal-status-btn px-3 py-1.5 text-xs rounded-lg bg-gray-100 dark:bg-gray-900/30 text-gray-700 dark:text-gray-400 hover:opacity-80"
+							class="modal-status-btn px-3 py-1.5 text-xs rounded-lg bg-gray-100 dark:bg-gray-900/30 text-gray-700 dark:text-gray-300 hover:opacity-80"
 							>📁 Archivar</button
 						>
 					</div>
@@ -264,6 +399,35 @@ const baseUrl =
 			const statNuevo = document.getElementById("stat-nuevo")!;
 			const statLeido = document.getElementById("stat-leido")!;
 			const statRespondido = document.getElementById("stat-respondido")!;
+
+			const brandViewsTotal = document.getElementById("brand-views-total")!;
+			const brandSessionsTotal = document.getElementById(
+				"brand-sessions-total",
+			)!;
+			const brandViews7d = document.getElementById("brand-views-7d")!;
+			const brandTopPage = document.getElementById("brand-top-page")!;
+			const brandPathsBody = document.getElementById("brand-paths-body")!;
+			const brandMetricsRefresh = document.getElementById(
+				"brand-metrics-refresh",
+			) as HTMLButtonElement | null;
+
+			type BrandView = {
+				path?: string;
+				at?: string;
+				sessionId?: string;
+			};
+
+			type BrandSession = {
+				id?: string;
+				startedAt?: string;
+			};
+
+			type BrandMetricsStore = {
+				views: BrandView[];
+				sessions: BrandSession[];
+			};
+
+			const BRAND_METRICS_KEY = "orpira_brand_metrics_v1";
 
 			let currentMsgId: string | null = null;
 
@@ -323,7 +487,82 @@ const baseUrl =
 			function showDashboard() {
 				loginSection.classList.add("hidden");
 				dashboardSection.classList.remove("hidden");
+				renderBrandMetrics();
 				loadMessages();
+			}
+
+			function getBrandMetrics(): BrandMetricsStore {
+				try {
+					const raw = localStorage.getItem(BRAND_METRICS_KEY);
+					if (!raw) {
+						return { views: [], sessions: [] };
+					}
+					const parsed = JSON.parse(raw);
+					return {
+						views: Array.isArray(parsed?.views) ? parsed.views : [],
+						sessions: Array.isArray(parsed?.sessions) ? parsed.sessions : [],
+					};
+				} catch {
+					return { views: [], sessions: [] };
+				}
+			}
+
+			function renderBrandMetrics() {
+				const { views, sessions } = getBrandMetrics();
+				const now = Date.now();
+				const sevenDaysMs = 7 * 24 * 60 * 60 * 1000;
+
+				const validViews = views.filter(
+					(view) => typeof view.path === "string",
+				);
+				const viewsLast7d = validViews.filter((view) => {
+					if (!view.at) return false;
+					const timestamp = new Date(view.at).getTime();
+					if (Number.isNaN(timestamp)) return false;
+					return now - timestamp <= sevenDaysMs;
+				}).length;
+
+				const uniqueSessionIds = new Set(
+					validViews
+						.map((view) => view.sessionId)
+						.filter((sessionId): sessionId is string => Boolean(sessionId)),
+				);
+				const sessionCount = Math.max(uniqueSessionIds.size, sessions.length);
+
+				const pathMap: Record<string, number> = {};
+				validViews.forEach((view) => {
+					const path = view.path || "/";
+					pathMap[path] = (pathMap[path] || 0) + 1;
+				});
+
+				const topPaths = Object.entries(pathMap)
+					.sort((a, b) => b[1] - a[1])
+					.slice(0, 5);
+
+				brandViewsTotal.textContent = String(validViews.length);
+				brandSessionsTotal.textContent = String(sessionCount);
+				brandViews7d.textContent = String(viewsLast7d);
+				brandTopPage.textContent = topPaths.length > 0 ? topPaths[0][0] : "--";
+
+				if (topPaths.length === 0) {
+					brandPathsBody.innerHTML = `
+						<tr>
+							<td colspan="2" class="px-4 py-4 text-zinc-500 dark:text-zinc-300">Sin datos todavía.</td>
+						</tr>
+					`;
+					return;
+				}
+
+				brandPathsBody.innerHTML = topPaths
+					.map(
+						([path, total]) => `
+							<tr class="border-t border-zinc-100 dark:border-zinc-700">
+								<td class="px-4 py-3 font-mono text-xs md:text-sm">${escapeHtml(path)}</td>
+								<td class="px-4 py-3 font-semibold">${total}</td>
+							</tr>
+						`,
+					)
+					.join("");
 			}
 
 			async function loadMessages(filter = "todos") {
@@ -363,7 +602,7 @@ const baseUrl =
 				);
 
 				if (messages.length === 0) {
-					messagesBody.innerHTML = `<tr><td colspan="6" class="px-4 py-8 text-center text-gray-500">No hay mensajes</td></tr>`;
+					messagesBody.innerHTML = `<tr><td colspan="6" class="px-4 py-8 text-center text-gray-500 dark:text-gray-300">No hay mensajes</td></tr>`;
 					return;
 				}
 
@@ -373,9 +612,9 @@ const baseUrl =
 					<tr class="border-b border-zinc-100 dark:border-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-700/30 cursor-pointer transition" data-id="${msg.id}">
 						<td class="px-4 py-3">${statusEmoji[msg.status] || "⚪"} <span class="text-xs">${msg.status}</span></td>
 						<td class="px-4 py-3 font-medium">${escapeHtml(msg.name)}</td>
-						<td class="px-4 py-3 hidden md:table-cell text-gray-500 dark:text-gray-400">${escapeHtml(msg.email)}</td>
-						<td class="px-4 py-3 hidden lg:table-cell text-gray-500 dark:text-gray-400 truncate max-w-xs">${escapeHtml(msg.message.substring(0, 60))}${msg.message.length > 60 ? "…" : ""}</td>
-						<td class="px-4 py-3 text-xs text-gray-400">${formatDate(msg.created_at)}</td>
+						<td class="px-4 py-3 hidden md:table-cell text-gray-500 dark:text-gray-300">${escapeHtml(msg.email)}</td>
+						<td class="px-4 py-3 hidden lg:table-cell text-gray-500 dark:text-gray-300 truncate max-w-xs">${escapeHtml(msg.message.substring(0, 60))}${msg.message.length > 60 ? "…" : ""}</td>
+						<td class="px-4 py-3 text-xs text-gray-400 dark:text-gray-300">${formatDate(msg.created_at)}</td>
 						<td class="px-4 py-3">
 							<button class="view-msg-btn text-xs text-orange-500 hover:underline" data-id="${msg.id}">Ver</button>
 						</td>
@@ -453,6 +692,10 @@ const baseUrl =
 			// === Filtro ===
 			filterStatus.addEventListener("change", () => {
 				loadMessages(filterStatus.value);
+			});
+
+			brandMetricsRefresh?.addEventListener("click", () => {
+				renderBrandMetrics();
 			});
 
 			// === Utilidades ===

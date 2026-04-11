@@ -1,6 +1,4 @@
 ---
-// src/layouts/Layout.astro
-import Footer from "../components/Footer.astro";
 import "../styles/global.css";
 
 interface Props {
@@ -9,14 +7,41 @@ interface Props {
 
 const { baseUrl } = Astro.props;
 const siteBase = baseUrl ?? "";
+const pageTitle = "OrPiRa | Portfolio";
+const description =
+	"Portfolio profesional de Orlando Pineda Raad (OrPiRa): proyectos, servicios y experiencia en ingenieria informatica.";
+const canonical = Astro.site
+	? new URL(Astro.url.pathname, Astro.site).toString()
+	: Astro.url.toString();
+const ogImage = Astro.site
+	? new URL(`${siteBase}/opr.png`, Astro.site).toString()
+	: `${siteBase}/opr.png`;
 ---
 
 <html lang="es" class="dark">
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>OrPiRa | Portfolio</title>
+		<title>{pageTitle}</title>
+		<meta name="description" content={description} />
+		<meta name="robots" content="index, follow" />
+		<link rel="canonical" href={canonical} />
+		<meta property="og:type" content="website" />
+		<meta property="og:title" content={pageTitle} />
+		<meta property="og:description" content={description} />
+		<meta property="og:url" content={canonical} />
+		<meta property="og:image" content={ogImage} />
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:title" content={pageTitle} />
+		<meta name="twitter:description" content={description} />
+		<meta name="twitter:image" content={ogImage} />
 		<link rel="icon" type="image/png" href={`${siteBase}/opr.png`} />
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,500&family=JetBrains+Mono:wght@400;600&family=Manrope:wght@400;500;600;700;800&family=Syne:wght@400;600;700;800&display=swap"
+			rel="stylesheet"
+		/>
 
 		<script>
 			if (
@@ -29,63 +54,83 @@ const siteBase = baseUrl ?? "";
 				document.documentElement.classList.remove("dark");
 			}
 		</script>
-
-		<style>
-			html {
-				transition:
-					background-color 0.5s ease,
-					color 0.5s ease;
-			}
-		</style>
 	</head>
 
 	<body
-		class="bg-zinc-50 dark:bg-zinc-900 text-zinc-900 dark:text-white font-sans"
+		class="relative bg-zinc-100 dark:bg-brand.bg text-zinc-900 dark:text-brand.text font-sans selection:bg-brand.accent/30 selection:text-brand.text"
 	>
+		<div aria-hidden="true" class="pointer-events-none fixed inset-0 -z-10">
+			<div
+				class="absolute -top-28 left-[18%] h-72 w-72 rounded-full bg-brand.accent/20 blur-3xl"
+			>
+			</div>
+			<div
+				class="absolute top-40 -right-16 h-80 w-80 rounded-full bg-cyan-400/15 blur-3xl"
+			>
+			</div>
+			<div
+				class="absolute -bottom-16 left-1/2 h-72 w-72 -translate-x-1/2 rounded-full bg-rose-300/10 blur-3xl"
+			>
+			</div>
+		</div>
+
 		<header
-			class="fixed top-0 w-full bg-zinc-50/80 dark:bg-zinc-900/80 backdrop-blur-md shadow z-50"
+			class="fixed inset-x-0 top-0 z-50 border-b border-black/10 dark:border-white/10 bg-white/70 dark:bg-brand.bg/70 backdrop-blur-xl"
 		>
 			<nav
-				class="max-w-4xl mx-auto px-4 py-4 flex justify-between items-center"
+				class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center"
 			>
-				<div class="text-2xl font-bold">
-					<!-- <a href="#top">OrPiRa</a> -->
-					<a href="#top" class="flex items-center gap-2">
+				<div>
+					<a href="#top" class="flex items-center gap-3">
 						<img
 							src={`${siteBase}/orpira.png`}
 							alt="OrPiRa"
-							class="size-12 block dark:hidden"
+							class="size-11 block dark:hidden"
 						/>
 						<img
 							src={`${siteBase}/opr_white.png`}
 							alt="OrPiRa"
-							class="size-12 hidden dark:block"
+							class="size-11 hidden dark:block"
 						/>
 						<span
-							class="font-serif text-2xl font-bold tracking-wide text-brand.accent"
+							class="font-display text-3xl font-semibold tracking-tight text-zinc-900 dark:text-brand.text"
 						>
 							OrPiRa
 						</span>
 					</a>
+					<!-- <p
+						class="micro-label nav-subtitle hidden md:block text-[0.62rem] uppercase tracking-[0.24em] mt-1"
+					>
+						Marca personal digital
+					</p> -->
 				</div>
 
-				<!-- Menú desktop -->
-				<ul class="hidden md:flex space-x-6 text-base">
-					<li><a href="#top" class="hover:underline">Inicio</a></li>
-					<li><a href="#services" class="hover:underline">Servicios</a></li>
-					<li><a href="#projects" class="hover:underline">Proyectos</a></li>
-					<li><a href="#skills" class="hover:underline">Tecnología</a></li>
-					<li><a href="#contact" class="hover:underline">Contacto</a></li>
+				<ul
+					class="micro-label hidden md:flex items-center gap-5 text-[0.72rem] uppercase tracking-[0.2em]"
+				>
+					<li>
+						<a href="#top" class="nav-title-link">Inicio</a>
+					</li>
+					<li>
+						<a href="#services" class="nav-title-link">Servicios</a>
+					</li>
+					<li>
+						<a href="#projects" class="nav-title-link">Proyectos</a>
+					</li>
+					<li>
+						<a href="#skills" class="nav-title-link">Tecnologia</a>
+					</li>
+					<li>
+						<a href="#contact" class="nav-title-link">Contacto</a>
+					</li>
 				</ul>
 
-				<!-- Botones de la derecha -->
-				<div class="flex items-center">
+				<div class="flex items-center gap-2">
 					<button
 						id="theme-toggle"
-						class="border px-3 py-2 rounded hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+						class="border border-black/15 dark:border-white/15 px-3 py-2 rounded-full hover:bg-zinc-100/80 dark:hover:bg-white/10 transition-colors"
 						aria-label="Cambiar tema"
 					>
-						<!-- Icono de sol (tema claro) - se muestra en modo oscuro -->
 						<svg
 							id="sun-icon"
 							class="w-5 h-5 hidden dark:block"
@@ -97,8 +142,6 @@ const siteBase = baseUrl ?? "";
 								d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"
 								clip-rule="evenodd"></path>
 						</svg>
-
-						<!-- Icono de luna (tema oscuro) - se muestra en modo claro -->
 						<svg
 							id="moon-icon"
 							class="w-5 h-5 block dark:hidden"
@@ -111,13 +154,11 @@ const siteBase = baseUrl ?? "";
 						</svg>
 					</button>
 
-					<!-- Botón hamburguesa para móvil -->
 					<button
 						id="mobile-menu-button"
-						class="md:hidden ml-2 p-2 rounded focus:outline-none hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
-						aria-label="Abrir menú"
+						class="md:hidden p-2 rounded-full border border-black/15 dark:border-white/15 hover:bg-zinc-100/80 dark:hover:bg-white/10 transition-colors"
+						aria-label="Abrir menu"
 					>
-						<!-- Icono hamburguesa (por defecto) -->
 						<svg
 							id="hamburger-icon"
 							class="w-6 h-6"
@@ -131,8 +172,6 @@ const siteBase = baseUrl ?? "";
 								stroke-width="2"
 								d="M4 6h16M4 12h16M4 18h16"></path>
 						</svg>
-
-						<!-- Icono X (cuando el menú está abierto) -->
 						<svg
 							id="close-icon"
 							class="w-6 h-6 hidden"
@@ -150,58 +189,66 @@ const siteBase = baseUrl ?? "";
 				</div>
 			</nav>
 
-			<!-- Menú móvil -->
 			<div
 				id="mobile-menu"
-				class="md:hidden hidden bg-brand.card/95 dark:bg-zinc-900/95 backdrop-blur-md"
+				class="md:hidden hidden border-t border-black/10 dark:border-white/10 bg-white/90 dark:bg-brand.card/90 backdrop-blur-xl"
 			>
-				<ul class="px-4 py-2 space-y-2">
+				<ul
+					class="micro-label px-4 py-4 space-y-3 text-xs uppercase tracking-[0.2em]"
+				>
+					<li>
+						<a href="#top" class="nav-title-link block py-2 mobile-menu-link"
+							>Inicio</a
+						>
+					</li>
 					<li>
 						<a
 							href="#services"
-							class="block py-2 hover:underline mobile-menu-link">Servicios</a
+							class="nav-title-link block py-2 mobile-menu-link">Servicios</a
 						>
 					</li>
 					<li>
 						<a
 							href="#projects"
-							class="block py-2 hover:underline mobile-menu-link">Proyectos</a
+							class="nav-title-link block py-2 mobile-menu-link">Proyectos</a
+						>
+					</li>
+					<li>
+						<a href="#skills" class="nav-title-link block py-2 mobile-menu-link"
+							>Tecnologia</a
 						>
 					</li>
 					<li>
 						<a
-							href="#skills"
-							class="block py-2 hover:underline mobile-menu-link">Tecnología</a
+							href="#contact"
+							class="nav-title-link block py-2 mobile-menu-link">Contacto</a
 						>
 					</li>
 				</ul>
 			</div>
 		</header>
 
-		<main class="pt-24 pb-32 max-w-4xl mx-auto px-4">
+		<main class="pt-28 pb-28 max-w-6xl mx-auto px-4 md:px-6">
 			<slot />
 		</main>
 
-		<!-- Botón flotante de WhatsApp -->
 		<a
 			href="https://wa.me/34643684541"
 			target="_blank"
 			rel="noopener noreferrer"
-			class="fixed bottom-6 right-6 z-50 transition-all duration-300 flex items-center justify-center"
+			class="fixed bottom-6 right-6 z-50 transition-all duration-300 flex items-center justify-center rounded-full border border-white/20 bg-brand.card/80 p-2 backdrop-blur"
 			aria-label="WhatsApp"
 		>
-			{/** Icono WhatsApp */}
 			<img
 				src={`${siteBase}/whatsapp-icon.svg`}
 				alt="WhatsApp"
-				class="size-9 icono-borde-blanco"
+				class="size-8 icono-borde-blanco"
 			/>
 		</a>
 
-		<!-- Botón flotante para ir arriba -->
 		<button
 			id="scroll-top-btn"
-			class="fixed bottom-6 left-6 z-50 hidden w-10 h-10 rounded-full bg-zinc-800 dark:bg-zinc-200 text-white dark:text-zinc-900 shadow-lg items-center justify-center transition-all duration-300 hover:scale-110 opacity-0"
+			class="fixed bottom-6 left-6 z-50 hidden w-10 h-10 rounded-full border border-black/10 dark:border-white/20 bg-white/70 dark:bg-brand.card/85 text-zinc-900 dark:text-brand.text shadow-lg items-center justify-center transition-all duration-300 hover:scale-110 opacity-0"
 			aria-label="Ir arriba"
 		>
 			<svg
@@ -219,7 +266,56 @@ const siteBase = baseUrl ?? "";
 		</button>
 
 		<script>
-			// Botón ir arriba
+			const BRAND_METRICS_KEY = "orpira_brand_metrics_v1";
+			const BRAND_SESSION_KEY = "orpira_brand_session_id";
+
+			const trackBrandMetrics = () => {
+				try {
+					const rawMetrics = localStorage.getItem(BRAND_METRICS_KEY);
+					const metrics = rawMetrics
+						? JSON.parse(rawMetrics)
+						: { views: [], sessions: [] };
+
+					let sessionId = sessionStorage.getItem(BRAND_SESSION_KEY);
+					if (!sessionId) {
+						sessionId = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+						sessionStorage.setItem(BRAND_SESSION_KEY, sessionId);
+					}
+
+					if (!Array.isArray(metrics.sessions)) metrics.sessions = [];
+					if (!Array.isArray(metrics.views)) metrics.views = [];
+
+					const hasSession = metrics.sessions.some(
+						(session: { id?: string }) => session.id === sessionId,
+					);
+					if (!hasSession) {
+						metrics.sessions.push({
+							id: sessionId,
+							startedAt: new Date().toISOString(),
+						});
+					}
+
+					metrics.views.push({
+						path: window.location.pathname || "/",
+						at: new Date().toISOString(),
+						sessionId,
+					});
+
+					if (metrics.views.length > 2000) {
+						metrics.views = metrics.views.slice(-2000);
+					}
+					if (metrics.sessions.length > 500) {
+						metrics.sessions = metrics.sessions.slice(-500);
+					}
+
+					localStorage.setItem(BRAND_METRICS_KEY, JSON.stringify(metrics));
+				} catch (error) {
+					console.warn("No se pudo registrar metricas locales de marca", error);
+				}
+			};
+
+			trackBrandMetrics();
+
 			const scrollTopBtn = document.getElementById("scroll-top-btn");
 			if (scrollTopBtn) {
 				window.addEventListener("scroll", () => {
@@ -242,7 +338,6 @@ const siteBase = baseUrl ?? "";
 				});
 			}
 
-			// Toggle de tema
 			const themeToggle = document.getElementById("theme-toggle");
 			if (themeToggle) {
 				themeToggle.addEventListener("click", () => {
@@ -254,7 +349,6 @@ const siteBase = baseUrl ?? "";
 				});
 			}
 
-			// Toggle del menú móvil
 			const mobileMenuButton = document.getElementById("mobile-menu-button");
 			const mobileMenu = document.getElementById("mobile-menu");
 			const hamburgerIcon = document.getElementById("hamburger-icon");
@@ -263,43 +357,35 @@ const siteBase = baseUrl ?? "";
 			if (mobileMenuButton && mobileMenu && hamburgerIcon && closeIcon) {
 				mobileMenuButton.addEventListener("click", () => {
 					const isMenuOpen = !mobileMenu.classList.contains("hidden");
-
 					mobileMenu.classList.toggle("hidden");
 
-					// Cambiar iconos y aria-label
 					if (isMenuOpen) {
-						// Menú se está cerrando
 						hamburgerIcon.classList.remove("hidden");
 						closeIcon.classList.add("hidden");
-						mobileMenuButton.setAttribute("aria-label", "Abrir menú");
+						mobileMenuButton.setAttribute("aria-label", "Abrir menu");
 					} else {
-						// Menú se está abriendo
 						hamburgerIcon.classList.add("hidden");
 						closeIcon.classList.remove("hidden");
-						mobileMenuButton.setAttribute("aria-label", "Cerrar menú");
+						mobileMenuButton.setAttribute("aria-label", "Cerrar menu");
 					}
 				});
 
-				// Cerrar menú al hacer clic en un enlace
 				const mobileMenuLinks = document.querySelectorAll(".mobile-menu-link");
 				mobileMenuLinks.forEach((link) => {
 					link.addEventListener("click", () => {
 						mobileMenu.classList.add("hidden");
-						// Restaurar icono hamburguesa
 						hamburgerIcon.classList.remove("hidden");
 						closeIcon.classList.add("hidden");
-						mobileMenuButton.setAttribute("aria-label", "Abrir menú");
+						mobileMenuButton.setAttribute("aria-label", "Abrir menu");
 					});
 				});
 
-				// Cerrar menú al redimensionar ventana (cuando se pasa a desktop)
 				window.addEventListener("resize", () => {
 					if (window.innerWidth >= 768) {
 						mobileMenu.classList.add("hidden");
-						// Restaurar icono hamburguesa
 						hamburgerIcon.classList.remove("hidden");
 						closeIcon.classList.add("hidden");
-						mobileMenuButton.setAttribute("aria-label", "Abrir menú");
+						mobileMenuButton.setAttribute("aria-label", "Abrir menu");
 					}
 				});
 			}

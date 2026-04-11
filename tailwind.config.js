@@ -10,16 +10,19 @@ export default {
 		extend: {
 			colors: {
 				brand: {
-					bg: "#0D1117", // Fondo elegante (GitHub-like)
-					card: "#161B22", // Paneles
-					text: "#E6EAF2",
-					muted: "#8B97A8",
-					accent: "#F59E0B",
+					bg: "#090b10",
+					card: "#121826",
+					text: "#f8f5ef",
+					muted: "#bcc6db",
+					accent: "#ff9b53",
+					accentSoft: "#ffd9c2",
 				},
 			},
 			fontFamily: {
-				sans: ["Inter", "sans-serif"],
-				serif: ["Merriweather", "serif"],
+				sans: ["Manrope", "sans-serif"],
+				serif: ["Cormorant Garamond", "serif"],
+				display: ["Syne", "sans-serif"],
+				mono: ["JetBrains Mono", "monospace"],
 			},
 		},
 	},
