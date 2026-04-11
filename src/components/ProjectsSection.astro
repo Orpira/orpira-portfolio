@@ -18,24 +18,22 @@ const resolveProjectHref = (href?: string, isExternal?: boolean) => {
 <section id="projects" class="py-20 section-divider">
 	<div class="text-center mb-12 md:mb-14">
 		<p class="editorial-kicker micro-label" data-reveal style="--delay: 40ms;">
-			Project ecosystem
+			Ecosistema de proyectos
 		</p>
 		<h2
 			class="section-title-contrast project-section-title font-display font-semibold text-4xl md:text-5xl mt-3"
 			data-reveal
 			style="--delay: 120ms;"
 		>
-			Un grid vivo para lanzar, medir y escalar proyectos.
+			Proyectos lanzados y en laboratorio.
 		</h2>
-		<p
+		<!-- <p
 			class="mt-4 max-w-3xl mx-auto text-zinc-700 dark:text-brand.muted"
 			data-reveal
 			style="--delay: 200ms;"
 		>
-			Cada tarjeta representa una pieza del ecosistema Orpira en Vercel. La
-			estructura es modular: puedes sumar nuevos proyectos sin romper la
-			narrativa de marca.
-		</p>
+			Cada tarjeta representa una pieza del ecosistema OrPiRa.
+		</p> -->
 	</div>
 
 	<div class="project-mosaic">
@@ -81,6 +79,10 @@ const resolveProjectHref = (href?: string, isExternal?: boolean) => {
 						{project.comingSoon ? (
 							<span class="micro-label text-xs font-semibold uppercase tracking-[0.14em] text-zinc-500 dark:text-zinc-200">
 								En configuracion
+							</span>
+						) : project.isCurrent ? (
+							<span class="project-current-badge rounded-full px-4 py-2 text-xs uppercase tracking-[0.14em]">
+								Estás aquí
 							</span>
 						) : (
 							<a
