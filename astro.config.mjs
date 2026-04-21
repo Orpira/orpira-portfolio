@@ -4,8 +4,7 @@ import react from "@astrojs/react";
 
 
 
-const isVercel = process.env.VERCEL === "1";
-const isProd = process.env.NODE_ENV === "production";
+// Variables eliminadas por no ser usadas
 const siteUrl = process.env.SITE_URL || "https://orpira.es";
 
 export default defineConfig({
