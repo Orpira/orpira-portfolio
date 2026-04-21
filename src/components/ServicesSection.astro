@@ -77,7 +77,7 @@ const services = [
 		{
 			services.map((service, index) => (
 				<article
-					class="service-card editorial-panel rounded-2xl p-6 md:p-7"
+					class="service-card sm:col-span-2 col-span-1 p-6 md:p-10 rounded-3xl bg-gradient-to-br from-orange-100/80 to-white shadow-xl border-2 border-orange-300 dark:bg-gradient-to-br dark:from-zinc-900 dark:via-orange-900/40 dark:to-zinc-800 dark:border-orange-500"
 					data-reveal
 					style={`--delay: ${280 + index * 90}ms;`}
 				>
@@ -85,15 +85,15 @@ const services = [
 						<span class="micro-accent font-mono text-xs uppercase tracking-[0.16em] text-brand.accent">
 							{service.id}
 						</span>
-						<span class="micro-accent text-[0.64rem] uppercase tracking-[0.14em] rounded-full border border-brand.accent/35 px-3 py-1 text-brand.accent">
+						<span class="micro-accent text-[0.64rem] uppercase tracking-[0.14em] rounded-full border border-orange-400/60 px-3 py-1 text-orange-700 dark:text-orange-200 bg-orange-100/60 dark:bg-orange-900/40">
 							{service.focus}
 						</span>
 					</div>
 
-					<h3 class="service-card-title font-display text-2xl mt-4">
+					<h3 class="service-card-title font-display text-2xl mt-4 text-orange-800 dark:text-orange-100">
 						{service.title}
 					</h3>
-					<p class="service-card-copy mt-3 text-sm leading-relaxed">
+					<p class="service-card-copy mt-3 text-sm leading-relaxed text-orange-900 dark:text-orange-100">
 						{service.summary}
 					</p>
 

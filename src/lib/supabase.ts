@@ -2,9 +2,8 @@ import { createClient } from "@supabase/supabase-js";
 
 // Configuración de Supabase (valores públicos, seguros para el frontend)
 // Reemplaza con tus credenciales de https://supabase.com
-const SUPABASE_URL = "https://wdaayllemxoubseukcxm.supabase.co";
-const SUPABASE_ANON_KEY =
-	"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndkYWF5bGxlbXhvdWJzZXVrY3htIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ3MzQ1MzEsImV4cCI6MjA5MDMxMDUzMX0.4dcBlfEyoajW9nfi5ap0WfruV0yL0cNaWVqXmmO4PFo";
+const SUPABASE_URL = process.env.SUPABASE_URL!;
+const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY!;
 
 export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 

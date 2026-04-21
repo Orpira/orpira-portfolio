@@ -20,13 +20,13 @@ const resolveProjectHref = (href?: string, isExternal?: boolean) => {
 		<p class="editorial-kicker micro-label" data-reveal style="--delay: 40ms;">
 			Ecosistema de proyectos
 		</p>
-		<h2
-			class="section-title-contrast project-section-title font-display font-semibold text-4xl md:text-5xl mt-3"
-			data-reveal
-			style="--delay: 120ms;"
-		>
-			Proyectos lanzados y en laboratorio.
-		</h2>
+		       <h2
+			       class="font-display section-title-contrast font-semibold text-3xl md:text-5xl mt-3 mb-4 text-orange-800 dark:text-orange-100"
+			       data-reveal
+			       style="--delay: 120ms;"
+		       >
+			       Proyectos lanzados y en laboratorio.
+		       </h2>
 		<!-- <p
 			class="mt-4 max-w-3xl mx-auto text-zinc-700 dark:text-brand.muted"
 			data-reveal
@@ -36,21 +36,23 @@ const resolveProjectHref = (href?: string, isExternal?: boolean) => {
 		</p> -->
 	</div>
 
-	<div class="project-mosaic">
+	<div class="project-mosaic grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-8">
 		{
-			brandProjects.map((project, index) => (
-				<article
-					class={`project-tile project-${project.layout} flex flex-col justify-between gap-6`}
-					style={`--tile-accent: ${project.accent}; --delay: ${280 + index * 90}ms;`}
-					data-reveal
-				>
+			[...brandProjects]
+				 .sort((a, b) => Number(b.year) - Number(a.year))
+				 .map((project, index) => (
+				   <article
+					   class={`project-tile flex flex-col justify-between gap-6 h-full min-h-[26rem]`}
+					   style={`--tile-accent: ${project.accent}; --delay: ${280 + index * 90}ms;`}
+					   data-reveal
+				   >
 					<div class="space-y-4">
 						<div class="flex items-start justify-between gap-3">
 							<p class="editorial-kicker micro-label !text-[0.62rem] !tracking-[0.2em] text-zinc-600 dark:text-zinc-200 font-semibold">
 								{project.domain}
 							</p>
 							<span
-								class={`micro-accent rounded-full px-3 py-1 text-[0.62rem] font-semibold uppercase tracking-[0.14em] ${project.comingSoon ? "bg-zinc-800/80 text-zinc-100 border border-zinc-500/85" : "bg-brand.accent/25 text-orange-950 dark:text-amber-100 border border-brand.accent/60"}`}
+															 class={`project-cta inline-flex items-center gap-2 rounded-full border border-brand.accent/45 px-4 py-2 text-xs font-semibold uppercase tracking-[0.14em] text-brand.accent hover:border-brand.accent hover:bg-brand.accent/10 ${project.comingSoon ? "opacity-60 cursor-not-allowed" : ""}`}
 							>
 								{project.status}
 							</span>
@@ -60,7 +62,7 @@ const resolveProjectHref = (href?: string, isExternal?: boolean) => {
 							{project.title}
 						</h3>
 
-						<p class="text-sm md:text-base leading-relaxed text-zinc-700 dark:text-brand.muted">
+						<p class="service-card-copy mt-3 text-sm leading-relaxed">
 							{project.summary}
 						</p>
 

@@ -1,145 +1,122 @@
 ---
-const skillGroups = [
-	{
-		title: "Frontend Engineering",
-		level: "Avanzado",
-		summary:
-			"Interfaces robustas y mantenibles con foco en UX, accesibilidad y performance.",
-		stack: [
-			"React",
-			"Astro",
-			"TypeScript",
-			"Tailwind",
-			"JavaScript",
-			"HTML/CSS",
-		],
-	},
-	{
-		title: "Backend & Data",
-		level: "Avanzado",
-		summary:
-			"Servicios y capas de datos orientadas a flujos reales de negocio y trazabilidad.",
-		stack: [
-			"Node.js",
-			"Express",
-			"Laravel",
-			"PostgreSQL",
-			"Supabase",
-			"Firebase",
-		],
-	},
-	{
-		title: "Productividad Técnica",
-		level: "Alto",
-		summary:
-			"Automatización, versionado y despliegue continuo para iterar rápido sin perder calidad.",
-		stack: ["Git", "GitHub", "Vercel", "Linux", "VS Code", "Vite"],
-	},
-	{
-		title: "IT Leadership",
-		level: "Senior",
-		summary:
-			"Experiencia operativa en soporte avanzado, coordinación de equipos y resolución crítica.",
-		stack: [
-			"Soporte IT",
-			"Diagnóstico",
-			"Documentación",
-			"Formación",
-			"Procesos",
-			"Escalado",
-		],
-	},
+const hero = {
+  title: "Soluciones Full Stack con Visión de Negocio",
+  summary: "Integro tecnología y producto para crear soluciones robustas, escalables y alineadas a objetivos reales de negocio. Experiencia integral en la entrega de soluciones, desde el descubrimiento hasta el despliegue.",
+  stack: ["React", "Node.js", "PostgreSQL", "Cloud", "UX/UI", "Agile"]
+};
+const identidad = {
+  title: "Perfil Híbrido: IT + Producto",
+  summary: "Coordinador IT y Full Stack Developer con enfoque estratégico y visión global. Capacidad para alinear tecnología, procesos y objetivos de negocio, asegurando ejecución eficiente y resultados medibles."
+};
+const capacidades = [
+  {
+    title: "Frontend",
+    level: "Interfaz",
+    summary: "Construyo interfaces intuitivas, accesibles y de alto rendimiento, priorizando la experiencia de usuario y la mantenibilidad.",
+    stack: [
+		       "React",
+		       "Astro",
+		       "TypeScript",
+		       "Tailwind",
+		       "JavaScript",
+		       "HTML/CSS",
+	       ],
+  },
+  {
+    title: "Backend & Data",
+    level: "Lógica",
+    summary: "Diseño arquitecturas sólidas, APIs y flujos de datos que soportan operaciones reales y escalabilidad.",
+    stack: [
+		       "Node.js",
+		       "Laravel",
+		       "PostgreSQL",
+		       "Supabase",
+		       "Firebase",
+	       ],
+  }
+];
+const ejecucion = [
+ {
+    title: "Herramientas y Tecnologías",
+    summary: "Utilizo una variedad de herramientas y tecnologías para optimizar el desarrollo y la implementación de soluciones.",
+    stack: ["Git", "GitHub", "Vercel", "Linux", "VS Code"],
+  },
+  {
+    title: "IT",
+    summary: "Experiencia operativa en soporte avanzado, coordinación de equipos y resolución crítica.",
+    stack: [
+		       "Soporte IT",
+		       "Diagnóstico",
+		       "Documentación",
+		       "Formación",
+		       "Procesos",
+		       "Escalado",
+	       ],
+  }
 ];
 
-const timeline = [
-	"15+ años en tecnología aplicada a negocio",
-	"Experiencia full stack en producto y operaciones",
-	"Capacidad de ejecución desde idea hasta despliegue",
-];
 ---
-
 <section id="skills" class="py-20 section-divider">
-	<div class="text-center mb-12 md:mb-14">
-		<p class="editorial-kicker micro-label" data-reveal style="--delay: 40ms;">
-			Habilidades tecnológicas
-		</p>
-		<h2
-			class="section-title-contrast font-display font-semibold text-4xl md:text-5xl mt-3"
-			data-reveal
-			style="--delay: 120ms;"
-		>
-			Herramientas para construir y escalar.
-		</h2>
-		<!-- <p
-			class="mt-4 max-w-3xl mx-auto text-zinc-700 dark:text-brand.muted"
-			data-reveal
-			style="--delay: 200ms;"
-		>
-			Stack orientado a resultados: desde experiencia de usuario hasta operación
-			técnica y despliegue continuo.
-		</p> -->
-	</div>
+  <div class="text-center mb-12 md:mb-14">
+    <p class="editorial-kicker micro-label" data-reveal style="--delay: 40ms;">
+      Capacidades de servicio
+    </p>
+    <h2
+      class="section-title-contrast font-display font-semibold text-4xl md:text-5xl mt-3 mb-4 text-orange-800 dark:text-orange-100"
+      data-reveal
+      style="--delay: 120ms;"
+    >
+      Servicios diseñados para impacto real.
+    </h2>
+  </div>
+  <div class="grid gap-8 md:grid-cols-2">
+    <!-- Card Hero -->
+    <article class="p-6 md:p-10 rounded-3xl bg-gradient-to-br from-orange-100/80 to-white shadow-xl border-2 border-orange-300 dark:bg-gradient-to-br dark:from-zinc-900 dark:via-orange-900/40 dark:to-zinc-800 dark:border-orange-500 md:col-span-2">
+      <h2 class="font-display section-title-contrast font-semibold text-3xl md:text-5xl mb-4 text-orange-800 dark:text-orange-100">{hero.title}</h2>
+      <p class="skill-card-copy mt-4 text-lg leading-relaxed text-orange-900 dark:text-orange-100 mb-6">{hero.summary}</p>
+      <div class="flex flex-wrap gap-2">
+        {hero.stack.map(tool => <span class="bg-orange-200 text-orange-900 px-3 py-1 rounded-full text-sm font-semibold border border-orange-300 dark:bg-orange-800/60 dark:text-orange-100 dark:border-orange-400">{tool}</span>)}
+      </div>
+    </article>
 
-	<div class="grid lg:grid-cols-[1.15fr_0.85fr] gap-6 items-start">
-		<div class="grid sm:grid-cols-2 gap-5">
-			{
-				skillGroups.map((group, index) => (
-					<article
-						class="skill-card editorial-panel rounded-2xl p-5"
-						data-reveal
-						style={`--delay: ${280 + index * 85}ms;`}
-					>
-						<div class="flex items-center justify-between gap-3">
-							<h3 class="skill-card-title font-display text-2xl leading-tight">
-								{group.title}
-							</h3>
-							<span class="micro-accent text-[0.64rem] uppercase tracking-[0.14em] rounded-full border border-brand.accent/35 px-3 py-1 text-brand.accent">
-								{group.level}
-							</span>
-						</div>
-						<p class="skill-card-copy mt-3 text-sm leading-relaxed">
-							{group.summary}
-						</p>
-						<div class="project-stack mt-4">
-							{group.stack.map((tool) => (
-								<span>{tool}</span>
-							))}
-						</div>
-					</article>
-				))
-			}
-		</div>
+    <!-- Card Identidad -->
+    <article class="p-4 md:p-6 rounded-3xl bg-gradient-to-br from-orange-100/80 to-white shadow-xl border-2 border-orange-300 dark:bg-gradient-to-br dark:from-zinc-900 dark:via-orange-900/40 dark:to-zinc-800 dark:border-orange-500">
+      <h3 class="font-display section-title-contrast font-semibold text-3xl md:text-4xl mb-2 text-orange-800 dark:text-orange-100">{identidad.title}</h3>
+      <p class="skill-card-copy text-gray-700 dark:text-brand.muted">Coordinador IT y Full Stack Developer con enfoque estratégico y visión global.</p>
+      <p class="skill-card-copy text-gray-700 dark:text-brand.muted">Capacidad para alinear tecnología, procesos y objetivos de negocio, asegurando ejecución eficiente y resultados medibles.</p>
+    </article>
 
-		<aside
-			class="skill-card editorial-panel rounded-2xl p-6"
-			data-reveal
-			style="--delay: 420ms;"
-		>
-			<p class="editorial-kicker micro-label !text-[0.66rem]">
-				Profile snapshot
-			</p>
-			<h3 class="skill-card-title font-display text-3xl mt-3">
-				Base técnica con visión de producto.
-			</h3>
-			<ul class="skill-card-copy mt-5 space-y-3 text-sm">
-				{
-					timeline.map((item) => (
-						<li class="flex items-start gap-3">
-							<span
-								class="mt-1.5 h-2 w-2 rounded-full bg-brand.accent"
-								aria-hidden="true"
-							/>
-							<span>{item}</span>
-						</li>
-					))
-				}
-			</ul>
-			<p
-				class="skill-card-copy micro-label mt-6 text-xs uppercase tracking-[0.16em]"
-			>
-				Disponible para proyectos web, plataformas internas y evolución técnica
-				de producto.
-			</p>
-		</aside>
-	</div>
+    <!-- Cards Capacidades -->
+    {capacidades.map(cap => (
+      <article class="p-4 md:p-6 rounded-3xl bg-gradient-to-br from-orange-100/80 to-white shadow-xl border-2 border-orange-300 dark:bg-gradient-to-br dark:from-zinc-900 dark:via-orange-900/40 dark:to-zinc-800 dark:border-orange-500">
+        <div class="flex items-center mb-1">
+          <h4 class="font-display section-title-contrast font-semibold text-2xl md:text-3xl text-orange-800 dark:text-orange-100 mb-0 flex-1">{cap.title}</h4>
+          <span class="micro-accent text-[0.74rem] uppercase tracking-[0.14em] rounded-full border border-orange-400/60 px-4 py-2 text-orange-700 dark:text-orange-200 bg-orange-100/60 dark:bg-orange-900/40 ml-auto">{cap.level}</span>
+        </div>
+        <p class="skill-card-copy text-gray-700 dark:text-brand.muted">{cap.summary}</p>
+        {Array.isArray(cap.stack) && (
+          <div class="project-stack mt-6">
+            {cap.stack.map((tool) => (
+              <span class="inline-block bg-orange-200/60 dark:bg-orange-900/40 text-orange-900 dark:text-orange-100 px-3 py-1 rounded-full mr-2 mb-2 text-sm font-semibold border border-orange-300 dark:border-orange-700">{tool}</span>
+            ))}
+          </div>
+        )}
+      </article>
+    ))}
+
+    <!-- Cards Ejecución -->
+    {ejecucion.map(eje => (
+      <article class="p-4 md:p-6 rounded-3xl bg-gradient-to-br from-orange-100/80 to-white shadow-xl border-2 border-orange-300 dark:bg-gradient-to-br dark:from-zinc-900 dark:via-orange-900/40 dark:to-zinc-800 dark:border-orange-500">
+        <h4 class="font-display section-title-contrast font-semibold text-2xl md:text-3xl mb-1 text-orange-800 dark:text-orange-100">{eje.title}</h4>
+        <p class="skill-card-copy text-gray-700 dark:text-brand.muted">{eje.summary}</p>
+        {Array.isArray(eje.stack) && (
+          <div class="project-stack mt-6">
+            {eje.stack.map((tool) => (
+              <span class="inline-block bg-orange-200/60 dark:bg-orange-900/40 text-orange-900 dark:text-orange-100 px-3 py-1 rounded-full mr-2 mb-2 text-sm font-semibold border border-orange-300 dark:border-orange-700">{tool}</span>
+            ))}
+          </div>
+        )}
+      </article>
+    ))}
+  </div>
 </section>

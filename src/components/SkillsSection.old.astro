@@ -1,0 +1,183 @@
+---
+const skillGroups = [
+       {
+	       title: "Perfil profesional",
+	       level: "Visión",
+	       summary:
+		       "Perfil integral con visión estratégica y capacidad de conectar tecnología con negocio.",
+	       stack: [
+		       "Full Stack",
+		       "Producto",
+		       "Operaciones",
+		       "Negocio",
+		       "Comunicación",
+	       ],
+       },
+       {
+	       title: "Frontend Engineering",
+	       level: "Interfaz",
+	       summary:
+		       "Interfaces robustas y mantenibles con foco en UX, accesibilidad y performance.",
+	       stack: [
+		       "React",
+		       "Astro",
+		       "TypeScript",
+		       "Tailwind",
+		       "JavaScript",
+		       "HTML/CSS",
+	       ],
+       },
+       {
+	       title: "Backend & Data",
+	       level: "Lógica",
+	       summary:
+		       "Servicios y capas de datos orientadas a flujos reales de negocio y trazabilidad.",
+	       stack: [
+		       "Node.js",
+		       "Express",
+		       "Laravel",
+		       "PostgreSQL",
+		       "Supabase",
+		       "Firebase",
+	       ],
+       },
+       {
+	       title: "Productividad Técnica",
+	       level: "Ejecución",
+	       summary:
+		       "Automatización, versionado y despliegue continuo para iterar rápido sin perder calidad.",
+	       stack: ["Git", "GitHub", "Vercel", "Linux", "VS Code", "Vite"],
+       },
+       {
+	       title: "IT Leadership",
+	       level: "Contexto real",
+	       summary:
+		       "Experiencia operativa en soporte avanzado, coordinación de equipos y resolución crítica.",
+	       stack: [
+		       "Soporte IT",
+		       "Diagnóstico",
+		       "Documentación",
+		       "Formación",
+		       "Procesos",
+		       "Escalado",
+	       ],
+       },
+];
+
+const timeline = [
+	"15+ años en tecnología aplicada a negocio",
+	"Experiencia full stack en producto y operaciones",
+	"Capacidad de ejecución desde idea hasta despliegue",
+];
+---
+
+<section id="skills" class="py-20 section-divider">
+	<div class="text-center mb-12 md:mb-14">
+		<p class="editorial-kicker micro-label" data-reveal style="--delay: 40ms;">
+			Habilidades tecnológicas
+		</p>
+		<h2
+			class="section-title-contrast font-display font-semibold text-4xl md:text-5xl mt-3"
+			data-reveal
+			style="--delay: 120ms;"
+		>
+			Herramientas para construir y escalar.
+		</h2>
+		<!-- <p
+			class="mt-4 max-w-3xl mx-auto text-zinc-700 dark:text-brand.muted"
+			data-reveal
+			style="--delay: 200ms;"
+		>
+			Stack orientado a resultados: desde experiencia de usuario hasta operación
+			técnica y despliegue continuo.
+		</p> -->
+	</div>
+
+	<div class="grid lg:grid-cols-[1.15fr_0.85fr] gap-6 items-start">
+		<div class="grid sm:grid-cols-2 gap-5">
+		       {
+			       skillGroups.map((group, index) => (
+				       index === 0 ? (
+						<article
+							class="col-span-2 p-10 rounded-3xl bg-gradient-to-br from-orange-100/80 to-white shadow-xl border-2 border-orange-300 dark:bg-gradient-to-br dark:from-zinc-900 dark:via-orange-900/40 dark:to-zinc-800 dark:border-orange-500"
+							data-reveal
+							style={`--delay: ${280 + index * 85}ms;`}
+						>
+						       <div class="flex items-center justify-between gap-3 mb-2">
+							       <h3 class="skill-card-title font-display text-3xl md:text-4xl leading-tight text-orange-700 dark:text-orange-200">
+								       {group.title}
+							       </h3>
+							       <span class="micro-accent text-[0.74rem] uppercase tracking-[0.14em] rounded-full border border-orange-400/60 px-4 py-2 text-orange-700 dark:text-orange-200 bg-orange-100/60 dark:bg-orange-900/40">
+								       {group.level}
+							       </span>
+						       </div>
+						       <p class="skill-card-copy mt-4 text-lg leading-relaxed text-orange-900 dark:text-orange-100">
+							       {group.summary}
+						       </p>
+						       <div class="project-stack mt-6">
+							       {group.stack.map((tool) => (
+								       <span class="inline-block bg-orange-200/60 dark:bg-orange-900/40 text-orange-900 dark:text-orange-100 px-3 py-1 rounded-full mr-2 mb-2 text-sm font-semibold border border-orange-300 dark:border-orange-700">{tool}</span>
+							       ))}
+						       </div>
+					       </article>
+				       ) : (
+						<article
+							class="editorial-panel rounded-2xl p-6 bg-white dark:bg-zinc-900 shadow border border-orange-300 dark:border-orange-500"
+							data-reveal
+							style={`--delay: ${280 + index * 85}ms;`}
+						>
+						       <div class="flex items-center justify-between gap-3">
+								<h3 class="skill-card-title font-display text-2xl leading-tight text-orange-800 dark:text-orange-100">
+								       {group.title}
+							       </h3>
+								<span class="micro-accent text-[0.64rem] uppercase tracking-[0.14em] rounded-full border border-orange-400/60 px-3 py-1 text-orange-700 dark:text-orange-200 bg-orange-100/60 dark:bg-orange-900/40">
+								       {group.level}
+							       </span>
+						       </div>
+							<p class="skill-card-copy mt-3 text-sm leading-relaxed text-orange-900 dark:text-orange-100">
+							       {group.summary}
+						       </p>
+							<div class="project-stack mt-4">
+							   {group.stack.map((tool) => (
+								   <span class="inline-block bg-orange-200/60 dark:bg-orange-900/40 text-orange-900 dark:text-orange-100 px-3 py-1 rounded-full mr-2 mb-2 text-sm font-semibold border border-orange-300 dark:border-orange-700">{tool}</span>
+							   ))}
+							</div>
+					       </article>
+				       )
+			       ))
+		       }
+		</div>
+
+		<aside
+			class="skill-card editorial-panel rounded-2xl p-6"
+			data-reveal
+			style="--delay: 420ms;"
+		>
+			<p class="editorial-kicker micro-label !text-[0.66rem]">
+				Profile snapshot
+			</p>
+			<h3 class="skill-card-title font-display text-3xl mt-3">
+				Base técnica con visión de producto.
+			</h3>
+			<ul class="skill-card-copy mt-5 space-y-3 text-sm">
+				{
+					timeline.map((item) => (
+						<li class="flex items-start gap-3">
+							<span
+								class="mt-1.5 h-2 w-2 rounded-full bg-brand.accent"
+								aria-hidden="true"
+							/>
+							<span>{item}</span>
+						</li>
+					))
+				}
+			</ul>
+			<p
+				class="skill-card-copy micro-label mt-6 text-xs uppercase tracking-[0.16em]"
+			>
+				Disponible para proyectos web, plataformas internas y evolución técnica
+				de producto.
+			</p>
+		</aside>
+	</div>
+</section>

@@ -18,12 +18,12 @@ const { title, description, year, tech, role, features, result, image } =
 	<!-- Header -->
 	<header class="text-center">
 		<h1
-			class="text-3xl md:text-4xl font-serif font-bold text-brand.accent mb-4"
+			class="text-3xl md:text-4xl font-serif font-bold text-orange-800 dark:text-orange-100 mb-4"
 		>
 			{title}
 		</h1>
 
-		<p class="text-brand.muted max-w-2xl mx-auto">
+		<p class="text-brand.muted max-w-2xl mx-auto text-zinc-700 dark:text-zinc-100">
 			{description}
 		</p>
 	</header>
@@ -43,31 +43,31 @@ const { title, description, year, tech, role, features, result, image } =
 
 	<!-- Info general -->
 	<section
-		class="grid md:grid-cols-3 gap-8 bg-brand.card border border-zinc-800 rounded-xl p-6"
+		class="grid md:grid-cols-3 gap-8 bg-gradient-to-br from-orange-100/80 to-white shadow-xl border-2 border-orange-300 dark:bg-gradient-to-br dark:from-zinc-900 dark:via-orange-900/40 dark:to-zinc-800 dark:border-orange-500 rounded-3xl p-4 md:p-10"
 	>
 		<div>
-			<h3 class="font-semibold text-brand.accent">Año</h3>
-			<p>{year}</p>
+			<h3 class="font-semibold text-orange-800 dark:text-orange-100">Año</h3>
+			<p class="text-orange-900 dark:text-orange-100">{year}</p>
 		</div>
 
 		<div>
-			<h3 class="font-semibold text-brand.accent">Rol</h3>
-			<p>{role}</p>
+			<h3 class="font-semibold text-orange-800 dark:text-orange-100">Rol</h3>
+			<p class="text-orange-900 dark:text-orange-100">{role}</p>
 		</div>
 
 		<div>
-			<h3 class="font-semibold text-brand.accent">Tecnologías</h3>
-			<ul class="text-sm mt-1 space-y-1">
-				{tech.map((t) => <li>• {t}</li>)}
+			<h3 class="font-semibold text-orange-800 dark:text-orange-100">Tecnologías</h3>
+			<ul class="text-sm mt-1 space-y-1 text-orange-900 dark:text-orange-100">
+				{tech.map((t: string) => <li>• {t}</li>)}
 			</ul>
 		</div>
 	</section>
 
 	<!-- Funcionalidades -->
 	<section>
-		<h3 class="text-xl font-semibold mb-4">Funciones principales</h3>
-		<ul class="list-disc ml-6 space-y-1">
-			{features.map((f) => <li>{f}</li>)}
+		<h3 class="text-xl font-semibold mb-4 text-orange-800 dark:text-orange-100">Funciones principales</h3>
+		<ul class="list-disc ml-6 space-y-1 text-orange-900 dark:text-orange-100">
+			{features.map((f: string) => <li>{f}</li>)}
 		</ul>
 	</section>
 
@@ -75,8 +75,8 @@ const { title, description, year, tech, role, features, result, image } =
 	{
 		result && (
 			<section>
-				<h3 class="text-xl font-semibold mb-4">Resultados / Impacto</h3>
-				<p class="text-brand.muted leading-relaxed">{result}</p>
+				<h3 class="text-xl font-semibold mb-4 text-orange-800 dark:text-orange-100">Resultados / Impacto</h3>
+				<p class="text-zinc-700 dark:text-zinc-100 leading-relaxed">{result}</p>
 			</section>
 		)
 	}
@@ -85,7 +85,7 @@ const { title, description, year, tech, role, features, result, image } =
 	<div class="text-center mt-10">
 		<a
 			href="/#projects"
-			class="px-6 py-3 border border-brand.accent rounded-lg text-brand.text hover:bg-brand.accent hover:text-brand.bg transition"
+			class="px-6 py-3 border border-brand.accent rounded-lg text-orange-800 dark:text-orange-100 hover:bg-brand.accent hover:text-brand.bg transition"
 		>
 			← Volver a proyectos
 		</a>

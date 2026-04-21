@@ -32,7 +32,7 @@ const impactCards = [
 			</h1>
 
 			<p
-				class="text-base md:text-lg text-zinc-700 dark:text-brand.muted max-w-2xl leading-relaxed"
+				 class="service-card-copy mt-3 text-sm leading-relaxed md:text-lg"
 				data-reveal
 				style="--delay: 170ms;"
 			>
@@ -78,11 +78,11 @@ const impactCards = [
 			<dl class="hero-impact-grid grid grid-cols-2 gap-3 pt-1">
 				{
 					impactCards.map((item) => (
-						<div class="hero-impact-card editorial-panel rounded-2xl px-4 py-4">
-							<dt class="hero-impact-value font-display text-2xl md:text-3xl">
+						<div class="hero-impact-card p-4 rounded-2xl bg-white dark:bg-zinc-900 shadow border">
+							<dt class="hero-impact-value font-display text-2xl md:text-3xl text-orange-800 dark:text-orange-100">
 								{item.value}
 							</dt>
-							<dd class="hero-impact-label micro-label text-[0.72rem] uppercase tracking-[0.12em] mt-1">
+							<dd class="hero-impact-label micro-label text-[0.72rem] uppercase tracking-[0.12em] mt-1 text-orange-700 dark:text-orange-200">
 								{item.label}
 							</dd>
 						</div>

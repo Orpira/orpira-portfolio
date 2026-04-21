@@ -139,9 +139,10 @@ body::before {
 	color: #0f172a;
 }
 
-.dark .nav-title-link {
-	color: #f1f5ff;
-	text-shadow: 0 1px 0 rgba(0, 0, 0, 0.45);
+
+.mobile-menu-link {
+	color: #1e293b !important;
+	text-shadow: none;
 }
 
 .dark .nav-title-link:hover {
@@ -324,18 +325,21 @@ html:not(.dark) .editorial-panel {
 }
 
 .project-tile {
-	position: relative;
-	overflow: hidden;
-	border-radius: 1.2rem;
-	border: 1px solid rgba(255, 255, 255, 0.12);
-	background: linear-gradient(
-		140deg,
-		rgba(255, 255, 255, 0.05),
-		rgba(255, 255, 255, 0.015)
-	);
-	padding: 1.4rem;
-	backdrop-filter: blur(10px);
-	min-height: 17rem;
+       position: relative;
+       overflow: hidden;
+       border-radius: 1.2rem;
+       border: 1px solid rgba(255, 255, 255, 0.12);
+       background: linear-gradient(
+	       140deg,
+	       rgba(255, 255, 255, 0.05),
+	       rgba(255, 255, 255, 0.015)
+       );
+       padding: 1.4rem;
+       backdrop-filter: blur(10px);
+       min-height: 19rem;
+       height: 100%;
+       display: flex;
+       flex-direction: column;
 }
 
 .project-section-title {

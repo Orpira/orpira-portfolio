@@ -3,10 +3,12 @@
 import "../styles/global.css";
 import { brandProjectStats } from "../data/projects";
 
-const baseUrl =
-	import.meta.env.BASE_URL === "/"
-		? ""
-		: import.meta.env.BASE_URL.replace(/\/$/, "");
+// Usar rutas relativas o absolutas según el base path configurado
+const baseUrl = "";
+
+// Pasar las variables de entorno públicas como props al frontend
+const SUPABASE_URL = import.meta.env.PUBLIC_SUPABASE_URL ?? "";
+const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? "";
 ---
 
 <html lang="es" class="dark">
@@ -14,7 +16,7 @@ const baseUrl =
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>OrPiRa | Dashboard de Mensajes</title>
-		<link rel="icon" type="image/png" href={`${baseUrl}/opr.png`} />
+		<link rel="icon" type="image/png" href="/opr.png" />
 		<script>
 			if (
 				localStorage.theme === "dark" ||
@@ -28,9 +30,11 @@ const baseUrl =
 		</script>
 	</head>
 
-	<body
-		class="bg-zinc-50 dark:bg-zinc-900 text-zinc-900 dark:text-white font-sans min-h-screen"
-	>
+	       <body
+		       class="bg-zinc-50 dark:bg-zinc-900 text-zinc-900 dark:text-white font-sans min-h-screen"
+		       data-supabase-url={SUPABASE_URL}
+		       data-supabase-anon-key={SUPABASE_ANON_KEY}
+	       >
 		<!-- Login -->
 		<div
 			id="login-section"
@@ -367,12 +371,11 @@ const baseUrl =
 		</div>
 
 		<script>
-			import { createClient } from "@supabase/supabase-js";
-
-			const SUPABASE_URL = "https://wdaayllemxoubseukcxm.supabase.co";
-			const SUPABASE_ANON_KEY =
-				"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndkYWF5bGxlbXhvdWJzZXVrY3htIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ3MzQ1MzEsImV4cCI6MjA5MDMxMDUzMX0.4dcBlfEyoajW9nfi5ap0WfruV0yL0cNaWVqXmmO4PFo";
-			const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+			   import { createClient } from "@supabase/supabase-js";
+			   // Las variables se pasan como atributos data- desde Astro
+			   const SUPABASE_URL = document.body.dataset.supabaseUrl || "";
+			   const SUPABASE_ANON_KEY = document.body.dataset.supabaseAnonKey || "";
+			   const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 			// === Elementos del DOM ===
 			const loginSection = document.getElementById("login-section")!;
