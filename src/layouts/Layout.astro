@@ -57,11 +57,11 @@ const ogImage = Astro.site
 	</head>
 
 	<body
-		class="relative bg-zinc-100 dark:bg-brand.bg text-zinc-900 dark:text-brand.text font-sans selection:bg-brand.accent/30 selection:text-brand.text"
+		class="relative bg-zinc-100 dark:bg-brand-bg text-zinc-900 dark:text-brand-text font-sans selection:bg-brand-accent/30 selection:text-brand-text"
 	>
 		<div aria-hidden="true" class="pointer-events-none fixed inset-0 -z-10">
 			<div
-				class="absolute -top-28 left-[18%] h-72 w-72 rounded-full bg-brand.accent/20 blur-3xl"
+				class="absolute -top-28 left-[18%] h-72 w-72 rounded-full bg-brand-accent/20 blur-3xl"
 			>
 			</div>
 			<div
@@ -75,7 +75,7 @@ const ogImage = Astro.site
 		</div>
 
 		<header
-			class="fixed inset-x-0 top-0 z-50 border-b border-black/10 dark:border-white/10 bg-white/70 dark:bg-brand.bg/70 backdrop-blur-xl"
+			class="fixed inset-x-0 top-0 z-50 border-b border-black/10 dark:border-white/10 bg-white/70 dark:bg-brand-bg/70 backdrop-blur-xl"
 		>
 			<nav
 				class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center"
@@ -87,9 +87,9 @@ const ogImage = Astro.site
 							alt="OrPiRa"
 							class="size-11 rounded-full border-2 border-black shadow-sm"
 						/>
-						
+
 						<span
-							class="font-display text-3xl font-semibold tracking-tight text-zinc-900 dark:text-brand.text"
+							class="font-display text-3xl font-semibold tracking-tight text-zinc-900 dark:text-brand-text"
 						>
 							OrPiRa
 						</span>
@@ -112,7 +112,7 @@ const ogImage = Astro.site
 					</li>
 					<li>
 						<a href="#projects" class="nav-title-link">Proyectos</a>
-					</li>					
+					</li>
 					<li>
 						<a href="#contact" class="nav-title-link">Contacto</a>
 					</li>
@@ -184,7 +184,7 @@ const ogImage = Astro.site
 
 			<div
 				id="mobile-menu"
-				class="md:hidden hidden border-t border-black/10 dark:border-white/10 bg-white/90 dark:bg-brand.card/90 backdrop-blur-xl"
+				class="md:hidden hidden border-t border-black/10 dark:border-white/10 bg-white/90 dark:bg-brand-card/90 backdrop-blur-xl"
 			>
 				<ul
 					class="micro-label px-4 py-4 space-y-3 text-xs uppercase tracking-[0.2em]"
@@ -195,9 +195,8 @@ const ogImage = Astro.site
 						>
 					</li>
 					<li>
-						<a
-							href="#skills"
-							class="nav-title-link block py-2 mobile-menu-link">Servicios</a
+						<a href="#skills" class="nav-title-link block py-2 mobile-menu-link"
+							>Servicios</a
 						>
 					</li>
 					<li>
@@ -224,7 +223,7 @@ const ogImage = Astro.site
 			href="https://wa.me/34643684541"
 			target="_blank"
 			rel="noopener noreferrer"
-			class="fixed bottom-6 right-6 z-50 transition-all duration-300 flex items-center justify-center rounded-full border border-white/20 bg-brand.card/80 p-2 backdrop-blur"
+			class="fixed bottom-6 right-6 z-50 transition-all duration-300 flex items-center justify-center rounded-full border border-white/20 bg-brand-card/80 p-2 backdrop-blur"
 			aria-label="WhatsApp"
 		>
 			<img
@@ -236,7 +235,7 @@ const ogImage = Astro.site
 
 		<button
 			id="scroll-top-btn"
-			class="fixed bottom-6 left-6 z-50 hidden w-10 h-10 rounded-full border border-black/10 dark:border-white/20 bg-white/70 dark:bg-brand.card/85 text-zinc-900 dark:text-brand.text shadow-lg items-center justify-center transition-all duration-300 hover:scale-110 opacity-0"
+			class="fixed bottom-6 left-6 z-50 hidden w-10 h-10 rounded-full border border-black/10 dark:border-white/20 bg-white/70 dark:bg-brand-card/85 text-zinc-900 dark:text-brand-text shadow-lg items-center justify-center transition-all duration-300 hover:scale-110 opacity-0"
 			aria-label="Ir arriba"
 		>
 			<svg
