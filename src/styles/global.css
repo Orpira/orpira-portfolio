@@ -145,6 +145,11 @@ body::before {
 	text-shadow: none;
 }
 
+.dark .mobile-menu-link {
+  color: #ffd9c2 !important;
+  text-shadow: 0 1px 0 rgba(0,0,0,0.45), 0 6px 14px rgba(255,155,83,0.16);
+}
+
 .dark .nav-title-link:hover {
 	color: #ffd9c2;
 }

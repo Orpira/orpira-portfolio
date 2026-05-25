@@ -146,11 +146,11 @@ Bilbao, España"
 </section>
 
 <script>
-	import { createClient } from "@supabase/supabase-js";
+	/* import { createClient } from "@supabase/supabase-js";
 
 	const SUPABASE_URL = import.meta.env.PUBLIC_SUPABASE_URL;
 	const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
-	const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+	const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY); */
 
 	const form = document.getElementById(
 		"contact-form",
@@ -190,19 +190,20 @@ Bilbao, España"
 					body: formData,
 				});
 
-				// 2. Guardar en Supabase (Dashboard CRM)
+				/* // 2. Guardar en Supabase (Dashboard CRM)
 				const supaPromise = supabase.from("messages").insert({
 					name,
 					email,
 					message,
 					status: "nuevo",
-				});
+				}); */
 
 				// Ejecutar ambos en paralelo
-				const [web3Res, supaRes] = await Promise.all([
+				/*const [web3Res, supaRes] = await Promise.all([
 					web3Promise,
 					supaPromise,
-				]);
+				]);*/
+				const web3Res = await web3Promise;
 				const web3Data = await web3Res.json();
 
 				if (web3Data.success) {
@@ -212,9 +213,9 @@ Bilbao, España"
 					if (autoResponseNote) autoResponseNote.classList.remove("hidden");
 					form.reset();
 
-					if (supaRes.error) {
+					/* if (supaRes.error) {
 						console.warn("Supabase backup falló:", supaRes.error.message);
-					}
+					} */
 				} else {
 					statusDiv.textContent = "❌ Error al enviar. Inténtalo de nuevo.";
 					statusDiv.className =

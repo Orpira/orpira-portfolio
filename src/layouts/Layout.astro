@@ -80,26 +80,19 @@ const ogImage = Astro.site
 			<nav
 				class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center"
 			>
-				<div>
-					<a href="#top" class="flex items-center gap-3">
-						<img
-							src={`${siteBase}/orpira.png`}
-							alt="OrPiRa"
-							class="size-11 rounded-full border-2 border-black shadow-sm"
-						/>
+				<div class="flex items-center">
+	<img
+		src={`${siteBase}/orpira.png`}
+		alt="OrPiRa"
+		class="size-11 rounded-full shadow-sm dark:hidden"
+	/>
 
-						<span
-							class="font-display text-3xl font-semibold tracking-tight text-zinc-900 dark:text-brand-text"
-						>
-							OrPiRa
-						</span>
-					</a>
-					<!-- <p
-						class="micro-label nav-subtitle hidden md:block text-[0.62rem] uppercase tracking-[0.24em] mt-1"
-					>
-						Marca personal digital
-					</p> -->
-				</div>
+	<img
+		src={`${siteBase}/opr_white.png`}
+		alt="OrPiRa"
+		class="hidden size-11 rounded-full shadow-sm dark:block"
+	/>
+</div>
 
 				<ul
 					class="micro-label hidden md:flex items-center gap-5 text-[0.72rem] uppercase tracking-[0.2em]"
@@ -223,13 +216,12 @@ const ogImage = Astro.site
 			href="https://wa.me/34643684541"
 			target="_blank"
 			rel="noopener noreferrer"
-			class="fixed bottom-6 right-6 z-50 transition-all duration-300 flex items-center justify-center rounded-full border border-white/20 bg-brand-card/80 p-2 backdrop-blur"
-			aria-label="WhatsApp"
+			class="fixed bottom-6 right-6 z-50 flex items-center justify-center rounded-full bg-brand-card/80 p-2 shadow-lg hover:scale-110 transition-all duration-300"
 		>
 			<img
 				src={`${siteBase}/whatsapp-icon.svg`}
 				alt="WhatsApp"
-				class="size-8 icono-borde-blanco"
+				class="size-8"
 			/>
 		</a>
 
