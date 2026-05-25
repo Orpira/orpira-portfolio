@@ -26,7 +26,7 @@ const WEB3FORMS_KEY = "aa6e8316-5807-4bc6-aa8b-c266d225146a";
 	</p>
 	<!-- <h3 class="text-2xl font-serif font-bold text-brand.accent mb-4">Contacto</h3> -->
 
-	<form id="contact-form" class="max-w-lg mx-auto space-y-5" novalidate>
+	<form id="contact-form" method="POST" action="https://api.web3forms.com/submit" class="max-w-lg mx-auto space-y-5" novalidate>
 		<!-- Configuración Web3Forms -->
 		<input type="hidden" name="access_key" value={WEB3FORMS_KEY} />
 		<input
@@ -41,7 +41,7 @@ const WEB3FORMS_KEY = "aa6e8316-5807-4bc6-aa8b-c266d225146a";
 		/>
 
 		<!-- Auto-respuesta al remitente -->
-		<input type="hidden" name="autoresponse" value="true" />
+		<!-- <input type="hidden" name="autoresponse" value="true" />
 		<input
 			type="hidden"
 			name="autoresponse_subject"
@@ -63,7 +63,7 @@ Un cordial saludo,
 Orlando Pineda Raad
 Desarrollador Full Stack
 Bilbao, España"
-		/>
+		/> -->
 
 		<!-- Anti-spam -->
 		<input type="checkbox" name="botcheck" class="hidden" />
@@ -206,6 +206,9 @@ Bilbao, España"
 				const web3Res = await web3Promise;
 				const web3Data = await web3Res.json();
 
+				console.log("WEB3 RESPONSE:", web3Data);
+				console.log("HTTP STATUS:", web3Res.status);
+
 				if (web3Data.success) {
 					statusDiv.textContent = "✅ ¡Mensaje enviado! Te responderé pronto.";
 					statusDiv.className =
@@ -217,11 +220,13 @@ Bilbao, España"
 						console.warn("Supabase backup falló:", supaRes.error.message);
 					} */
 				} else {
+					console.error(web3Data);
 					statusDiv.textContent = "❌ Error al enviar. Inténtalo de nuevo.";
 					statusDiv.className =
 						"text-center text-sm py-2 rounded-lg bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400";
 				}
-			} catch {
+			} catch (error) {
+				console.error("Error al enviar el formulario:", error);
 				statusDiv.textContent = "❌ Error de conexión. Inténtalo más tarde.";
 				statusDiv.className =
 					"text-center text-sm py-2 rounded-lg bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400";
