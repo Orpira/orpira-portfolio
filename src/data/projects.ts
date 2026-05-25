@@ -49,7 +49,7 @@ export const brandProjects: BrandProject[] = [
 			"Plataforma de retos interactivos para evaluar conocimientos HTML, CSS y JavaScript con feedback en tiempo real.",
 		domain: "test-interactivo",
 		stack: ["React", "Supabase", "Vercel"],
-		href: "https://test-interactivo-supabase.vercel.app/",
+		href: "https://webwiz.orpira.es/",
 		year: "2025",
 		status: "En línea",
 		cta: "Abrir demo",
