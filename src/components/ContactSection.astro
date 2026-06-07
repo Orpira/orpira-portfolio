@@ -89,9 +89,9 @@ interface Props {
 </section>
 
 <script>
-	const form = document.getElementById("contact-form");
-	const statusDiv = document.getElementById("form-status");
-	const submitBtn = document.getElementById("contact-submit");
+	const form = document.getElementById("contact-form") as HTMLFormElement | null;
+	const statusDiv = document.getElementById("form-status") as HTMLDivElement | null;
+	const submitBtn = document.getElementById("contact-submit") as HTMLButtonElement | null;
 
 	if (form && statusDiv && submitBtn) {
 		form.addEventListener("submit", async (e) => {
@@ -107,9 +107,9 @@ interface Props {
 
 			statusDiv.classList.add("hidden");
 
-			const nameInput = document.getElementById("name");
-			const emailInput = document.getElementById("email");
-			const messageInput = document.getElementById("message");
+			const nameInput = document.getElementById("name") as HTMLInputElement | null;
+			const emailInput = document.getElementById("email") as HTMLInputElement | null;
+			const messageInput = document.getElementById("message") as HTMLTextAreaElement | null;
 
 			const name = nameInput?.value ?? "";
 			const email = emailInput?.value ?? "";
