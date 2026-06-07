@@ -2,10 +2,11 @@ import { createClient } from "@supabase/supabase-js";
 
 // Configuración de Supabase (valores públicos, seguros para el frontend)
 // Reemplaza con tus credenciales de https://supabase.com
-const SUPABASE_URL = process.env.SUPABASE_URL!;
-const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY!;
+const SUPABASE_URL = process.env.PUBLIC_SUPABASE_URL!;
+const SUPABASE_ANON_KEY = process.env.PUBLIC_SUPABASE_ANON_KEY!;
 
-export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+export const supabase = createClient(import.meta.env.PUBLIC_SUPABASE_URL,
+	import.meta.env.PUBLIC_SUPABASE_ANON_KEY);
 
 /**
  * SQL para crear la tabla en Supabase (ejecutar en SQL Editor):

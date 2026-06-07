@@ -10,5 +10,6 @@ const siteUrl = process.env.SITE_URL || "https://orpira.es";
 export default defineConfig({
   integrations: [tailwind(), react()],
   site: siteUrl,
+  output: "server",
   base: "/",
 });
