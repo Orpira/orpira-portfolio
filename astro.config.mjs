@@ -1,15 +1,19 @@
 import { defineConfig } from "astro/config";
-import tailwind from "@astrojs/tailwind";
 import react from "@astrojs/react";
+import vercel from "@astrojs/vercel";
 
-
-
-// Variables eliminadas por no ser usadas
-const siteUrl = process.env.SITE_URL || "https://orpira.es";
+const siteUrl = "https://orpira.es";
 
 export default defineConfig({
-  integrations: [tailwind(), react()],
-  site: siteUrl,
-  output: "server",
-  base: "/",
+	site: siteUrl,
+
+	output: "server",
+
+	adapter: vercel(),
+
+	integrations: [
+		react(),
+	],
+
+	base: "/",
 });
