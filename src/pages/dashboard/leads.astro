@@ -1,0 +1,243 @@
+---
+import { supabaseAdmin } from "../../lib/supabase-admin";
+import CRMLayout from "../../layouts/CRMLayout.astro";
+
+
+const auth =
+  Astro.cookies.get("crm_auth");
+
+if (
+  auth?.value !== "true"
+) {
+  return Astro.redirect(
+    "/dashboard"
+  );
+}
+
+const { data: leads, error } = await supabaseAdmin
+  .from("contacts")
+  .select("*")
+  .order("lead_score", { ascending: false });
+
+if (error) {
+  console.error(error);
+}
+
+const totalLeads = leads?.length ?? 0;
+
+const highPriority =
+  leads?.filter(
+    lead => lead.priority === "alta"
+  ).length ?? 0;
+
+const clients =
+  leads?.filter(
+    lead => lead.lead_type === "cliente"
+  ).length ?? 0;
+
+const pending =
+  leads?.filter(
+    lead => !lead.notified
+  ).length ?? 0;
+---
+
+<CRMLayout title="CRM OrPiRa">
+
+
+    <div class="max-w-7xl mx-auto p-6">  
+        
+        <div class="mb-8">
+
+        <h1 class="text-black text-4xl font-bold">
+            Dashboard de Leads
+        </h1>
+
+        <p class="text-black mt-2">
+            Seguimiento y clasificación automática
+        </p>
+
+        </div>
+
+        <!-- KPIs -->
+
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+
+        <div class="bg-slate-900 rounded-xl p-6 border border-slate-800">
+            <p class="text-slate-400">
+            Total Leads
+            </p>
+
+            <h2 class="text-4xl font-bold mt-2">
+            {totalLeads}
+            </h2>
+        </div>
+
+        <div class="bg-slate-900 rounded-xl p-6 border border-slate-800">
+            <p class="text-slate-400">
+            Clientes
+            </p>
+
+            <h2 class="text-4xl font-bold text-blue-400 mt-2">
+            {clients}
+            </h2>
+        </div>
+
+        <div class="bg-slate-900 rounded-xl p-6 border border-slate-800">
+            <p class="text-slate-400">
+            Alta Prioridad
+            </p>
+
+            <h2 class="text-4xl font-bold text-red-400 mt-2">
+            {highPriority}
+            </h2>
+        </div>
+
+        <div class="bg-slate-900 rounded-xl p-6 border border-slate-800">
+            <p class="text-slate-400">
+            Pendientes
+            </p>
+
+            <h2 class="text-4xl font-bold text-yellow-400 mt-2">
+            {pending}
+            </h2>
+        </div>
+
+        </div>
+
+        <!-- Buscador -->
+
+        <div class="mb-6">
+
+        <input
+            type="text"
+            placeholder="Buscar lead..."
+            class="w-full bg-slate-900 border border-slate-800 rounded-lg px-4 py-3"
+        />
+
+        </div>
+
+        <!-- Tabla -->
+
+        <div class="bg-slate-900 rounded-xl border border-slate-800 overflow-hidden">
+
+        <div class="overflow-x-auto">
+
+            <table class="w-full">
+
+            <thead class="bg-slate-800">
+
+                <tr>
+
+                <th class="text-left p-4">
+                    Nombre
+                </th>
+
+                <th class="text-left p-4">
+                    Email
+                </th>
+
+                <th class="text-left p-4">
+                    Tipo
+                </th>
+
+                <th class="text-left p-4">
+                    Prioridad
+                </th>
+
+                <th class="text-left p-4">
+                    Score
+                </th>
+
+                <th class="text-left p-4">
+                    Fecha
+                </th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {
+                leads?.map((lead) => (
+
+                    <tr class="border-t border-slate-800">
+
+                    <td class="p-4">
+                        <a
+                            href={`/dashboard/lead/${lead.id}`}
+                            class="text-cyan-400 hover:underline"
+                        >
+                            {lead.name}
+                        </a>
+                    </td>
+
+                    <td class="p-4">
+                        {lead.email}
+                    </td>
+
+                    <td class="p-4">
+
+                        <span class="px-3 py-1 rounded-full bg-blue-500/20 text-blue-300 text-sm">
+
+                        {lead.lead_type}
+
+                        </span>
+
+                    </td>
+
+                    <td class="p-4">
+                        <span
+                            class={
+                                lead.priority === "alta"
+                                ? "px-3 py-1 rounded-full bg-red-500/20 text-red-400"
+                                : lead.priority === "media"
+                                ? "px-3 py-1 rounded-full bg-yellow-500/20 text-yellow-400"
+                                : "px-3 py-1 rounded-full bg-green-500/20 text-green-400"
+                            }
+                            >
+                            {lead.priority}
+                        </span>                      
+                    </td>
+
+                    <td class="p-4">
+                        <span
+                            class={
+                            lead.lead_score >= 80
+                                ? "text-green-400 font-bold"
+                                : lead.lead_score >= 50
+                                ? "text-yellow-400 font-bold"
+                                : "text-slate-400 font-bold"
+                            }
+                        >
+                            {lead.lead_score}
+                        </span>
+                    </td>
+
+                    <td class="p-4">
+
+                        {
+                        new Date(
+                            lead.created_at
+                        ).toLocaleDateString("es-ES")
+                        }
+
+                    </td>
+
+                    </tr>
+
+                ))
+                }
+
+            </tbody>
+
+            </table>
+
+        </div>
+
+        </div>
+
+
+
+    </div>
+</CRMLayout>

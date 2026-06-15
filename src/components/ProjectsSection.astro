@@ -73,7 +73,7 @@ const resolveProjectHref = (href?: string, isExternal?: boolean) => {
 						</div>
 					</div>
 
-					<div class="flex items-center justify-between gap-4 border-t border-white/10 dark:border-white/10 pt-4">
+					<div class="flex flex-wrap items-center justify-between gap-4 border-t border-white/10 dark:border-white/10 pt-4">
 						<span class="micro-label text-xs font-semibold uppercase tracking-[0.14em] text-zinc-600 dark:text-zinc-200">
 							{project.year}
 						</span>
@@ -87,14 +87,26 @@ const resolveProjectHref = (href?: string, isExternal?: boolean) => {
 								Estás aquí
 							</span>
 						) : (
-							<a
-								href={resolveProjectHref(project.href, project.external)}
-								target={project.external ? "_blank" : undefined}
-								rel={project.external ? "noopener noreferrer" : undefined}
-								class="project-cta inline-flex items-center gap-2 rounded-full border border-brand.accent/45 px-4 py-2 text-xs font-semibold uppercase tracking-[0.14em] text-brand.accent hover:border-brand.accent hover:bg-brand.accent/10"
-							>
-								{project.cta}
-							</a>
+							<div class="flex flex-wrap items-center gap-2">
+								<a
+									href={resolveProjectHref(project.href, project.external)}
+									target={project.external ? "_blank" : undefined}
+									rel={project.external ? "noopener noreferrer" : undefined}
+									class="project-cta inline-flex items-center gap-2 rounded-full border border-brand.accent/45 px-4 py-2 text-xs font-semibold uppercase tracking-[0.14em] text-brand.accent hover:border-brand.accent hover:bg-brand.accent/10"
+								>
+									{project.cta}
+								</a>
+								{project.secondaryCta && project.secondaryHref && (
+									<a
+										href={resolveProjectHref(project.secondaryHref, project.external)}
+										target={project.external ? "_blank" : undefined}
+										rel={project.external ? "noopener noreferrer" : undefined}
+										class="project-cta inline-flex items-center gap-2 rounded-full border border-cyan-300/45 px-4 py-2 text-xs font-semibold uppercase tracking-[0.14em] text-cyan-700 hover:border-cyan-300 hover:bg-cyan-300/10 dark:text-cyan-100"
+									>
+										{project.secondaryCta}
+									</a>
+								)}
+							</div>
 						)}
 					</div>
 				</article>

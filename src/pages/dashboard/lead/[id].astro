@@ -1,0 +1,109 @@
+---
+import CRMLayout from "../../../layouts/CRMLayout.astro";
+import { supabaseAdmin } from "../../../lib/supabase-admin";
+
+const { id } = Astro.params;
+
+const { data: lead } = await supabaseAdmin
+  .from("contacts")
+  .select("*")
+  .eq("id", id)
+  .single();
+
+if (!lead) {
+  return Astro.redirect("/dashboard/leads");
+}
+---
+
+<CRMLayout title={lead.name}>
+
+<div class="space-y-6">
+
+  <div>
+
+    <h1 class="text-4xl font-bold">
+      {lead.name}
+    </h1>
+
+    <p class="text-slate-400">
+      Detalle del Lead
+    </p>
+
+  </div>
+
+  <div
+    class="grid md:grid-cols-2 gap-6"
+  >
+
+    <div
+      class="bg-slate-900 rounded-xl p-6"
+    >
+
+      <h2 class="font-bold mb-4">
+        Información
+      </h2>
+
+      <div class="space-y-3">
+
+        <p>
+          <strong>Email:</strong>
+          {lead.email}
+        </p>
+
+        <p>
+          <strong>Estado:</strong>
+
+          <span
+            class={
+              lead.status === "won"
+                ? "text-green-400"
+                : lead.status === "lost"
+                ? "text-red-400"
+                : lead.status === "qualified"
+                ? "text-blue-400"
+                : "text-yellow-400"
+            }
+          >
+            {lead.status}
+          </span>
+
+        </p>
+
+        <p>
+          <strong>Tipo:</strong>
+          {lead.lead_type}
+        </p>
+
+        <p>
+          <strong>Prioridad:</strong>
+          {lead.priority}
+        </p>
+
+        <p>
+          <strong>Score:</strong>
+          {lead.lead_score}
+        </p>
+
+      </div>
+
+    </div>
+
+    <div
+      class="bg-slate-900 rounded-xl p-6"
+    >
+
+      <h2 class="font-bold mb-4">
+        Mensaje
+      </h2>
+
+      <p class="text-slate-300">
+        {lead.message}
+      </p>
+
+    </div>
+
+  </div>
+
+</div>
+
+</CRMLayout>

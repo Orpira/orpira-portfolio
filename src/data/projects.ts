@@ -21,6 +21,8 @@ export interface BrandProject {
 		| "Escalando"
 		| "Roadmap";
 	cta: string;
+	secondaryCta?: string;
+	secondaryHref?: string;
 	external?: boolean;
 	comingSoon?: boolean;
 	isCurrent?: boolean;
@@ -30,17 +32,27 @@ export interface BrandProject {
 
 export const brandProjects: BrandProject[] = [
 	{
-		id: "control-horario",
-		title: "Control Horario Laboral",
-		summary: "Sistema para registro y control de horario laboral.",
-		domain: "orpira.es/projects/control-horario",
-		stack: ["Laravel", "SQLite", "Tailwind"],
-		href: "/projects/control-horario",
-		year: "2024",
+		id: "finance-app",
+		title: "Finance App",
+		summary:
+			"Aplicación de gestión financiera personal para registrar ingresos, gastos y visualizar movimientos básicos desde una interfaz simple y responsiva.",
+		domain: "orpira.es/projects/finance-app",
+		stack: [
+			"React",
+			"TypeScript",
+			"Tailwind CSS",
+			"Supabase",
+			"Vercel",
+			"PWA / Android Preview",
+		],
+		href: "/projects/finance-app",
+		year: "2026",
 		status: "En Desarrollo",
-		cta: "Ver caso",
+		cta: "Ver proyecto",
+		secondaryCta: "Vista Android",
+		secondaryHref: "/projects/finance-app#android-preview",
 		layout: "feature",
-		accent: "rgba(255, 155, 83, 0.3)",
+		accent: "rgba(72, 215, 178, 0.25)",
 	},
 	{
 		id: "webwiz-quiz",
@@ -56,6 +68,21 @@ export const brandProjects: BrandProject[] = [
 		external: true,
 		layout: "tall",
 		accent: "rgba(82, 163, 255, 0.34)",
+	},
+	{
+		id: "test-interactivo-prl",
+		title: "Test Interactivo PRL",
+		summary:
+			"Plataforma web interactiva para formacion y evaluacion en Prevencion de Riesgos Laborales, con tests individuales, multijugador local y salas en red.",
+		domain: "test-interactivo-prl.vercel.app",
+		stack: ["React", "Vite", "Tailwind CSS", "Express", "Socket.IO", "Vercel"],
+		href: "https://test-interactivo-prl-vooe.vercel.app/",
+		year: "2026",
+		status: "En línea",
+		cta: "Abrir demo",
+		external: true,
+		layout: "wide",
+		accent: "rgba(34, 197, 94, 0.24)",
 	},
 	/* {
 		id: "dashboard-evaluacion",

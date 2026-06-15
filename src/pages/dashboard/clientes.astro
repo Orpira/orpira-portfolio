@@ -1,0 +1,106 @@
+---
+import CRMLayout from "../../layouts/CRMLayout.astro";
+import { supabaseAdmin } from "../../lib/supabase-admin";
+
+const { data: clientes } = await supabaseAdmin
+  .from("contacts")
+  .select("*")
+  .eq("lead_type", "cliente")
+  .order("lead_score", {
+    ascending: false,
+  });
+---
+
+<CRMLayout title="Clientes">
+
+<div>
+
+  <div class="mb-8">
+
+    <h1 class="text-4xl font-bold">
+      Clientes
+    </h1>
+
+    <p class="text-slate-400 mt-2">
+      Clientes potenciales clasificados automáticamente
+    </p>
+
+  </div>
+
+  <div
+    class="bg-slate-900 rounded-xl border border-slate-800 overflow-hidden"
+  >
+    <div class="grid grid-cols-3 gap-4 mb-8">
+        <div class="bg-slate-900 p-6 rounded-xl">
+            <p class="text-slate-400">
+                Total Clientes
+            </p>
+            <h2 class="text-4xl font-bold">
+                {clientes?.length ?? 0}
+            </h2>
+        </div>
+    </div>
+
+    <table class="w-full">
+
+      <thead class="bg-slate-800">
+
+        <tr>
+
+          <th class="text-left p-4">
+            Nombre
+          </th>
+
+          <th class="text-left p-4">
+            Email
+          </th>
+
+          <th class="text-left p-4">
+            Prioridad
+          </th>
+
+          <th class="text-left p-4">
+            Score
+          </th>
+
+        </tr>
+
+      </thead>
+
+      <tbody>
+
+        {
+          clientes?.map(cliente => (
+
+            <tr class="border-t border-slate-800">
+
+              <td class="p-4">
+                {cliente.name}
+              </td>
+
+              <td class="p-4">
+                {cliente.email}
+              </td>
+
+              <td class="p-4">
+                {cliente.priority}
+              </td>
+
+              <td class="p-4">
+                {cliente.lead_score}
+              </td>
+
+            </tr>
+
+          ))
+        }
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+</div>
+
+</CRMLayout>

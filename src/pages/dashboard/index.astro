@@ -1,0 +1,38 @@
+---
+const error =
+  Astro.url.searchParams.get("error");
+---
+
+<html lang="es">
+<head>
+  <title>Acceso CRM</title>
+</head>
+
+<body>
+
+<h1>CRM OrPiRa</h1>
+
+{error && (
+  <p style="color:red;">
+    Contraseña incorrecta
+  </p>
+)}
+
+<form
+  method="POST"
+  action="/dashboard/login"
+>
+  <input
+    type="password"
+    name="password"
+    placeholder="Contraseña"
+    required
+  />
+
+  <button type="submit">
+    Entrar
+  </button>
+</form>
+
+</body>
+</html>

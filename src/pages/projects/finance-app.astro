@@ -1,0 +1,531 @@
+---
+import ProjectLayout from "../../layouts/ProjectLayout.astro";
+
+const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL;
+const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
+---
+
+<ProjectLayout
+	title="Finance App"
+	description="Demo funcional de gestion financiera personal con Supabase, Astro y Tailwind."
+>
+	<section class="space-y-12">
+		<header class="space-y-6 text-center">
+			<a
+				href="/#projects"
+				class="project-cta inline-flex items-center rounded-full border border-white/15 px-4 py-2 text-xs font-semibold uppercase tracking-[0.14em] text-brand-accent hover:border-brand-accent hover:bg-brand-accent/10"
+			>
+				Volver a proyectos
+			</a>
+
+			<div class="space-y-4">
+				<p class="editorial-kicker micro-label text-brand-accent">
+					Demo funcional con registros de prueba
+				</p>
+				<h1
+					class="font-display text-4xl font-semibold leading-tight text-orange-100 md:text-6xl"
+				>
+					Finance App
+				</h1>
+				<p class="mx-auto max-w-3xl text-base leading-relaxed text-brand-muted md:text-lg">
+					Aplicacion de gestion financiera personal para registrar ingresos,
+					gastos y visualizar movimientos basicos desde una interfaz simple y
+					responsiva.
+				</p>
+			</div>
+
+			<div class="project-stack justify-center">
+				<span>React</span>
+				<span>TypeScript</span>
+				<span>Tailwind CSS</span>
+				<span>Supabase</span>
+				<span>Vercel</span>
+				<span>PWA / Android Preview</span>
+			</div>
+		</header>
+
+		<section
+			id="finance-demo"
+			class="rounded-3xl border border-white/12 bg-white/[0.04] p-4 shadow-2xl shadow-black/20 backdrop-blur md:p-6"
+		>
+			<div class="mb-6 flex flex-col justify-between gap-4 md:flex-row md:items-end">
+				<div>
+					<p class="editorial-kicker micro-label">Panel demo</p>
+					<h2 class="mt-2 font-display text-2xl font-semibold text-orange-100">
+						Movimientos personales
+					</h2>
+				</div>
+				<a
+					href="#android-preview"
+					class="project-cta inline-flex w-fit items-center rounded-full border border-cyan-300/45 px-4 py-2 text-xs font-semibold uppercase tracking-[0.14em] text-cyan-100 hover:bg-cyan-300/10"
+				>
+					Vista Android
+				</a>
+			</div>
+
+			<div class="grid gap-4 md:grid-cols-3">
+				<div class="rounded-2xl border border-emerald-300/20 bg-emerald-300/10 p-4">
+					<p class="text-xs font-semibold uppercase tracking-[0.14em] text-emerald-100">
+						Ingresos
+					</p>
+					<p
+						id="total-income"
+						class="mt-3 font-display text-3xl font-semibold text-white"
+					>
+						0,00 €
+					</p>
+				</div>
+				<div class="rounded-2xl border border-rose-300/20 bg-rose-300/10 p-4">
+					<p class="text-xs font-semibold uppercase tracking-[0.14em] text-rose-100">
+						Gastos
+					</p>
+					<p
+						id="total-expense"
+						class="mt-3 font-display text-3xl font-semibold text-white"
+					>
+						0,00 €
+					</p>
+				</div>
+				<div class="rounded-2xl border border-orange-300/25 bg-orange-300/10 p-4">
+					<p class="text-xs font-semibold uppercase tracking-[0.14em] text-orange-100">
+						Balance
+					</p>
+					<p id="total-balance" class="mt-3 font-display text-3xl font-semibold text-white">
+						0,00 €
+					</p>
+				</div>
+			</div>
+
+			<div class="mt-8 grid gap-6 lg:grid-cols-[0.9fr_1.4fr]">
+				<form
+					id="finance-form"
+					class="space-y-4 rounded-2xl border border-white/12 bg-brand-card/80 p-4"
+				>
+					<div>
+						<label
+							for="movement-type"
+							class="mb-2 block text-sm font-semibold text-orange-100"
+						>
+							Tipo
+						</label>
+						<select
+							id="movement-type"
+							name="type"
+							class="w-full rounded-xl border-white/15 bg-zinc-950/80 text-white focus:border-brand-accent focus:ring-brand-accent"
+						>
+							<option value="income">Ingreso</option>
+							<option value="expense">Gasto</option>
+						</select>
+					</div>
+
+					<div>
+						<label
+							for="movement-description"
+							class="mb-2 block text-sm font-semibold text-orange-100"
+						>
+							Descripcion
+						</label>
+						<input
+							id="movement-description"
+							name="description"
+							type="text"
+							maxlength="120"
+							placeholder="Ej. Nomina demo"
+							class="w-full rounded-xl border-white/15 bg-zinc-950/80 text-white placeholder:text-zinc-500 focus:border-brand-accent focus:ring-brand-accent"
+							required
+						/>
+					</div>
+
+					<div>
+						<label
+							for="movement-category"
+							class="mb-2 block text-sm font-semibold text-orange-100"
+						>
+							Categoria
+						</label>
+						<input
+							id="movement-category"
+							name="category"
+							type="text"
+							maxlength="80"
+							placeholder="Ej. Demo"
+							class="w-full rounded-xl border-white/15 bg-zinc-950/80 text-white placeholder:text-zinc-500 focus:border-brand-accent focus:ring-brand-accent"
+						/>
+					</div>
+
+					<div>
+						<label
+							for="movement-amount"
+							class="mb-2 block text-sm font-semibold text-orange-100"
+						>
+							Importe
+						</label>
+						<input
+							id="movement-amount"
+							name="amount"
+							type="number"
+							min="0.01"
+							step="0.01"
+							placeholder="125.00"
+							class="w-full rounded-xl border-white/15 bg-zinc-950/80 text-white placeholder:text-zinc-500 focus:border-brand-accent focus:ring-brand-accent"
+							required
+						/>
+					</div>
+
+					<button
+						id="submit-finance-movement"
+						type="submit"
+						class="project-cta w-full rounded-xl border border-brand-accent/60 bg-brand-accent/15 px-4 py-3 text-sm font-semibold uppercase tracking-[0.14em] text-orange-100 hover:bg-brand-accent/25"
+					>
+						Guardar movimiento
+					</button>
+
+					<p id="finance-message" class="min-h-6 text-sm text-brand-muted"></p>
+				</form>
+
+				<div class="overflow-hidden rounded-2xl border border-white/12 bg-zinc-950/55">
+					<div
+						class="flex items-center justify-between border-b border-white/10 px-4 py-3"
+					>
+						<h3 class="font-semibold text-orange-100">Ultimos movimientos</h3>
+						<button
+							id="refresh-finance-movements"
+							type="button"
+							class="rounded-full border border-white/15 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-brand-muted hover:border-brand-accent hover:text-orange-100"
+						>
+							Actualizar
+						</button>
+					</div>
+					<div class="overflow-x-auto">
+						<table class="min-w-full divide-y divide-white/10 text-left text-sm">
+							<thead class="bg-white/[0.03] text-xs uppercase tracking-[0.12em] text-brand-muted">
+								<tr>
+									<th class="px-4 py-3 font-semibold">Fecha</th>
+									<th class="px-4 py-3 font-semibold">Tipo</th>
+									<th class="px-4 py-3 font-semibold">Descripcion</th>
+									<th class="px-4 py-3 font-semibold">Categoria</th>
+									<th class="px-4 py-3 text-right font-semibold">Importe</th>
+								</tr>
+							</thead>
+							<tbody id="finance-table-body" class="divide-y divide-white/10 text-zinc-100">
+								<tr>
+									<td colspan="5" class="px-4 py-6 text-center text-brand-muted">
+										Cargando movimientos demo...
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<section
+			id="android-preview"
+			class="grid gap-8 rounded-3xl border border-white/12 bg-gradient-to-br from-white/[0.05] via-white/[0.03] to-cyan-300/[0.06] p-4 md:grid-cols-[0.95fr_1.05fr] md:p-8"
+		>
+			<div class="flex flex-col justify-center space-y-5">
+				<p class="editorial-kicker micro-label text-cyan-100">
+					Vista Android / PWA
+				</p>
+				<h2 class="font-display text-3xl font-semibold text-orange-100">
+					Preview mobile-first para evolucionar a app instalable.
+				</h2>
+				<p class="leading-relaxed text-brand-muted">
+					Esta demo puede evolucionar a PWA instalable o APK Android mediante
+					Capacitor. La base funcional ya separa lectura publica, escritura
+					server-side y una interfaz pensada para pantallas pequenas.
+				</p>
+				<a
+					href="#mobile-demo"
+					class="project-cta inline-flex w-fit rounded-full border border-cyan-300/45 px-5 py-3 text-xs font-semibold uppercase tracking-[0.14em] text-cyan-100 hover:bg-cyan-300/10"
+				>
+					Abrir modo movil
+				</a>
+			</div>
+
+			<div id="mobile-demo" class="mx-auto w-full max-w-[22rem]">
+				<div
+					class="rounded-[2.2rem] border border-white/18 bg-zinc-950 p-3 shadow-2xl shadow-cyan-950/40"
+				>
+					<div class="rounded-[1.7rem] border border-white/10 bg-brand-bg p-4">
+						<div class="mx-auto mb-4 h-1.5 w-20 rounded-full bg-white/20"></div>
+						<div class="space-y-4">
+							<div>
+								<p class="text-xs uppercase tracking-[0.14em] text-brand-muted">
+									Finance App
+								</p>
+								<p class="mt-1 font-display text-2xl font-semibold text-white">
+									Balance demo
+								</p>
+							</div>
+							<div
+								class="rounded-2xl border border-orange-300/20 bg-orange-300/10 p-4"
+							>
+								<p class="text-xs text-orange-100">Balance actual</p>
+								<p
+									id="mobile-balance"
+									class="mt-2 font-display text-3xl font-semibold text-white"
+								>
+									0,00 €
+								</p>
+							</div>
+							<div class="grid grid-cols-2 gap-3">
+								<div class="rounded-2xl bg-emerald-300/10 p-3">
+									<p class="text-[0.68rem] text-emerald-100">Ingresos</p>
+									<p id="mobile-income" class="mt-1 font-semibold text-white">
+										0,00 €
+									</p>
+								</div>
+								<div class="rounded-2xl bg-rose-300/10 p-3">
+									<p class="text-[0.68rem] text-rose-100">Gastos</p>
+									<p id="mobile-expense" class="mt-1 font-semibold text-white">
+										0,00 €
+									</p>
+								</div>
+							</div>
+							<div id="mobile-movements" class="space-y-2">
+								<div class="rounded-2xl border border-white/10 p-3 text-sm text-brand-muted">
+									Los ultimos movimientos apareceran aqui.
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+	</section>
+
+	<script is:inline define:vars={{ supabaseUrl, supabaseAnonKey }}>
+		const form = document.getElementById("finance-form");
+		const message = document.getElementById("finance-message");
+		const submitButton = document.getElementById("submit-finance-movement");
+		const refreshButton = document.getElementById("refresh-finance-movements");
+		const tableBody = document.getElementById("finance-table-body");
+		const totalIncome = document.getElementById("total-income");
+		const totalExpense = document.getElementById("total-expense");
+		const totalBalance = document.getElementById("total-balance");
+		const mobileIncome = document.getElementById("mobile-income");
+		const mobileExpense = document.getElementById("mobile-expense");
+		const mobileBalance = document.getElementById("mobile-balance");
+		const mobileMovements = document.getElementById("mobile-movements");
+
+		const moneyFormatter = new Intl.NumberFormat("es-ES", {
+			style: "currency",
+			currency: "EUR",
+		});
+
+		const dateFormatter = new Intl.DateTimeFormat("es-ES", {
+			day: "2-digit",
+			month: "short",
+			hour: "2-digit",
+			minute: "2-digit",
+		});
+
+		const setMessage = (text, tone = "muted") => {
+			if (!message) return;
+			message.textContent = text;
+			message.className =
+				tone === "error"
+					? "min-h-6 text-sm text-rose-200"
+					: tone === "success"
+						? "min-h-6 text-sm text-emerald-200"
+						: "min-h-6 text-sm text-brand-muted";
+		};
+
+		const formatAmount = (value) => moneyFormatter.format(Number(value) || 0);
+
+		const escapeHtml = (value) =>
+			String(value ?? "")
+				.replaceAll("&", "&amp;")
+				.replaceAll("<", "&lt;")
+				.replaceAll(">", "&gt;")
+				.replaceAll('"', "&quot;")
+				.replaceAll("'", "&#039;");
+
+		const fetchMovements = async () => {
+			if (!supabaseUrl || !supabaseAnonKey) {
+				throw new Error("Faltan variables publicas de Supabase.");
+			}
+
+			const response = await fetch(
+				`${supabaseUrl}/rest/v1/finance_movements?select=id,type,description,amount,category,created_at&order=created_at.desc&limit=50`,
+				{
+					headers: {
+						apikey: supabaseAnonKey,
+						Authorization: `Bearer ${supabaseAnonKey}`,
+					},
+				},
+			);
+
+			if (!response.ok) {
+				throw new Error("No se pudieron cargar los movimientos demo.");
+			}
+
+			return response.json();
+		};
+
+		const renderMovements = (movements) => {
+			const income = movements
+				.filter((movement) => movement.type === "income")
+				.reduce((sum, movement) => sum + Number(movement.amount), 0);
+			const expense = movements
+				.filter((movement) => movement.type === "expense")
+				.reduce((sum, movement) => sum + Number(movement.amount), 0);
+			const balance = income - expense;
+
+			if (totalIncome) totalIncome.textContent = formatAmount(income);
+			if (totalExpense) totalExpense.textContent = formatAmount(expense);
+			if (totalBalance) totalBalance.textContent = formatAmount(balance);
+			if (mobileIncome) mobileIncome.textContent = formatAmount(income);
+			if (mobileExpense) mobileExpense.textContent = formatAmount(expense);
+			if (mobileBalance) mobileBalance.textContent = formatAmount(balance);
+
+			if (tableBody) {
+				if (movements.length === 0) {
+					tableBody.innerHTML = `
+						<tr>
+							<td colspan="5" class="px-4 py-6 text-center text-brand-muted">
+								Aun no hay movimientos demo. Crea el primero desde el formulario.
+							</td>
+						</tr>
+					`;
+				} else {
+					tableBody.innerHTML = movements
+						.map((movement) => {
+							const isIncome = movement.type === "income";
+							const badgeClass = isIncome
+								? "bg-emerald-300/10 text-emerald-100 border-emerald-300/25"
+								: "bg-rose-300/10 text-rose-100 border-rose-300/25";
+
+							return `
+								<tr>
+									<td class="whitespace-nowrap px-4 py-3 text-brand-muted">
+										${dateFormatter.format(new Date(movement.created_at))}
+									</td>
+									<td class="px-4 py-3">
+										<span class="rounded-full border px-2.5 py-1 text-xs font-semibold ${badgeClass}">
+											${isIncome ? "Ingreso" : "Gasto"}
+										</span>
+									</td>
+									<td class="px-4 py-3 text-white">${escapeHtml(movement.description)}</td>
+									<td class="px-4 py-3 text-brand-muted">${escapeHtml(movement.category || "Demo")}</td>
+									<td class="whitespace-nowrap px-4 py-3 text-right font-semibold ${isIncome ? "text-emerald-100" : "text-rose-100"}">
+										${isIncome ? "+" : "-"}${formatAmount(movement.amount)}
+									</td>
+								</tr>
+							`;
+						})
+						.join("");
+				}
+			}
+
+			if (mobileMovements) {
+				const latest = movements.slice(0, 4);
+				mobileMovements.innerHTML = latest.length
+					? latest
+							.map((movement) => {
+								const isIncome = movement.type === "income";
+								return `
+									<div class="flex items-center justify-between rounded-2xl border border-white/10 p-3">
+										<div>
+											<p class="text-sm font-semibold text-white">${escapeHtml(movement.description)}</p>
+											<p class="text-xs text-brand-muted">${escapeHtml(movement.category || "Demo")}</p>
+										</div>
+										<p class="text-sm font-semibold ${isIncome ? "text-emerald-100" : "text-rose-100"}">
+											${isIncome ? "+" : "-"}${formatAmount(movement.amount)}
+										</p>
+									</div>
+								`;
+							})
+							.join("")
+					: `<div class="rounded-2xl border border-white/10 p-3 text-sm text-brand-muted">Los ultimos movimientos apareceran aqui.</div>`;
+			}
+		};
+
+		const loadMovements = async () => {
+			try {
+				setMessage("Cargando movimientos demo...");
+				const movements = await fetchMovements();
+				renderMovements(movements);
+				setMessage("Demo conectada a Supabase.");
+			} catch (error) {
+				setMessage(error.message || "Error al cargar la demo.", "error");
+				if (tableBody) {
+					tableBody.innerHTML = `
+						<tr>
+							<td colspan="5" class="px-4 py-6 text-center text-rose-200">
+								No se pudieron cargar los movimientos.
+							</td>
+						</tr>
+					`;
+				}
+			}
+		};
+
+		refreshButton?.addEventListener("click", loadMovements);
+
+		form?.addEventListener("submit", async (event) => {
+			event.preventDefault();
+
+			const formData = new FormData(form);
+			const type = formData.get("type");
+			const description = String(formData.get("description") || "").trim();
+			const category = String(formData.get("category") || "").trim();
+			const amount = Number(formData.get("amount"));
+
+			if (type !== "income" && type !== "expense") {
+				setMessage("Selecciona un tipo valido.", "error");
+				return;
+			}
+
+			if (!description) {
+				setMessage("La descripcion es obligatoria.", "error");
+				return;
+			}
+
+			if (!Number.isFinite(amount) || amount <= 0) {
+				setMessage("El importe debe ser mayor que 0.", "error");
+				return;
+			}
+
+			if (submitButton) {
+				submitButton.setAttribute("disabled", "true");
+				submitButton.textContent = "Guardando...";
+			}
+
+			try {
+				const response = await fetch("/api/finance-demo", {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify({
+						type,
+						description,
+						category,
+						amount,
+					}),
+				});
+				const result = await response.json();
+
+				if (!response.ok || !result.success) {
+					throw new Error(result.error || "No se pudo guardar el movimiento.");
+				}
+
+				form.reset();
+				setMessage("Movimiento demo guardado correctamente.", "success");
+				await loadMovements();
+			} catch (error) {
+				setMessage(error.message || "Error al guardar el movimiento.", "error");
+			} finally {
+				if (submitButton) {
+					submitButton.removeAttribute("disabled");
+					submitButton.textContent = "Guardar movimiento";
+				}
+			}
+		});
+
+		loadMovements();
+	</script>
+</ProjectLayout>

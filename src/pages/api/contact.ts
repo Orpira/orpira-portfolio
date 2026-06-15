@@ -5,6 +5,7 @@ import { createClient } from "@supabase/supabase-js";
 
 const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL;
 const serviceKey = import.meta.env.SUPABASE_SERVICE_ROLE_KEY;
+const contactWebhookUrl = import.meta.env.CONTACT_WEBHOOK_URL;
 
 if (!supabaseUrl) {
 	throw new Error("PUBLIC_SUPABASE_URL no configurada");
@@ -36,6 +37,24 @@ export const POST: APIRoute = async ({ request }) => {
 
 		if (error) {
 			throw error;
+		}
+
+		if (contactWebhookUrl) {
+			try {
+				await fetch(contactWebhookUrl, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({
+					name,
+					email,
+					message,
+				}),
+				});
+			} catch (webhookError) {
+				console.error(webhookError);
+			}
 		}
 
 		return new Response(
