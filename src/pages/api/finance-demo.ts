@@ -12,6 +12,11 @@ interface FinanceMovementPayload {
 	category?: unknown;
 }
 
+interface DeleteFinanceMovementPayload {
+	id?: unknown;
+	all?: unknown;
+}
+
 const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL;
 const serviceKey = import.meta.env.SUPABASE_SERVICE_ROLE_KEY;
 
@@ -104,6 +109,47 @@ export const POST: APIRoute = async ({ request }) => {
 		return jsonResponse({
 			success: true,
 			movement: data,
+		});
+	} catch (error: any) {
+		console.error(error);
+
+		return jsonResponse(
+			{
+				success: false,
+				error: error?.message ?? "Error interno",
+			},
+			500,
+		);
+	}
+};
+
+export const DELETE: APIRoute = async ({ request }) => {
+	try {
+		const payload = (await request.json().catch(() => ({}))) as DeleteFinanceMovementPayload;
+		const id = typeof payload.id === "string" ? payload.id.trim() : "";
+		const deleteAll = payload.all === true;
+
+		if (!id && !deleteAll) {
+			return jsonResponse(
+				{
+					success: false,
+					error: "Indica el movimiento a borrar o confirma el borrado completo.",
+				},
+				400,
+			);
+		}
+
+		const query = supabase.from("finance_movements").delete();
+		const { error } = deleteAll
+			? await query.neq("id", "00000000-0000-0000-0000-000000000000")
+			: await query.eq("id", id);
+
+		if (error) {
+			throw error;
+		}
+
+		return jsonResponse({
+			success: true,
 		});
 	} catch (error: any) {
 		console.error(error);

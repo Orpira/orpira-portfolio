@@ -9,7 +9,7 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
 	title="Finance App"
 	description="Demo funcional de gestion financiera personal con Supabase, Astro y Tailwind."
 >
-	<section class="space-y-12">
+	<section class="finance-page space-y-12">
 		<header class="space-y-6 text-center">
 			<a
 				href="/#projects"
@@ -185,16 +185,25 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
 
 				<div class="overflow-hidden rounded-2xl border border-white/12 bg-zinc-950/55">
 					<div
-						class="flex items-center justify-between border-b border-white/10 px-4 py-3"
+						class="flex flex-col gap-3 border-b border-white/10 px-4 py-3 sm:flex-row sm:items-center sm:justify-between"
 					>
 						<h3 class="font-semibold text-orange-100">Ultimos movimientos</h3>
-						<button
-							id="refresh-finance-movements"
-							type="button"
-							class="rounded-full border border-white/15 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-brand-muted hover:border-brand-accent hover:text-orange-100"
-						>
-							Actualizar
-						</button>
+						<div class="flex flex-wrap gap-2">
+							<button
+								id="refresh-finance-movements"
+								type="button"
+								class="rounded-full border border-white/15 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-brand-muted hover:border-brand-accent hover:text-orange-100"
+							>
+								Actualizar
+							</button>
+							<button
+								id="clear-finance-movements"
+								type="button"
+								class="rounded-full border border-rose-300/25 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-rose-100 hover:bg-rose-300/10"
+							>
+								Borrar demo
+							</button>
+						</div>
 					</div>
 					<div class="overflow-x-auto">
 						<table class="min-w-full divide-y divide-white/10 text-left text-sm">
@@ -205,11 +214,12 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
 									<th class="px-4 py-3 font-semibold">Descripcion</th>
 									<th class="px-4 py-3 font-semibold">Categoria</th>
 									<th class="px-4 py-3 text-right font-semibold">Importe</th>
+									<th class="px-4 py-3 text-right font-semibold">Acciones</th>
 								</tr>
 							</thead>
 							<tbody id="finance-table-body" class="divide-y divide-white/10 text-zinc-100">
 								<tr>
-									<td colspan="5" class="px-4 py-6 text-center text-brand-muted">
+									<td colspan="6" class="px-4 py-6 text-center text-brand-muted">
 										Cargando movimientos demo...
 									</td>
 								</tr>
@@ -236,28 +246,42 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
 					Capacitor. La base funcional ya separa lectura publica, escritura
 					server-side y una interfaz pensada para pantallas pequenas.
 				</p>
-				<a
-					href="#mobile-demo"
+				<button
+					id="open-mobile-demo"
+					type="button"
 					class="project-cta inline-flex w-fit rounded-full border border-cyan-300/45 px-5 py-3 text-xs font-semibold uppercase tracking-[0.14em] text-cyan-100 hover:bg-cyan-300/10"
 				>
 					Abrir modo movil
-				</a>
+				</button>
 			</div>
 
-			<div id="mobile-demo" class="mx-auto w-full max-w-[22rem]">
+			<div
+				id="mobile-demo"
+				tabindex="-1"
+				class="mx-auto w-full max-w-[22rem] scroll-mt-24 rounded-[2.4rem] outline-none transition-shadow duration-500"
+			>
 				<div
 					class="rounded-[2.2rem] border border-white/18 bg-zinc-950 p-3 shadow-2xl shadow-cyan-950/40"
 				>
 					<div class="rounded-[1.7rem] border border-white/10 bg-brand-bg p-4">
 						<div class="mx-auto mb-4 h-1.5 w-20 rounded-full bg-white/20"></div>
 						<div class="space-y-4">
-							<div>
-								<p class="text-xs uppercase tracking-[0.14em] text-brand-muted">
-									Finance App
-								</p>
-								<p class="mt-1 font-display text-2xl font-semibold text-white">
-									Balance demo
-								</p>
+							<div class="flex items-start justify-between gap-3">
+								<div>
+									<p class="text-xs uppercase tracking-[0.14em] text-brand-muted">
+										Finance App
+									</p>
+									<p class="mt-1 font-display text-2xl font-semibold text-white">
+										Balance demo
+									</p>
+								</div>
+								<button
+									id="mobile-refresh-finance-movements"
+									type="button"
+									class="rounded-full border border-white/15 px-3 py-1.5 text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-cyan-100 hover:bg-cyan-300/10"
+								>
+									Sync
+								</button>
 							</div>
 							<div
 								class="rounded-2xl border border-orange-300/20 bg-orange-300/10 p-4"
@@ -284,6 +308,27 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
 									</p>
 								</div>
 							</div>
+							<div class="grid grid-cols-2 gap-2">
+								<a
+									href="#finance-form"
+									class="rounded-2xl border border-cyan-300/25 bg-cyan-300/10 px-3 py-2 text-center text-[0.68rem] font-semibold uppercase tracking-[0.12em] text-cyan-100"
+								>
+									Nuevo
+								</a>
+								<button
+									id="mobile-clear-finance-movements"
+									type="button"
+									class="rounded-2xl border border-rose-300/25 bg-rose-300/10 px-3 py-2 text-[0.68rem] font-semibold uppercase tracking-[0.12em] text-rose-100"
+								>
+									Borrar
+								</button>
+							</div>
+							<div class="flex items-center justify-between">
+								<p class="text-xs font-semibold uppercase tracking-[0.14em] text-brand-muted">
+									Movimientos
+								</p>
+								<p id="mobile-movement-count" class="text-xs text-brand-muted">0 registros</p>
+							</div>
 							<div id="mobile-movements" class="space-y-2">
 								<div class="rounded-2xl border border-white/10 p-3 text-sm text-brand-muted">
 									Los ultimos movimientos apareceran aqui.
@@ -301,6 +346,8 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
 		const message = document.getElementById("finance-message");
 		const submitButton = document.getElementById("submit-finance-movement");
 		const refreshButton = document.getElementById("refresh-finance-movements");
+		const clearButton = document.getElementById("clear-finance-movements");
+		const openMobileButton = document.getElementById("open-mobile-demo");
 		const tableBody = document.getElementById("finance-table-body");
 		const totalIncome = document.getElementById("total-income");
 		const totalExpense = document.getElementById("total-expense");
@@ -309,6 +356,14 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
 		const mobileExpense = document.getElementById("mobile-expense");
 		const mobileBalance = document.getElementById("mobile-balance");
 		const mobileMovements = document.getElementById("mobile-movements");
+		const mobileMovementCount = document.getElementById("mobile-movement-count");
+		const mobileRefreshButton = document.getElementById(
+			"mobile-refresh-finance-movements",
+		);
+		const mobileClearButton = document.getElementById(
+			"mobile-clear-finance-movements",
+		);
+		const mobileDemo = document.getElementById("mobile-demo");
 
 		const moneyFormatter = new Intl.NumberFormat("es-ES", {
 			style: "currency",
@@ -365,6 +420,70 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
 			return response.json();
 		};
 
+		const deleteMovements = async (payload) => {
+			const response = await fetch("/api/finance-demo", {
+				method: "DELETE",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify(payload),
+			});
+			const result = await response.json();
+
+			if (!response.ok || !result.success) {
+				throw new Error(result.error || "No se pudieron borrar los datos demo.");
+			}
+
+			return result;
+		};
+
+		const setDeletingState = (isDeleting) => {
+			const buttons = document.querySelectorAll("[data-delete-movement]");
+			buttons.forEach((button) => {
+				if (isDeleting) {
+					button.setAttribute("disabled", "true");
+				} else {
+					button.removeAttribute("disabled");
+				}
+			});
+		};
+
+		const clearDemoData = async () => {
+			if (!window.confirm("Quieres borrar todos los movimientos demo?")) {
+				return;
+			}
+
+			const originalClearText = clearButton?.textContent;
+			const originalMobileClearText = mobileClearButton?.textContent;
+
+			if (clearButton) {
+				clearButton.setAttribute("disabled", "true");
+				clearButton.textContent = "Borrando...";
+			}
+			if (mobileClearButton) {
+				mobileClearButton.setAttribute("disabled", "true");
+				mobileClearButton.textContent = "Borrando...";
+			}
+
+			try {
+				setMessage("Borrando datos demo...");
+				await deleteMovements({ all: true });
+				setMessage("Datos demo borrados correctamente.", "success");
+				await loadMovements();
+			} catch (error) {
+				setMessage(error.message || "Error al borrar los datos demo.", "error");
+			} finally {
+				if (clearButton) {
+					clearButton.removeAttribute("disabled");
+					clearButton.textContent = originalClearText || "Borrar demo";
+				}
+				if (mobileClearButton) {
+					mobileClearButton.removeAttribute("disabled");
+					mobileClearButton.textContent = originalMobileClearText || "Borrar";
+				}
+			}
+		};
+
 		const renderMovements = (movements) => {
 			const income = movements
 				.filter((movement) => movement.type === "income")
@@ -380,12 +499,16 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
 			if (mobileIncome) mobileIncome.textContent = formatAmount(income);
 			if (mobileExpense) mobileExpense.textContent = formatAmount(expense);
 			if (mobileBalance) mobileBalance.textContent = formatAmount(balance);
+			if (mobileMovementCount) {
+				mobileMovementCount.textContent =
+					movements.length === 1 ? "1 registro" : `${movements.length} registros`;
+			}
 
 			if (tableBody) {
 				if (movements.length === 0) {
 					tableBody.innerHTML = `
 						<tr>
-							<td colspan="5" class="px-4 py-6 text-center text-brand-muted">
+							<td colspan="6" class="px-4 py-6 text-center text-brand-muted">
 								Aun no hay movimientos demo. Crea el primero desde el formulario.
 							</td>
 						</tr>
@@ -413,6 +536,15 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
 									<td class="whitespace-nowrap px-4 py-3 text-right font-semibold ${isIncome ? "text-emerald-100" : "text-rose-100"}">
 										${isIncome ? "+" : "-"}${formatAmount(movement.amount)}
 									</td>
+									<td class="px-4 py-3 text-right">
+										<button
+											type="button"
+											data-delete-movement="${escapeHtml(movement.id)}"
+											class="rounded-full border border-rose-300/25 px-3 py-1.5 text-xs font-semibold text-rose-100 hover:bg-rose-300/10 disabled:cursor-not-allowed disabled:opacity-50"
+										>
+											Borrar
+										</button>
+									</td>
 								</tr>
 							`;
 						})
@@ -427,14 +559,26 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
 							.map((movement) => {
 								const isIncome = movement.type === "income";
 								return `
-									<div class="flex items-center justify-between rounded-2xl border border-white/10 p-3">
-										<div>
-											<p class="text-sm font-semibold text-white">${escapeHtml(movement.description)}</p>
-											<p class="text-xs text-brand-muted">${escapeHtml(movement.category || "Demo")}</p>
+									<div class="rounded-2xl border border-white/10 p-3">
+										<div class="flex items-start justify-between gap-3">
+											<div class="min-w-0">
+												<p class="truncate text-sm font-semibold text-white">${escapeHtml(movement.description)}</p>
+												<p class="text-xs text-brand-muted">${escapeHtml(movement.category || "Demo")}</p>
+											</div>
+											<p class="shrink-0 text-sm font-semibold ${isIncome ? "text-emerald-100" : "text-rose-100"}">
+												${isIncome ? "+" : "-"}${formatAmount(movement.amount)}
+											</p>
 										</div>
-										<p class="text-sm font-semibold ${isIncome ? "text-emerald-100" : "text-rose-100"}">
-											${isIncome ? "+" : "-"}${formatAmount(movement.amount)}
-										</p>
+										<div class="mt-2 flex items-center justify-between gap-3 text-xs text-brand-muted">
+											<span>${dateFormatter.format(new Date(movement.created_at))}</span>
+											<button
+												type="button"
+												data-delete-movement="${escapeHtml(movement.id)}"
+												class="rounded-full border border-rose-300/25 px-2.5 py-1 text-[0.68rem] font-semibold text-rose-100 hover:bg-rose-300/10 disabled:cursor-not-allowed disabled:opacity-50"
+											>
+												Borrar
+											</button>
+										</div>
 									</div>
 								`;
 							})
@@ -454,7 +598,7 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
 				if (tableBody) {
 					tableBody.innerHTML = `
 						<tr>
-							<td colspan="5" class="px-4 py-6 text-center text-rose-200">
+							<td colspan="6" class="px-4 py-6 text-center text-rose-200">
 								No se pudieron cargar los movimientos.
 							</td>
 						</tr>
@@ -464,6 +608,50 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
 		};
 
 		refreshButton?.addEventListener("click", loadMovements);
+		mobileRefreshButton?.addEventListener("click", loadMovements);
+		clearButton?.addEventListener("click", clearDemoData);
+		mobileClearButton?.addEventListener("click", clearDemoData);
+		openMobileButton?.addEventListener("click", () => {
+			if (!mobileDemo) return;
+
+			mobileDemo.scrollIntoView({
+				behavior: "smooth",
+				block: "center",
+				inline: "nearest",
+			});
+			mobileDemo.focus({ preventScroll: true });
+			mobileDemo.classList.add("shadow-[0_0_0_4px_rgba(103,232,249,0.35)]");
+
+			window.setTimeout(() => {
+				mobileDemo.classList.remove(
+					"shadow-[0_0_0_4px_rgba(103,232,249,0.35)]",
+				);
+			}, 1300);
+		});
+
+		document.addEventListener("click", async (event) => {
+			const target = event.target;
+			if (!(target instanceof Element)) return;
+
+			const deleteButton = target.closest("[data-delete-movement]");
+			if (!(deleteButton instanceof HTMLElement)) return;
+
+			const id = deleteButton.dataset.deleteMovement;
+			if (!id) return;
+
+			try {
+				setDeletingState(true);
+				deleteButton.textContent = "Borrando...";
+				setMessage("Borrando movimiento demo...");
+				await deleteMovements({ id });
+				setMessage("Movimiento demo borrado.", "success");
+				await loadMovements();
+			} catch (error) {
+				setMessage(error.message || "Error al borrar el movimiento.", "error");
+			} finally {
+				setDeletingState(false);
+			}
+		});
 
 		form?.addEventListener("submit", async (event) => {
 			event.preventDefault();
@@ -528,4 +716,72 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
 
 		loadMovements();
 	</script>
+
+	<style is:global>
+		html:not(.dark) .finance-page .text-brand-muted,
+		html:not(.dark) .finance-page .editorial-kicker {
+			color: #475569;
+		}
+
+		html:not(.dark) .finance-page .text-white,
+		html:not(.dark) .finance-page .text-zinc-100,
+		html:not(.dark) .finance-page .text-orange-100 {
+			color: #111827;
+		}
+
+		html:not(.dark) .finance-page .text-cyan-100 {
+			color: #155e75;
+		}
+
+		html:not(.dark) .finance-page .text-emerald-100 {
+			color: #047857;
+		}
+
+		html:not(.dark) .finance-page .text-rose-100,
+		html:not(.dark) .finance-page .text-rose-200 {
+			color: #be123c;
+		}
+
+		html:not(.dark) .finance-page .bg-zinc-950\/55,
+		html:not(.dark) .finance-page .bg-brand-card\/80 {
+			background-color: rgba(255, 255, 255, 0.72);
+		}
+
+		html:not(.dark) .finance-page .bg-zinc-950\/80 {
+			background-color: rgba(255, 255, 255, 0.9);
+		}
+
+		html:not(.dark) .finance-page input,
+		html:not(.dark) .finance-page select {
+			color: #111827;
+		}
+
+		html:not(.dark) .finance-page input::placeholder {
+			color: #64748b;
+		}
+
+		html:not(.dark) .finance-page #mobile-demo,
+		html:not(.dark) .finance-page #mobile-demo .text-brand-muted {
+			color: #bcc6db;
+		}
+
+		html:not(.dark) .finance-page #mobile-demo .text-white,
+		html:not(.dark) .finance-page #mobile-demo .text-zinc-100,
+		html:not(.dark) .finance-page #mobile-demo .text-orange-100 {
+			color: #ffffff;
+		}
+
+		html:not(.dark) .finance-page #mobile-demo .text-cyan-100 {
+			color: #cffafe;
+		}
+
+		html:not(.dark) .finance-page #mobile-demo .text-emerald-100 {
+			color: #d1fae5;
+		}
+
+		html:not(.dark) .finance-page #mobile-demo .text-rose-100,
+		html:not(.dark) .finance-page #mobile-demo .text-rose-200 {
+			color: #ffe4e6;
+		}
+	</style>
 </ProjectLayout>
