@@ -6,43 +6,59 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
 ---
 
 <ProjectLayout
-	title="Finance App"
-	description="Demo funcional de gestion financiera personal con Supabase, Astro y Tailwind."
+	title="Private Balance | Finance App PWA y Android"
+	description="Private Balance es una aplicación financiera privada, mobile-first y disponible como PWA, con versión Android mediante Capacitor."
 >
 	<section class="finance-page space-y-12">
-		<header class="space-y-6 text-center">
+		<header class="relative overflow-hidden rounded-[2rem] border border-emerald-300/15 bg-gradient-to-br from-emerald-400/[0.12] via-cyan-400/[0.06] to-violet-400/[0.1] px-5 py-10 text-center shadow-2xl shadow-black/20 md:px-10 md:py-16">
+			<div aria-hidden="true" class="absolute -left-24 -top-24 size-64 rounded-full bg-emerald-400/15 blur-3xl"></div>
+			<div aria-hidden="true" class="absolute -bottom-28 -right-20 size-72 rounded-full bg-violet-400/15 blur-3xl"></div>
 			<a
 				href="/#projects"
-				class="project-cta inline-flex items-center rounded-full border border-white/15 px-4 py-2 text-xs font-semibold uppercase tracking-[0.14em] text-brand-accent hover:border-brand-accent hover:bg-brand-accent/10"
+				class="project-cta relative inline-flex items-center rounded-full border border-white/15 px-4 py-2 text-xs font-semibold uppercase tracking-[0.14em] text-brand-accent hover:border-brand-accent hover:bg-brand-accent/10"
 			>
 				Volver a proyectos
 			</a>
 
-			<div class="space-y-4">
-				<p class="editorial-kicker micro-label text-brand-accent">
-					Demo funcional con registros de prueba
-				</p>
+			<div class="relative mt-7 space-y-5">
+				<span class="inline-flex rounded-full border border-cyan-300/25 bg-cyan-300/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.15em] text-cyan-100">
+					PWA / Web / Android Preview
+				</span>
 				<h1
-					class="font-display text-4xl font-semibold leading-tight text-orange-100 md:text-6xl"
+					class="font-display text-5xl font-semibold leading-none text-orange-100 md:text-7xl"
 				>
-					Finance App
+					Private Balance
 				</h1>
 				<p class="mx-auto max-w-3xl text-base leading-relaxed text-brand-muted md:text-lg">
-					Aplicacion de gestion financiera personal para registrar ingresos,
-					gastos y visualizar movimientos basicos desde una interfaz simple y
-					responsiva.
+					Private Balance es una aplicación financiera privada orientada a móvil
+					que permite registrar ingresos, egresos y ganancias, ocultar importes
+					sensibles y consultar un resumen mensual desde una experiencia visual
+					tipo app bancaria.
 				</p>
-			</div>
-
-			<div class="project-stack justify-center">
-				<span>React</span>
-				<span>TypeScript</span>
-				<span>Tailwind CSS</span>
-				<span>Supabase</span>
-				<span>Vercel</span>
-				<span>PWA / Android Preview</span>
+				<div class="flex flex-col items-center justify-center gap-3 pt-2 sm:flex-row">
+					<a href="https://private-balance.orpira.es/" target="_blank" rel="noopener noreferrer" class="project-cta inline-flex w-full items-center justify-center rounded-full border border-emerald-300/50 bg-emerald-300/15 px-6 py-3 text-sm font-semibold text-emerald-100 hover:bg-emerald-300/25 sm:w-auto">
+						Abrir demo PWA <span aria-hidden="true" class="ml-2">↗</span>
+					</a>
+					<a href="#android-preview" class="project-cta inline-flex w-full items-center justify-center rounded-full border border-cyan-300/40 px-6 py-3 text-sm font-semibold text-cyan-100 hover:bg-cyan-300/10 sm:w-auto">
+						Ver Android Preview <span aria-hidden="true" class="ml-2">↓</span>
+					</a>
+				</div>
 			</div>
 		</header>
+
+		<section class="grid gap-7 rounded-3xl border border-white/12 bg-white/[0.04] p-5 shadow-xl md:grid-cols-[1.15fr_0.85fr] md:p-8">
+			<div class="space-y-4">
+				<p class="editorial-kicker micro-label text-emerald-100">Demo PWA / Web</p>
+				<h2 class="font-display text-3xl font-semibold text-orange-100 md:text-4xl">Tu gestión financiera, disponible desde cualquier navegador.</h2>
+				<p class="leading-relaxed text-brand-muted">La versión desplegada de Private Balance puede abrirse desde móvil o escritorio. En navegadores compatibles también puede instalarse como PWA para acceder con una experiencia similar a una aplicación nativa.</p>
+				<a href="https://private-balance.orpira.es/" target="_blank" rel="noopener noreferrer" class="project-cta inline-flex items-center rounded-full border border-emerald-300/45 px-5 py-3 text-sm font-semibold text-emerald-100 hover:bg-emerald-300/10">private-balance.orpira.es <span aria-hidden="true" class="ml-2">↗</span></a>
+			</div>
+			<div class="grid gap-3 sm:grid-cols-3 md:grid-cols-1">
+				<div class="rounded-2xl border border-emerald-300/15 bg-emerald-300/[0.07] p-4"><p class="font-semibold text-emerald-100">Responsive</p><p class="mt-1 text-sm text-brand-muted">Móvil y escritorio</p></div>
+				<div class="rounded-2xl border border-cyan-300/15 bg-cyan-300/[0.07] p-4"><p class="font-semibold text-cyan-100">Instalable</p><p class="mt-1 text-sm text-brand-muted">Experiencia PWA</p></div>
+				<div class="rounded-2xl border border-violet-300/15 bg-violet-300/[0.07] p-4"><p class="font-semibold text-violet-100">Privada</p><p class="mt-1 text-sm text-brand-muted">Datos bajo control</p></div>
+			</div>
+		</section>
 
 		<section
 			id="finance-demo"
@@ -232,112 +248,47 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
 
 		<section
 			id="android-preview"
-			class="grid gap-8 rounded-3xl border border-white/12 bg-gradient-to-br from-white/[0.05] via-white/[0.03] to-cyan-300/[0.06] p-4 md:grid-cols-[0.95fr_1.05fr] md:p-8"
+			class="scroll-mt-8 overflow-hidden rounded-3xl border border-white/12 bg-gradient-to-br from-white/[0.05] via-cyan-300/[0.05] to-violet-300/[0.08] p-5 shadow-2xl shadow-cyan-950/20 md:p-10"
 		>
-			<div class="flex flex-col justify-center space-y-5">
-				<p class="editorial-kicker micro-label text-cyan-100">
-					Vista Android / PWA
-				</p>
-				<h2 class="font-display text-3xl font-semibold text-orange-100">
-					Preview mobile-first para evolucionar a app instalable.
-				</h2>
-				<p class="leading-relaxed text-brand-muted">
-					Esta demo puede evolucionar a PWA instalable o APK Android mediante
-					Capacitor. La base funcional ya separa lectura publica, escritura
-					server-side y una interfaz pensada para pantallas pequenas.
-				</p>
-				<button
-					id="open-mobile-demo"
-					type="button"
-					class="project-cta inline-flex w-fit rounded-full border border-cyan-300/45 px-5 py-3 text-xs font-semibold uppercase tracking-[0.14em] text-cyan-100 hover:bg-cyan-300/10"
-				>
-					Abrir modo movil
-				</button>
-			</div>
-
-			<div
-				id="mobile-demo"
-				tabindex="-1"
-				class="mx-auto w-full max-w-[22rem] scroll-mt-24 rounded-[2.4rem] outline-none transition-shadow duration-500"
-			>
-				<div
-					class="rounded-[2.2rem] border border-white/18 bg-zinc-950 p-3 shadow-2xl shadow-cyan-950/40"
-				>
-					<div class="rounded-[1.7rem] border border-white/10 bg-brand-bg p-4">
-						<div class="mx-auto mb-4 h-1.5 w-20 rounded-full bg-white/20"></div>
-						<div class="space-y-4">
-							<div class="flex items-start justify-between gap-3">
-								<div>
-									<p class="text-xs uppercase tracking-[0.14em] text-brand-muted">
-										Finance App
-									</p>
-									<p class="mt-1 font-display text-2xl font-semibold text-white">
-										Balance demo
-									</p>
-								</div>
-								<button
-									id="mobile-refresh-finance-movements"
-									type="button"
-									class="rounded-full border border-white/15 px-3 py-1.5 text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-cyan-100 hover:bg-cyan-300/10"
-								>
-									Sync
-								</button>
-							</div>
-							<div
-								class="rounded-2xl border border-orange-300/20 bg-orange-300/10 p-4"
-							>
-								<p class="text-xs text-orange-100">Balance actual</p>
-								<p
-									id="mobile-balance"
-									class="mt-2 font-display text-3xl font-semibold text-white"
-								>
-									0,00 €
-								</p>
-							</div>
-							<div class="grid grid-cols-2 gap-3">
-								<div class="rounded-2xl bg-emerald-300/10 p-3">
-									<p class="text-[0.68rem] text-emerald-100">Ingresos</p>
-									<p id="mobile-income" class="mt-1 font-semibold text-white">
-										0,00 €
-									</p>
-								</div>
-								<div class="rounded-2xl bg-rose-300/10 p-3">
-									<p class="text-[0.68rem] text-rose-100">Gastos</p>
-									<p id="mobile-expense" class="mt-1 font-semibold text-white">
-										0,00 €
-									</p>
-								</div>
-							</div>
-							<div class="grid grid-cols-2 gap-2">
-								<a
-									href="#finance-form"
-									class="rounded-2xl border border-cyan-300/25 bg-cyan-300/10 px-3 py-2 text-center text-[0.68rem] font-semibold uppercase tracking-[0.12em] text-cyan-100"
-								>
-									Nuevo
-								</a>
-								<button
-									id="mobile-clear-finance-movements"
-									type="button"
-									class="rounded-2xl border border-rose-300/25 bg-rose-300/10 px-3 py-2 text-[0.68rem] font-semibold uppercase tracking-[0.12em] text-rose-100"
-								>
-									Borrar
-								</button>
-							</div>
-							<div class="flex items-center justify-between">
-								<p class="text-xs font-semibold uppercase tracking-[0.14em] text-brand-muted">
-									Movimientos
-								</p>
-								<p id="mobile-movement-count" class="text-xs text-brand-muted">0 registros</p>
-							</div>
-							<div id="mobile-movements" class="space-y-2">
-								<div class="rounded-2xl border border-white/10 p-3 text-sm text-brand-muted">
-									Los ultimos movimientos apareceran aqui.
-								</div>
-							</div>
+			<div class="grid items-center gap-10 md:grid-cols-[0.85fr_1.15fr]">
+				<div class="space-y-5">
+					<p class="editorial-kicker micro-label text-cyan-100">Android Preview</p>
+					<h2 class="font-display text-3xl font-semibold text-orange-100 md:text-4xl">Una experiencia financiera diseñada para sentirse nativa.</h2>
+					<p class="leading-relaxed text-brand-muted">Vista Android de Private Balance, diseñada con enfoque mobile-first, navegación inferior tipo app nativa, tarjetas financieras y opción de ocultar valores sensibles.</p>
+					<p class="leading-relaxed text-brand-muted">La versión Android se genera mediante Capacitor a partir de la base PWA/Web, manteniendo una única experiencia de producto y acceso a capacidades nativas.</p>
+				</div>
+				<figure class="mx-auto w-full max-w-[24rem]">
+					<div class="rounded-[2.8rem] border border-white/15 bg-zinc-950 p-3 shadow-2xl shadow-black/50 ring-1 ring-cyan-300/10">
+						<div class="overflow-hidden rounded-[2.15rem] bg-black">
+							<img src="/projects/private-balance/android-preview.jpg" alt="Pantalla de inicio de Private Balance en Android con resumen de ingresos, egresos y ganancia" width="1080" height="2340" loading="lazy" class="h-auto w-full object-cover" />
 						</div>
 					</div>
-				</div>
+					<figcaption class="mt-4 text-center text-xs leading-relaxed text-brand-muted">Captura real de Private Balance ejecutándose en Android.</figcaption>
+				</figure>
 			</div>
+		</section>
+
+		<section class="space-y-6">
+			<div class="text-center">
+				<p class="editorial-kicker micro-label text-emerald-100">Capacidades</p>
+				<h2 class="mt-3 font-display text-3xl font-semibold text-orange-100 md:text-4xl">Características principales</h2>
+			</div>
+			<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+				{["Registro de ingresos", "Registro de egresos", "Cálculo de ganancia", "Ocultar valores sensibles", "Resumen mensual", "Interfaz mobile-first", "Navegación tipo app bancaria", "Preparada para PWA / Android"].map((feature, index) => (
+					<div class="rounded-2xl border border-white/10 bg-white/[0.035] p-5 shadow-lg shadow-black/10">
+						<span class="text-xs font-semibold text-emerald-100">0{index + 1}</span>
+						<h3 class="mt-3 font-semibold leading-snug text-orange-100">{feature}</h3>
+					</div>
+				))}
+			</div>
+		</section>
+
+		<section class="rounded-3xl border border-white/12 bg-gradient-to-r from-emerald-300/[0.07] via-cyan-300/[0.05] to-violet-300/[0.07] p-6 text-center md:p-8">
+			<p class="editorial-kicker micro-label text-cyan-100">Stack técnico</p>
+			<div class="project-stack mt-5 justify-center">
+				{["React", "TypeScript", "Vite", "Tailwind CSS", "IndexedDB", "PWA", "Vercel", "Capacitor Android"].map((tech) => <span>{tech}</span>)}
+			</div>
+			<a href="https://private-balance.orpira.es/" target="_blank" rel="noopener noreferrer" class="project-cta mt-7 inline-flex items-center rounded-full border border-emerald-300/45 bg-emerald-300/10 px-6 py-3 text-sm font-semibold text-emerald-100 hover:bg-emerald-300/20">Abrir demo PWA <span aria-hidden="true" class="ml-2">↗</span></a>
 		</section>
 	</section>
 

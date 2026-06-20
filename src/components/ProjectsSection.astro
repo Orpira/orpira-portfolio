@@ -13,6 +13,9 @@ const resolveProjectHref = (href?: string, isExternal?: boolean) => {
 	if (!href.startsWith("/")) return href;
 	return `${siteBase}${href}`;
 };
+
+const isExternalHref = (href?: string) =>
+	Boolean(href && /^(https?:)?\/\//.test(href));
 ---
 
 <section id="projects" class="py-20 section-divider">
@@ -98,9 +101,9 @@ const resolveProjectHref = (href?: string, isExternal?: boolean) => {
 								</a>
 								{project.secondaryCta && project.secondaryHref && (
 									<a
-										href={resolveProjectHref(project.secondaryHref, project.external)}
-										target={project.external ? "_blank" : undefined}
-										rel={project.external ? "noopener noreferrer" : undefined}
+										href={resolveProjectHref(project.secondaryHref, isExternalHref(project.secondaryHref))}
+										target={isExternalHref(project.secondaryHref) ? "_blank" : undefined}
+										rel={isExternalHref(project.secondaryHref) ? "noopener noreferrer" : undefined}
 										class="project-cta inline-flex items-center gap-2 rounded-full border border-cyan-300/45 px-4 py-2 text-xs font-semibold uppercase tracking-[0.14em] text-cyan-700 hover:border-cyan-300 hover:bg-cyan-300/10 dark:text-cyan-100"
 									>
 										{project.secondaryCta}
