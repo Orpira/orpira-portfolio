@@ -79,7 +79,7 @@ export const brandProjects: BrandProject[] = [
 			"Plataforma web interactiva para formacion y evaluacion en Prevencion de Riesgos Laborales, con tests individuales, multijugador local y salas en red.",
 		domain: "test-interactivo-prl.vercel.app",
 		stack: ["React", "Vite", "Tailwind CSS", "Express", "Socket.IO", "Vercel"],
-		href: "https://test-interactivo-prl-vooe.vercel.app/",
+		href: "https://prl.orpira.es/",
 		year: "2026",
 		status: "En línea",
 		cta: "Abrir demo",
