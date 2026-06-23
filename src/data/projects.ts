@@ -36,7 +36,7 @@ export const brandProjects: BrandProject[] = [
 		title: "Private Balance",
 		summary:
 			"Aplicación privada de gestión financiera personal para registrar ingresos, egresos, ganancias y actividad mensual desde una interfaz segura, responsive y orientada a móvil.",
-		domain: "Finance App / PWA / Android Preview",
+		domain: "private-balance.orpira.es",
 		stack: [
 			"React",
 			"TypeScript",
@@ -77,7 +77,7 @@ export const brandProjects: BrandProject[] = [
 		title: "Test Interactivo PRL",
 		summary:
 			"Plataforma web interactiva para formacion y evaluacion en Prevencion de Riesgos Laborales, con tests individuales, multijugador local y salas en red.",
-		domain: "test-interactivo-prl.vercel.app",
+		domain: "https://prl.orpira.es/",
 		stack: ["React", "Vite", "Tailwind CSS", "Express", "Socket.IO", "Vercel"],
 		href: "https://prl.orpira.es/",
 		year: "2026",
