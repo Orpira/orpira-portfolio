@@ -36,7 +36,7 @@ export const brandProjects: BrandProject[] = [
 		title: "Private Balance",
 		summary:
 			"Aplicación privada de gestión financiera personal para registrar ingresos, egresos, ganancias y actividad mensual desde una interfaz segura, responsive y orientada a móvil.",
-		domain: "private-balance.orpira.es",
+		domain: "https://private-balance.orpira.es",
 		stack: [
 			"React",
 			"TypeScript",
@@ -106,7 +106,7 @@ export const brandProjects: BrandProject[] = [
 		title: "Orpira Portfolio",
 		summary:
 			"Este mismo sitio que estás navegando: landing + portfolio de marca personal para posicionar servicios, casos y nuevos lanzamientos.",
-		domain: "Proyecto actual · orpira.es",
+		domain: "https://Proyecto actual·orpira.es",
 		stack: ["Astro", "Tailwind", "Vercel", "SEO"],
 		href: "#top",
 		year: "2026",
