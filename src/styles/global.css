@@ -22,10 +22,12 @@
 
 html {
 	scroll-behavior: smooth;
+	overflow-x: clip;
 }
 
 body {
 	min-height: 100%;
+	overflow-x: clip;
 	background:
 		radial-gradient(
 			1000px 500px at 8% -10%,
@@ -88,6 +90,12 @@ body::before {
 		border-color 0.22s ease,
 		fill 0.35s ease,
 		stroke 0.35s ease;
+}
+
+.static-control {
+	animation: none !important;
+	transform: none !important;
+	transition: none !important;
 }
 
 .editorial-kicker {
