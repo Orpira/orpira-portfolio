@@ -98,6 +98,119 @@ body::before {
 	transition: none !important;
 }
 
+.site-nav {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) auto;
+	align-items: center;
+	column-gap: 0.75rem;
+}
+
+.brand-lockup {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.2rem;
+	max-width: 100%;
+}
+
+.brand-cube,
+.brand-name {
+	position: relative;
+	display: block;
+	flex: none;
+	overflow: hidden;
+}
+
+.brand-cube {
+	width: 3rem;
+	height: 3rem;
+}
+
+.brand-cube-image {
+	position: absolute;
+	top: -0.5rem;
+	left: -0.5rem;
+	width: 4rem;
+	height: 4rem;
+	max-width: none;
+}
+
+.brand-name {
+	width: 7rem;
+	height: 2.6rem;
+}
+
+.brand-name-image {
+	position: absolute;
+	top: -2.25rem;
+	left: -1.75rem;
+	width: 10.35rem;
+	height: auto;
+	max-width: none;
+}
+
+@media (min-width: 640px) {
+	.brand-lockup {
+		gap: 0.35rem;
+	}
+
+	.brand-cube {
+		width: 3.75rem;
+		height: 3.75rem;
+	}
+
+	.brand-cube-image {
+		top: -0.65rem;
+		left: -0.65rem;
+		width: 5.05rem;
+		height: 5.05rem;
+	}
+
+	.brand-name {
+		width: 9.5rem;
+		height: 3.25rem;
+	}
+
+	.brand-name-image {
+		top: -3rem;
+		left: -2.3rem;
+		width: 13.6rem;
+	}
+}
+
+@media (min-width: 1024px) {
+	.site-nav {
+		grid-template-columns: minmax(15rem, 1fr) auto minmax(15rem, 1fr);
+		column-gap: 1.5rem;
+	}
+
+	.site-nav > :last-child {
+		justify-self: end;
+	}
+
+	.brand-cube {
+		width: 4.5rem;
+		height: 4.5rem;
+	}
+
+	.brand-cube-image {
+		top: -0.75rem;
+		left: -0.75rem;
+		width: 6rem;
+		height: 6rem;
+	}
+
+	.brand-name {
+		width: 11.75rem;
+		height: 3.8rem;
+	}
+
+	.brand-name-image {
+		top: -3.7rem;
+		left: -2.9rem;
+		width: 16.8rem;
+	}
+}
+
 .editorial-kicker {
 	font-family: "JetBrains Mono", monospace;
 	font-size: 0.74rem;

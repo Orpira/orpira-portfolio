@@ -78,32 +78,28 @@ const ogImage = Astro.site
 			class="fixed inset-x-0 top-0 z-50 border-b border-black/10 dark:border-white/10 bg-white/70 dark:bg-brand-bg/70 backdrop-blur-xl"
 		>
 			<nav
-				class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center"
+				class="site-nav max-w-7xl mx-auto px-4 sm:px-6 py-3"
 			>
 				<div class="min-w-0">
-					<a href="#top" class="flex items-center gap-0">
-						<img
-							src={`${siteBase}/opr-cubo.png`}
-							alt="OrPiRa"
-							width="48"
-							height="48"
-							class="size-12 sm:size-14 shrink-0 rounded-full shadow-sm dark:hidden"
-						/>
-
-						<img
-							src={`${siteBase}/opr-cubo.png`}
-							alt="OrPiRa"
-							width="48"
-							height="48"
-							class="hidden size-12 sm:size-14 shrink-0 rounded-full shadow-sm dark:block"
-						/>
-						<img
-							src={`${siteBase}/OrPiRa-SF.png`}
-							alt="OrPiRa"
-							width="120"
-							height="80"
-							class="h-20 sm:h-24 w-auto min-w-0 object-contain"
-						/>
+					<a href="#top" class="brand-lockup" aria-label="OrPiRa, ir al inicio">
+						<span class="brand-cube" aria-hidden="true">
+							<img
+								src={`${siteBase}/opr-cubo.png`}
+								alt=""
+								width="48"
+								height="48"
+								class="brand-cube-image"
+							/>
+						</span>
+						<span class="brand-name" aria-hidden="true">
+							<img
+								src={`${siteBase}/OrPiRa-SF.png`}
+								alt=""
+								width="120"
+								height="80"
+								class="brand-name-image"
+							/>
+						</span>
 					</a>
 					<!-- <p
 						class="micro-label nav-subtitle hidden md:block text-[0.62rem] uppercase tracking-[0.24em] mt-1"
@@ -113,7 +109,7 @@ const ogImage = Astro.site
 				</div>
 
 				<ul
-					class="micro-label hidden md:flex items-center gap-5 text-[0.72rem] uppercase tracking-[0.2em]"
+					class="micro-label hidden lg:flex items-center gap-5 text-[0.72rem] uppercase tracking-[0.2em]"
 				>
 					<li>
 						<a href="#top" class="nav-title-link" >Inicio</a>
@@ -164,7 +160,7 @@ const ogImage = Astro.site
 
 					<button
 						id="mobile-menu-button"
-						class="static-control md:hidden p-2 rounded-full border border-black/15 dark:border-white/15 hover:bg-zinc-100/80 dark:hover:bg-white/10"
+						class="static-control lg:hidden p-2 rounded-full border border-black/15 dark:border-white/15 hover:bg-zinc-100/80 dark:hover:bg-white/10"
 						aria-label="Abrir menu"
 					>
 						<svg
@@ -203,7 +199,7 @@ const ogImage = Astro.site
 
 			<div
 				id="mobile-menu"
-				class="md:hidden hidden border-t border-black/10 dark:border-white/10 bg-white/90 dark:bg-brand-card/90 backdrop-blur-xl"
+				class="lg:hidden hidden border-t border-black/10 dark:border-white/10 bg-white/90 dark:bg-brand-card/90 backdrop-blur-xl"
 			>
 				<ul
 					class="micro-label px-4 py-4 space-y-3 text-xs uppercase tracking-[0.2em]"
@@ -389,7 +385,7 @@ const ogImage = Astro.site
 				});
 
 				window.addEventListener("resize", () => {
-					if (window.innerWidth >= 768) {
+					if (window.innerWidth >= 1024) {
 						mobileMenu.classList.add("hidden");
 						hamburgerIcon.classList.remove("hidden");
 						closeIcon.classList.add("hidden");
