@@ -23,6 +23,11 @@
 html {
 	scroll-behavior: smooth;
 	overflow-x: clip;
+	color-scheme: light;
+}
+
+html.dark {
+	color-scheme: dark;
 }
 
 body {
@@ -39,7 +44,22 @@ body {
 			rgba(82, 163, 255, 0.16),
 			transparent 70%
 		),
-		linear-gradient(180deg, var(--surface-1) 0%, var(--surface-2) 100%);
+		linear-gradient(180deg, #f6f2ec 0%, #ebe3d7 100%);
+}
+
+.dark body {
+	background:
+		radial-gradient(
+			1000px 500px at 8% -10%,
+			rgba(255, 155, 83, 0.2),
+			transparent 65%
+		),
+		radial-gradient(
+			900px 600px at 110% 0%,
+			rgba(82, 163, 255, 0.16),
+			transparent 70%
+		),
+		linear-gradient(180deg, #090b10 0%, #0f1522 100%);
 }
 
 body::before {
