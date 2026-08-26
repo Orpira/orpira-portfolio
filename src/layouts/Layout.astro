@@ -14,8 +14,8 @@ const canonical = Astro.site
 	? new URL(Astro.url.pathname, Astro.site).toString()
 	: Astro.url.toString();
 const ogImage = Astro.site
-	? new URL(`${siteBase}/opr-cubo.png`, Astro.site).toString()
-	: `${siteBase}/opr-cubo.png`;
+	? new URL(`${siteBase}/orpira-social-card-v1.jpg`, Astro.site).toString()
+	: `${siteBase}/orpira-social-card-v1.jpg`;
 ---
 
 <html lang="es" class="dark">
@@ -31,10 +31,21 @@ const ogImage = Astro.site
 		<meta property="og:description" content={description} />
 		<meta property="og:url" content={canonical} />
 		<meta property="og:image" content={ogImage} />
+		<meta property="og:image:width" content="1200" />
+		<meta property="og:image:height" content="630" />
+		<meta property="og:image:type" content="image/jpeg" />
+		<meta
+			property="og:image:alt"
+			content="OrPiRa, portfolio profesional de Orlando Pineda Raad"
+		/>
 		<meta name="twitter:card" content="summary_large_image" />
 		<meta name="twitter:title" content={pageTitle} />
 		<meta name="twitter:description" content={description} />
 		<meta name="twitter:image" content={ogImage} />
+		<meta
+			name="twitter:image:alt"
+			content="OrPiRa, portfolio profesional de Orlando Pineda Raad"
+		/>
 		<link rel="icon" type="image/png" href={`${siteBase}/opr-cubo.png`} />
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
