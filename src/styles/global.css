@@ -496,6 +496,18 @@ html:not(.dark) .editorial-panel {
        flex-direction: column;
 }
 
+.project-tile-featured {
+	min-height: 0;
+	padding-top: 1.1rem;
+	padding-bottom: 1.1rem;
+}
+
+@media (min-width: 768px) {
+	.project-tile-featured {
+		padding: 1.85rem 2.25rem;
+	}
+}
+
 .project-section-title {
 	color: #0f172a;
 }
