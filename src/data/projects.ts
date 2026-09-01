@@ -26,6 +26,8 @@ export interface BrandProject {
 	external?: boolean;
 	comingSoon?: boolean;
 	isCurrent?: boolean;
+	featured?: boolean;
+	role?: string;
 	layout: ProjectLayoutSize;
 	accent: string;
 }
@@ -35,7 +37,7 @@ export const brandProjects: BrandProject[] = [
 		id: "finance-app",
 		title: "Private Balance",
 		summary:
-			"Aplicación privada de gestión financiera personal para registrar ingresos, egresos, ganancias y actividad mensual desde una interfaz segura, responsive y orientada a móvil.",
+			"Gestión financiera privada para profesionales que necesitan controlar ingresos, gastos, temporadas y rentabilidad desde una experiencia local y orientada a su forma de trabajo.",
 		domain: "https://private-balance.orpira.es",
 		stack: [
 			"React",
@@ -54,29 +56,16 @@ export const brandProjects: BrandProject[] = [
 		secondaryCta: "Ver versión Android",
 		secondaryHref: "/projects/finance-app#android-preview",
 		external: true,
+		featured: true,
+		role: "Producto · Arquitectura · Full Stack · UX",
 		layout: "feature",
 		accent: "rgba(72, 215, 178, 0.25)",
-	},
-	{
-		id: "webwiz-quiz",
-		title: "WebWiz Quiz",
-		summary:
-			"Plataforma de retos interactivos para evaluar conocimientos HTML, CSS y JavaScript con feedback en tiempo real.",
-		domain: "https://webwiz.orpira.es/",
-		stack: ["React", "Supabase", "Vercel"],
-		href: "https://webwiz.orpira.es/",
-		year: "2025",
-		status: "En línea",
-		cta: "Abrir demo",
-		external: true,
-		layout: "tall",
-		accent: "rgba(82, 163, 255, 0.34)",
 	},
 	{
 		id: "test-interactivo-prl",
 		title: "Test Interactivo PRL",
 		summary:
-			"Plataforma web interactiva para formacion y evaluacion en Prevencion de Riesgos Laborales, con tests individuales, multijugador local y salas en red.",
+			"Plataforma interactiva de formación y evaluación en Prevención de Riesgos Laborales, diseñada para convertir contenidos formativos en experiencias de aprendizaje y evaluación.",
 		domain: "https://prl.orpira.es/",
 		stack: ["React", "Vite", "Tailwind CSS", "Express", "Socket.IO", "Vercel"],
 		href: "https://prl.orpira.es/",
@@ -84,8 +73,25 @@ export const brandProjects: BrandProject[] = [
 		status: "En línea",
 		cta: "Abrir demo",
 		external: true,
+		role: "Full Stack · Arquitectura · Experiencia interactiva",
 		layout: "wide",
 		accent: "rgba(34, 197, 94, 0.24)",
+	},
+	{
+		id: "webwiz-quiz",
+		title: "WebWiz Quiz",
+		summary:
+			"Experiencia interactiva para practicar y evaluar conocimientos de desarrollo web mediante retos con feedback inmediato.",
+		domain: "https://webwiz.orpira.es/",
+		stack: ["React", "Supabase", "Vercel"],
+		href: "https://webwiz.orpira.es/",
+		year: "2025",
+		status: "En línea",
+		cta: "Abrir demo",
+		external: true,
+		role: "Desarrollo Full Stack · UX interactiva",
+		layout: "tall",
+		accent: "rgba(82, 163, 255, 0.34)",
 	},
 	/* {
 		id: "dashboard-evaluacion",
@@ -105,7 +111,7 @@ export const brandProjects: BrandProject[] = [
 		id: "orpira-portfolio",
 		title: "Orpira Portfolio",
 		summary:
-			"Este mismo sitio que estás navegando: landing + portfolio de marca personal para posicionar servicios, casos y nuevos lanzamientos.",
+			"Diseñado y desarrollado como parte de la identidad digital OrPiRa, combinando rendimiento, accesibilidad, responsive, SEO y una experiencia visual propia.",
 		domain: "https://Proyecto actual·orpira.es",
 		stack: ["Astro", "Tailwind", "Vercel", "SEO"],
 		href: "#top",

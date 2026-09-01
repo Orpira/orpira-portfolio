@@ -1,25 +1,40 @@
 ---
+import { Image } from "astro:assets";
+import heroPhoto from "../assets/images/orpira-hero-professional.png";
+
 interface Props {
 	baseUrl: string;
 }
-const { baseUrl } = Astro.props;
-const siteBase = baseUrl ?? "";
 
-const impactCards = [
-	{ value: "15+", label: "combinando experiencia técnica, comunicación efectiva y trabajo en equipo." },
-	{ value: "30+", label: "proyectos y mejoras ejecutadas" },
-	{ value: "24h", label: "Tiempo medio de respuesta a nuevas oportunidades" },
-	{ value: "100%", label: "foco en producto útil" },
+const capabilities = [
+	{
+		value: "15+",
+		descriptor: "Años en tecnología",
+		detail: "Experiencia aplicada a IT, operaciones y desarrollo.",
+	},
+	{
+		value: "FULL STACK",
+		descriptor: "Desarrollo end-to-end",
+		detail: "Frontend, backend, datos y despliegue.",
+	},
+	{
+		value: "IT",
+		descriptor: "Experiencia operativa",
+		detail: "Coordinación, soporte, procesos y resolución crítica.",
+	},
+	{
+		value: "PRODUCTO",
+		descriptor: "Visión de negocio",
+		detail: "Tecnología orientada a necesidades y resultados reales.",
+	},
 ];
 ---
 
 <section id="top" class="relative pt-20 pb-14 md:pt-20 md:pb-20">
-	<div
-		class="grid items-center lg:items-start gap-12 lg:grid-cols-[1.25fr_0.9fr]"
-	>
-		<div class="space-y-7">
+	<div class="hero-layout gap-12">
+		<div class="hero-content space-y-7">
 			<p class="editorial-kicker micro-label" data-reveal style="--delay: 0ms;">
-				Orpira Portfolio
+				FULL STACK · IT · PRODUCTO
 			</p>
 
 			<h1
@@ -27,7 +42,7 @@ const impactCards = [
 				data-reveal
 				style="--delay: 90ms;"
 			>
-				Construyo plataformas digitales con solidez técnica, comunicación efectiva y enfoque en las personas.
+				Tecnología con visión de negocio.
 			</h1>
 
 			<p
@@ -35,7 +50,7 @@ const impactCards = [
 				data-reveal
 				style="--delay: 170ms;"
 			>
-				Soy Orlando Pineda Raad. Ingeniero informático con experiencia real en desarrollo de software, operaciones IT y colaboración técnica para convertir ideas en soluciones funcionales. Este portfolio no es un CV — es prueba de ejecución: proyectos vivos, desplegados y construidos sobre resultados medibles.
+				Desarrollo productos digitales y soluciones web combinando ingeniería Full Stack, experiencia operativa en IT y enfoque de producto.
 			</p>
 
 			<div class="flex flex-wrap gap-3" data-reveal style="--delay: 250ms;">
@@ -43,53 +58,94 @@ const impactCards = [
 					href="#projects"
 					class="hero-cta hero-cta-primary rounded-full px-6 py-3 text-sm font-semibold uppercase tracking-[0.1em]"
 				>
-					Explorar proyectos
+					Ver proyectos
 				</a>
-				<!-- <a
-					href={`${siteBase}/CV_OrlandoPinedaRaad.pdf`}
+				<a
+					href="#services"
 					class="hero-cta hero-cta-secondary rounded-full border px-6 py-3 text-sm font-semibold uppercase tracking-[0.1em]"
 				>
-					Descargar CV
-				</a> -->
+					Conocer mi experiencia
+				</a>
 			</div>
 		</div>
 
 		<div
-			class="hero-visual lg:mt-12 space-y-5"
+			class="hero-visual"
 			data-reveal
 			style="--delay: 220ms;"
 		>
 			<div class="hero-portrait-wrap relative">
 				<div class="portrait-shell">
-					<img
-						src={`${siteBase}/foto_new.png`}
-						alt="Foto de Orlando"
+					<Image
+						src={heroPhoto}
+						alt="Orlando Pineda Raad (OrPiRa) trabajando en su puesto, frente a una pantalla con código y el logotipo de OrPiRa"
 						class="portrait-image"
+						widths={[400, 600, 832, 1097]}
+						sizes="(min-width: 1024px) 45vw, 100vw"
+						format="avif"
+						quality={82}
+						loading="eager"
+						decoding="async"
+						fetchpriority="high"
 					/>
 				</div>
 				<div class="hero-quote">De la idea al deploy.</div>
 				<div class="hero-orbit" aria-hidden="true"></div>
 			</div>
+		</div>
 
-			<dl class="hero-impact-grid grid grid-cols-2 gap-3 pt-1">
+		<div class="hero-capability" data-reveal style="--delay: 310ms;">
+			<p class="hero-evidence-line micro-label text-[0.72rem] uppercase tracking-[0.14em]">
+				Ingeniería Full Stack · Coordinación IT · Operaciones · Producto
+			</p>
+
+			<div class="capability-strip editorial-panel rounded-2xl">
 				{
-					impactCards.map((item) => (
-						<div class="hero-impact-card p-4 rounded-2xl bg-white dark:bg-zinc-900 shadow border">
-							<dt class="hero-impact-value font-display text-2xl md:text-3xl text-orange-800 dark:text-orange-100">
+					capabilities.map((item) => (
+						<div class="capability-segment">
+							<p class="capability-value font-display max-[389px]:text-lg text-xl md:text-2xl text-orange-800 dark:text-orange-100">
 								{item.value}
-							</dt>
-							<dd class="hero-impact-label micro-label text-[0.72rem] uppercase tracking-[0.12em] mt-1 text-orange-700 dark:text-orange-200">
-								{item.label}
-							</dd>
+							</p>
+							<p class="capability-descriptor micro-label text-[0.66rem] uppercase tracking-[0.12em] mt-1 text-orange-700 dark:text-orange-200">
+								{item.descriptor}
+							</p>
+							<p class="capability-detail service-card-copy text-xs leading-snug mt-1">
+								{item.detail}
+							</p>
 						</div>
 					))
 				}
-			</dl>
+			</div>
 		</div>
 	</div>
 </section>
 
 <style>
+	.hero-layout {
+		display: grid;
+	}
+
+	@media (min-width: 1024px) {
+		.hero-layout {
+			grid-template-columns: 1.15fr 1fr;
+			grid-template-areas: "content visual" "strip strip";
+			align-items: start;
+		}
+
+		.hero-content {
+			grid-area: content;
+		}
+
+		.hero-visual {
+			grid-area: visual;
+			margin-top: 3rem;
+		}
+
+		.hero-capability {
+			grid-area: strip;
+		}
+	}
+
 	.hero-cta {
 		transition:
 			background-color 0.22s ease,
@@ -124,16 +180,6 @@ const impactCards = [
 		border-color: rgba(255, 155, 83, 0.7);
 	}
 
-	.hero-impact-value {
-		color: #ff9b53;
-		font-weight: 700;
-	}
-
-	.hero-impact-label {
-		color: #4b5563;
-		font-weight: 600;
-	}
-
 	:global(.dark) .hero-cta-primary {
 		background: linear-gradient(145deg, #ffb27b, #ff9b53);
 		color: #19120e;
@@ -155,22 +201,92 @@ const impactCards = [
 		color: #ffd9c2;
 	}
 
-	:global(.dark) .hero-impact-card {
-		background: linear-gradient(
-			135deg,
-			rgba(255, 255, 255, 0.08),
-			rgba(255, 255, 255, 0.035)
-		);
-		border-color: rgba(255, 255, 255, 0.2);
+	.hero-evidence-line {
+		color: #6b7280;
+		font-weight: 600;
 	}
 
-	:global(.dark) .hero-impact-value {
-		color: #ffd9c2;
+	:global(.dark) .hero-evidence-line {
+		color: #a9b4c9;
+	}
+
+	.capability-strip {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		margin-top: 1.25rem;
+		padding: 0.25rem;
+	}
+
+	.capability-segment {
+		border-top: 1px solid transparent;
+		border-left: 1px solid transparent;
+		padding: 1rem 1.15rem;
+	}
+
+	.capability-segment:nth-child(2n) {
+		border-left-color: rgba(20, 26, 42, 0.14);
+	}
+
+	.capability-segment:nth-child(n + 3) {
+		border-top-color: rgba(20, 26, 42, 0.14);
+	}
+
+	:global(.dark) .capability-segment:nth-child(2n) {
+		border-left-color: rgba(255, 255, 255, 0.12);
+	}
+
+	:global(.dark) .capability-segment:nth-child(n + 3) {
+		border-top-color: rgba(255, 255, 255, 0.12);
+	}
+
+	.capability-value {
+		font-weight: 700;
+	}
+
+	.capability-descriptor {
+		font-weight: 600;
+	}
+
+	.capability-detail {
+		color: #4b5563;
+	}
+
+	:global(.dark) .capability-value {
 		text-shadow: 0 6px 16px rgba(255, 155, 83, 0.18);
 	}
 
-	:global(.dark) .hero-impact-label {
+	:global(.dark) .capability-detail {
 		color: #d8e0ef;
+	}
+
+	@media (min-width: 1024px) {
+		.capability-strip {
+			grid-template-columns: repeat(4, minmax(0, 1fr));
+		}
+
+		.capability-segment:nth-child(n + 3) {
+			border-top-color: transparent;
+		}
+
+		.capability-segment:nth-child(2n) {
+			border-left-color: transparent;
+		}
+
+		.capability-segment:not(:first-child) {
+			border-left-color: rgba(20, 26, 42, 0.14);
+		}
+
+		:global(.dark) .capability-segment:nth-child(n + 3) {
+			border-top-color: transparent;
+		}
+
+		:global(.dark) .capability-segment:nth-child(2n) {
+			border-left-color: transparent;
+		}
+
+		:global(.dark) .capability-segment:not(:first-child) {
+			border-left-color: rgba(255, 255, 255, 0.12);
+		}
 	}
 
 	.hero-title {

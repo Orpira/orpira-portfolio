@@ -16,104 +16,176 @@ const resolveProjectHref = (href?: string, isExternal?: boolean) => {
 
 const isExternalHref = (href?: string) =>
 	Boolean(href && /^(https?:)?\/\//.test(href));
+
+const activeProjects = brandProjects.filter((project) => !project.isCurrent);
+const featuredProject = activeProjects.find((project) => project.featured);
+const secondaryProjects = activeProjects.filter((project) => !project.featured);
+const portfolioProject = brandProjects.find((project) => project.isCurrent);
 ---
 
 <section id="projects" class="py-20 section-divider">
 	<div class="text-center mb-12 md:mb-14">
 		<p class="editorial-kicker micro-label" data-reveal style="--delay: 40ms;">
-			Ecosistema de proyectos
+			Producto · Ingeniería · Ejecución
 		</p>
 		       <h2
 			       class="font-display section-title-contrast font-semibold text-3xl md:text-5xl mt-3 mb-4 text-orange-800 dark:text-orange-100"
 			       data-reveal
 			       style="--delay: 120ms;"
 		       >
-			       Proyectos Lanzados y En Laboratorio.
+			       Productos que convierten ideas en soluciones.
 		       </h2>
-		<!-- <p
-			class="mt-4 max-w-3xl mx-auto text-zinc-700 dark:text-brand.muted"
-			data-reveal
-			style="--delay: 200ms;"
-		>
-			Cada tarjeta representa una pieza del ecosistema OrPiRa.
-		</p> -->
 	</div>
 
-	<div class="project-mosaic grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-8">
+	<div class="project-showcase space-y-8">
 		{
-			[...brandProjects]
-				 .sort((a, b) => Number(b.year) - Number(a.year))
-				 .map((project, index) => (
-				   <article
-					   class={`project-tile flex flex-col justify-between gap-6 h-full min-h-[26rem]`}
-					   style={`--tile-accent: ${project.accent}; --delay: ${280 + index * 90}ms;`}
-					   data-reveal
-				   >
-					<div class="space-y-4">
+			featuredProject && (
+				<article
+					class="project-tile project-tile-featured flex flex-col justify-between gap-5"
+					style={`--tile-accent: ${featuredProject.accent}; --delay: 280ms;`}
+					data-reveal
+				>
+					<div class="space-y-3">
 						<div class="flex items-start justify-between gap-3">
 							<p class="editorial-kicker micro-label !text-[0.62rem] !tracking-[0.2em] text-zinc-600 dark:text-zinc-200 font-semibold">
-								{project.domain}
+								Producto destacado
 							</p>
-							<span
-															 class={`project-cta inline-flex items-center gap-2 rounded-full border border-brand.accent/45 px-4 py-2 text-xs font-semibold uppercase tracking-[0.14em] text-brand.accent hover:border-brand.accent hover:bg-brand.accent/10 ${project.comingSoon ? "opacity-60 cursor-not-allowed" : ""}`}
-							>
-								{project.status}
+							<span class="project-cta inline-flex items-center gap-2 rounded-full border border-brand.accent/45 px-4 py-2 text-xs font-semibold uppercase tracking-[0.14em] text-brand.accent">
+								{featuredProject.status}
 							</span>
 						</div>
 
-						<h3 class="project-card-title font-display text-2xl md:text-3xl leading-tight">
-							{project.title}
+						<h3 class="project-card-title font-display text-3xl md:text-4xl leading-tight">
+							{featuredProject.title}
 						</h3>
 
-						<p class="service-card-copy mt-3 text-sm leading-relaxed">
-							{project.summary}
+						<p class="service-card-copy text-sm leading-relaxed max-w-3xl md:text-base">
+							{featuredProject.summary}
 						</p>
 
+						<div>
+							<p class="editorial-kicker micro-label !text-[0.62rem] !tracking-[0.2em] text-zinc-600 dark:text-zinc-200 font-semibold">
+								Mi papel
+							</p>
+							<p class="service-card-copy font-medium text-sm mt-1">{featuredProject.role}</p>
+						</div>
+
 						<div class="project-stack">
-							{project.stack.map((tech) => (
+							{featuredProject.stack.map((tech) => (
 								<span>{tech}</span>
 							))}
 						</div>
 					</div>
 
-					<div class="flex flex-wrap items-center justify-between gap-4 border-t border-white/10 dark:border-white/10 pt-4">
+					<div class="flex flex-wrap items-center justify-between gap-4 border-t border-white/10 dark:border-white/10 pt-3">
 						<span class="micro-label text-xs font-semibold uppercase tracking-[0.14em] text-zinc-600 dark:text-zinc-200">
-							{project.year}
+							{featuredProject.year}
 						</span>
 
-						{project.comingSoon ? (
-							<span class="micro-label text-xs font-semibold uppercase tracking-[0.14em] text-zinc-500 dark:text-zinc-200">
-								En configuracion
-							</span>
-						) : project.isCurrent ? (
-							<span class="project-current-badge rounded-full px-4 py-2 text-xs uppercase tracking-[0.14em]">
-								Estás aquí
-							</span>
-						) : (
-							<div class="flex flex-wrap items-center gap-2">
+						<div class="flex flex-wrap items-center gap-2">
+							<a
+								href={resolveProjectHref(featuredProject.href, featuredProject.external)}
+								target={featuredProject.external ? "_blank" : undefined}
+								rel={featuredProject.external ? "noopener noreferrer" : undefined}
+								class="project-cta inline-flex items-center gap-2 rounded-full border border-brand.accent/45 px-4 py-2 text-xs font-semibold uppercase tracking-[0.14em] text-brand.accent hover:border-brand.accent hover:bg-brand.accent/10"
+							>
+								{featuredProject.cta}
+							</a>
+							{featuredProject.secondaryCta && featuredProject.secondaryHref && (
 								<a
-									href={resolveProjectHref(project.href, project.external)}
-									target={project.external ? "_blank" : undefined}
-									rel={project.external ? "noopener noreferrer" : undefined}
-									class="project-cta inline-flex items-center gap-2 rounded-full border border-brand.accent/45 px-4 py-2 text-xs font-semibold uppercase tracking-[0.14em] text-brand.accent hover:border-brand.accent hover:bg-brand.accent/10"
+									href={resolveProjectHref(featuredProject.secondaryHref, isExternalHref(featuredProject.secondaryHref))}
+									target={isExternalHref(featuredProject.secondaryHref) ? "_blank" : undefined}
+									rel={isExternalHref(featuredProject.secondaryHref) ? "noopener noreferrer" : undefined}
+									class="project-cta inline-flex items-center gap-2 rounded-full border border-cyan-300/45 px-4 py-2 text-xs font-semibold uppercase tracking-[0.14em] text-cyan-700 hover:border-cyan-300 hover:bg-cyan-300/10 dark:text-cyan-100"
 								>
-									{project.cta}
+									{featuredProject.secondaryCta}
 								</a>
-								{project.secondaryCta && project.secondaryHref && (
-									<a
-										href={resolveProjectHref(project.secondaryHref, isExternalHref(project.secondaryHref))}
-										target={isExternalHref(project.secondaryHref) ? "_blank" : undefined}
-										rel={isExternalHref(project.secondaryHref) ? "noopener noreferrer" : undefined}
-										class="project-cta inline-flex items-center gap-2 rounded-full border border-cyan-300/45 px-4 py-2 text-xs font-semibold uppercase tracking-[0.14em] text-cyan-700 hover:border-cyan-300 hover:bg-cyan-300/10 dark:text-cyan-100"
-									>
-										{project.secondaryCta}
-									</a>
-								)}
-							</div>
-						)}
+							)}
+						</div>
 					</div>
 				</article>
-			))
+			)
+		}
+
+		<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+			{
+				secondaryProjects.map((project, index) => (
+					<article
+						class="project-tile flex flex-col justify-between gap-6 h-full min-h-[26rem]"
+						style={`--tile-accent: ${project.accent}; --delay: ${370 + index * 90}ms;`}
+						data-reveal
+					>
+						<div class="space-y-4">
+							<div class="flex items-start justify-between gap-3">
+								<p class="editorial-kicker micro-label !text-[0.62rem] !tracking-[0.2em] text-zinc-600 dark:text-zinc-200 font-semibold">
+									{project.domain}
+								</p>
+								<span class="project-cta inline-flex items-center gap-2 rounded-full border border-brand.accent/45 px-4 py-2 text-xs font-semibold uppercase tracking-[0.14em] text-brand.accent">
+									{project.status}
+								</span>
+							</div>
+
+							<h3 class="project-card-title font-display text-2xl md:text-3xl leading-tight">
+								{project.title}
+							</h3>
+
+							<p class="service-card-copy mt-3 text-sm leading-relaxed">
+								{project.summary}
+							</p>
+
+							<div>
+								<p class="editorial-kicker micro-label !text-[0.62rem] !tracking-[0.2em] text-zinc-600 dark:text-zinc-200 font-semibold">
+									Mi papel
+								</p>
+								<p class="service-card-copy font-medium text-sm mt-1">{project.role}</p>
+							</div>
+
+							<div class="project-stack">
+								{project.stack.map((tech) => (
+									<span>{tech}</span>
+								))}
+							</div>
+						</div>
+
+						<div class="flex flex-wrap items-center justify-between gap-4 border-t border-white/10 dark:border-white/10 pt-4">
+							<span class="micro-label text-xs font-semibold uppercase tracking-[0.14em] text-zinc-600 dark:text-zinc-200">
+								{project.year}
+							</span>
+
+							<a
+								href={resolveProjectHref(project.href, project.external)}
+								target={project.external ? "_blank" : undefined}
+								rel={project.external ? "noopener noreferrer" : undefined}
+								class="project-cta inline-flex items-center gap-2 rounded-full border border-brand.accent/45 px-4 py-2 text-xs font-semibold uppercase tracking-[0.14em] text-brand.accent hover:border-brand.accent hover:bg-brand.accent/10"
+							>
+								{project.cta}
+							</a>
+						</div>
+					</article>
+				))
+			}
+		</div>
+
+		{
+			portfolioProject && (
+				<div
+					class="project-meta-note editorial-panel rounded-2xl p-6 md:p-8"
+					data-reveal
+					style="--delay: 550ms;"
+				>
+					<p class="editorial-kicker micro-label">
+						Este portfolio también es un proyecto
+					</p>
+					<p class="service-card-copy mt-3 text-sm leading-relaxed max-w-2xl">
+						{portfolioProject.summary}
+					</p>
+					<div class="project-stack mt-4">
+						{portfolioProject.stack.map((tech) => (
+							<span>{tech}</span>
+						))}
+					</div>
+				</div>
+			)
 		}
 	</div>
 </section>
