@@ -1,26 +1,31 @@
 ---
 import { supabaseAdmin } from "../../lib/supabase-admin";
 import CRMLayout from "../../layouts/CRMLayout.astro";
-
-
-const auth =
-  Astro.cookies.get("crm_auth");
+import {
+  ADMIN_SESSION_COOKIE,
+  verifyAdminSession,
+} from "../../lib/admin-session";
 
 if (
-  auth?.value !== "true"
+  !verifyAdminSession(
+    Astro.cookies.get(ADMIN_SESSION_COOKIE)?.value
+  )
 ) {
-  return Astro.redirect(
-    "/dashboard"
-  );
+  return Astro.redirect("/dashboard", 303);
 }
 
 const { data: leads, error } = await supabaseAdmin
   .from("contacts")
-  .select("*")
+  .select("id, name, email, lead_type, priority, lead_score, notified, created_at")
   .order("lead_score", { ascending: false });
 
 if (error) {
-  console.error(error);
+  console.error(
+    JSON.stringify({
+      scope: "leads-query",
+      code: error.code ?? "unknown",
+    })
+  );
 }
 
 const totalLeads = leads?.length ?? 0;

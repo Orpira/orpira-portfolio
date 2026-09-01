@@ -1,0 +1,57 @@
+<figure
+	class="pb-architecture-figure"
+	aria-labelledby="pb-architecture-title"
+	aria-describedby="pb-architecture-description"
+>
+	<h3 id="pb-architecture-title" class="sr-only">
+		Arquitectura de Private Balance
+	</h3>
+	<div
+		class="pb-architecture-map"
+		role="img"
+		aria-label="Private Balance se construye con React y TypeScript. El producto conecta las finanzas, la agenda, las temporadas y el Copiloto con datos locales en IndexedDB mediante Dexie. La aplicación se distribuye como PWA y llega a Android mediante Capacitor."
+	>
+		<div class="pb-map-node pb-map-node--primary">
+			<span>Producto</span>
+			<strong>Private Balance</strong>
+		</div>
+		<div class="pb-map-connector" aria-hidden="true"></div>
+		<div class="pb-map-node">
+			<span>Interfaz</span>
+			<strong>React + TypeScript</strong>
+		</div>
+
+		<div class="pb-map-branches">
+			<article class="pb-map-branch pb-map-branch--product">
+				<span class="pb-map-branch-label">Producto</span>
+				<strong>Finanzas · Agenda</strong>
+				<p>Temporadas · Copiloto</p>
+			</article>
+			<article class="pb-map-branch pb-map-branch--data">
+				<span class="pb-map-branch-label">Datos</span>
+				<strong>IndexedDB</strong>
+				<p>Dexie</p>
+			</article>
+		</div>
+
+		<div class="pb-map-connector" aria-hidden="true"></div>
+		<div class="pb-map-node pb-map-node--surface">
+			<span>Superficie web</span>
+			<strong>PWA</strong>
+		</div>
+		<div class="pb-map-connector" aria-hidden="true"></div>
+		<div class="pb-map-node pb-map-node--compact">
+			<span>Puente</span>
+			<strong>Capacitor</strong>
+		</div>
+		<div class="pb-map-connector" aria-hidden="true"></div>
+		<div class="pb-map-node pb-map-node--terminal">
+			<span>Superficie nativa</span>
+			<strong>Android</strong>
+		</div>
+	</div>
+	<figcaption id="pb-architecture-description">
+		El dominio y los datos locales sostienen una única base de producto que se
+		distribuye como PWA y se integra en Android mediante Capacitor.
+	</figcaption>
+</figure>

@@ -1,0 +1,101 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Footer from "../components/Footer.astro";
+
+const baseUrl =
+	import.meta.env.BASE_URL === "/"
+		? ""
+		: import.meta.env.BASE_URL.replace(/\/$/, "");
+---
+
+<Layout baseUrl={baseUrl}>
+	<section class="py-16">
+		<div class="max-w-3xl mx-auto space-y-8">
+			<header class="space-y-3 text-center">
+				<p class="micro-label uppercase tracking-[0.24em]">Legal</p>
+				<h1 class="font-display text-4xl md:text-5xl font-semibold">
+					Política de privacidad
+				</h1>
+				<p class="text-sm text-gray-600 dark:text-brand-muted">
+					Última actualización: agosto de 2026
+				</p>
+			</header>
+
+			<div
+				class="space-y-6 text-gray-700 dark:text-brand-muted leading-relaxed"
+			>
+				<section>
+					<h2 class="text-xl font-semibold mb-2 text-zinc-900 dark:text-brand-text">
+						Responsable del tratamiento
+					</h2>
+					<p>
+						Orlando Pineda Raad (OrPiRa), Bilbao, España. Puedes contactar conmigo
+						en el formulario de esta web para cualquier consulta sobre tus datos.
+					</p>
+				</section>
+
+				<section>
+					<h2 class="text-xl font-semibold mb-2 text-zinc-900 dark:text-brand-text">
+						Datos que se recogen
+					</h2>
+					<p>
+						A través del formulario de contacto se recogen únicamente tu nombre,
+						correo electrónico y el mensaje que envíes. No se utilizan cookies de
+						seguimiento ni analítica de terceros.
+					</p>
+				</section>
+
+				<section>
+					<h2 class="text-xl font-semibold mb-2 text-zinc-900 dark:text-brand-text">
+						Finalidad y base jurídica
+					</h2>
+					<p>
+						Los datos se utilizan exclusivamente para responder a tu solicitud de
+						contacto y, si procede, gestionar una relación profesional o
+						comercial. La base jurídica es tu consentimiento, que otorgas al
+						marcar la casilla de aceptación antes de enviar el formulario.
+					</p>
+				</section>
+
+				<section>
+					<h2 class="text-xl font-semibold mb-2 text-zinc-900 dark:text-brand-text">
+						Conservación
+					</h2>
+					<p>
+						Los mensajes se conservan durante un máximo de 24 meses desde el
+						último contacto, o durante el tiempo necesario si existe una relación
+						profesional en curso. Transcurrido ese plazo se eliminan o
+						anonimizan.
+					</p>
+				</section>
+
+				<section>
+					<h2 class="text-xl font-semibold mb-2 text-zinc-900 dark:text-brand-text">
+						Destinatarios y encargados
+					</h2>
+					<p>
+						Los datos se almacenan en Supabase (infraestructura en la UE) y el
+						sitio se sirve mediante Vercel. Al enviar el formulario puede
+						enviarse una notificación a través de un servicio automatizado de
+						mensajería. Ninguna de estas plataformas recibe tus datos con fines
+						publicitarios ni los cede a terceros.
+					</p>
+				</section>
+
+				<section>
+					<h2 class="text-xl font-semibold mb-2 text-zinc-900 dark:text-brand-text">
+						Derechos
+					</h2>
+					<p>
+						Puedes ejercer en cualquier momento tus derechos de acceso,
+						rectificación, supresión, oposición, limitación y portabilidad
+						escribiendo a través del formulario de contacto indicando tu
+						solicitud. También puedes presentar una reclamación ante la Agencia
+						Española de Protección de Datos.
+					</p>
+				</section>
+			</div>
+		</div>
+	</section>
+	<Footer />
+</Layout>

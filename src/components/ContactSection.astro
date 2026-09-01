@@ -25,7 +25,7 @@ interface Props {
 
 	<form id="contact-form" class="max-w-lg mx-auto space-y-5" novalidate>
 		
-		<input type="checkbox" name="botcheck" class="hidden" />
+		<input type="checkbox" id="botcheck" name="botcheck" class="hidden" tabindex="-1" autocomplete="off" />
 
 		<div>
 			<label for="name" class="block text-sm font-medium mb-1 text-left"
@@ -36,6 +36,7 @@ interface Props {
 				id="name"
 				name="name"
 				required
+				maxlength="100"
 				placeholder="Tu nombre"
 				class="w-full px-4 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition"
 			/>
@@ -64,9 +65,29 @@ interface Props {
 				name="message"
 				required
 				rows="5"
+				maxlength="5000"
 				placeholder="Cuéntame sobre tu proyecto..."
 				class="w-full px-4 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition resize-none"
 			></textarea>
+		</div>
+
+		<div class="flex items-start gap-2 text-left">
+			<input
+				type="checkbox"
+				id="privacy-consent"
+				name="privacy-consent"
+				required
+				class="mt-1"
+			/>
+			<label
+				for="privacy-consent"
+				class="text-xs text-gray-600 dark:text-gray-400"
+			>
+				He leído y acepto la
+				<a href="/privacidad" class="underline hover:text-brand-accent"
+					>política de privacidad</a
+				>.
+			</label>
 		</div>
 
 		<button
@@ -110,10 +131,14 @@ interface Props {
 			const nameInput = document.getElementById("name") as HTMLInputElement | null;
 			const emailInput = document.getElementById("email") as HTMLInputElement | null;
 			const messageInput = document.getElementById("message") as HTMLTextAreaElement | null;
+			const botcheckInput = document.getElementById("botcheck") as HTMLInputElement | null;
+			const consentInput = document.getElementById("privacy-consent") as HTMLInputElement | null;
 
 			const name = nameInput?.value ?? "";
 			const email = emailInput?.value ?? "";
 			const message = messageInput?.value ?? "";
+			const botcheck = botcheckInput?.checked ?? false;
+			const consent = consentInput?.checked ?? false;
 
 			try {
 				const response = await fetch(
@@ -128,6 +153,8 @@ interface Props {
 							name,
 							email,
 							message,
+							botcheck,
+							consent,
 						}),
 					},
 				);

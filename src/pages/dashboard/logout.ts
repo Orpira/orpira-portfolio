@@ -1,18 +1,17 @@
 import type { APIRoute } from "astro";
+import { ADMIN_SESSION_COOKIE } from "../../lib/admin-session";
 
-export const GET: APIRoute = async ({
+export const POST: APIRoute = async ({
   cookies,
   redirect
 }) => {
 
   cookies.delete(
-    "crm_auth",
+    ADMIN_SESSION_COOKIE,
     {
-      path: "/"
+      path: "/dashboard"
     }
   );
 
-  return redirect(
-    "/dashboard"
-  );
+  return redirect("/dashboard", 303);
 };

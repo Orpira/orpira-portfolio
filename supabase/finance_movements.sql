@@ -12,14 +12,10 @@ alter table public.finance_movements enable row level security;
 drop policy if exists "Public can read finance demo movements"
 	on public.finance_movements;
 
-create policy "Public can read finance demo movements"
-	on public.finance_movements
-	for select
-	to anon
-	using (true);
+revoke all on table public.finance_movements from anon, authenticated;
 
--- Public inserts stay disabled. The Astro endpoint uses SUPABASE_SERVICE_ROLE_KEY
--- server-side after validating type, description and amount.
+-- The portfolio demo now stores movements in the visitor's browser. Keep this
+-- table private if legacy demo data must be retained for administrative review.
 
 insert into public.finance_movements (type, description, amount, category)
 select type, description, amount, category

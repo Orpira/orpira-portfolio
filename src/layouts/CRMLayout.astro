@@ -85,10 +85,12 @@ const {
 
   
 
-    <a
-        href="/dashboard/logout"
+    <form method="POST" action="/dashboard/logout">
+      <button
+        type="submit"
         class="
             flex
+            w-full
             items-center
             gap-3
             p-4
@@ -116,7 +118,8 @@ const {
             Cerrar sesión
             </p>
         </div>
-    </a>
+      </button>
+    </form>
 
     
 

@@ -1,0 +1,627 @@
+---
+import { Picture } from "astro:assets";
+
+import ArchitectureDiagram from "../../components/case-study/ArchitectureDiagram.astro";
+import { brandProjects } from "../../data/projects";
+import Layout from "../../layouts/Layout.astro";
+import dashboardImage from "../../assets/images/private-balance/dashboard-pwa.webp";
+import movementsImage from "../../assets/images/private-balance/movements-pwa.webp";
+import agendaImage from "../../assets/images/private-balance/agenda-pwa.webp";
+import copilotImage from "../../assets/images/private-balance/copilot-pwa.webp";
+import androidImage from "../../assets/images/private-balance/android-dashboard.webp";
+import "../../styles/private-balance-case-study.css";
+
+const baseUrl =
+	import.meta.env.BASE_URL === "/"
+		? ""
+		: import.meta.env.BASE_URL.replace(/\/$/, "");
+
+const project = brandProjects.find(({ id }) => id === "finance-app");
+
+if (!project) {
+	throw new Error("No se encontró Private Balance en el catálogo de proyectos.");
+}
+
+const productUrl = project.domain;
+
+const principles = [
+	{
+		title: "Privacidad",
+		copy: "La información financiera debe permanecer bajo control del usuario.",
+	},
+	{
+		title: "Local-first",
+		copy: "El núcleo del producto debe poder funcionar sin depender permanentemente de infraestructura remota.",
+	},
+	{
+		title: "Menos fricción",
+		copy: "Registrar y consultar información debe requerir el mínimo esfuerzo razonable.",
+	},
+	{
+		title: "Producto antes que tecnología",
+		copy: "Una tecnología entra cuando resuelve una necesidad del producto, no simplemente porque sea posible incorporarla.",
+	},
+];
+
+const evolution = [
+	"Idea",
+	"MVP",
+	"Finanzas",
+	"Temporadas",
+	"Agenda",
+	"PWA",
+	"Android",
+	"Inteligencia",
+	"Licenciamiento",
+	"Pre-Release",
+];
+
+const financialConcepts = [
+	["Ingresos", "Qué genera la actividad."],
+	["Egresos", "Qué cuesta desarrollarla."],
+	["Tiempo", "Cuánto trabajo requiere."],
+	["Temporadas", "En qué periodo se está midiendo."],
+	["Objetivos", "Hacia dónde se quiere avanzar."],
+	["Resultado", "Qué queda después de relacionar las variables."],
+];
+
+const qualityRoadmap = [
+	"Calidad",
+	"Android real",
+	"PWA",
+	"Accesibilidad",
+	"Rendimiento",
+	"Privacidad",
+	"Estabilidad",
+];
+---
+
+<Layout
+	baseUrl={baseUrl}
+	title="Private Balance — Product Case Study | OrPiRa"
+	description="Caso de estudio de Private Balance: producto financiero local-first, PWA y Android, diseñado y desarrollado con enfoque de producto, privacidad, arquitectura Full Stack y experiencia de usuario."
+>
+	<article id="top" class="pb-case">
+		<header class="pb-hero" aria-labelledby="private-balance-title">
+			<div class="pb-hero-top">
+				<div class="pb-hero-copy" data-reveal style="--delay: 40ms;">
+					<p class="pb-kicker">Private Balance · Product Case Study</p>
+					<h1 id="private-balance-title">
+						Finanzas privadas diseñadas alrededor del trabajo real.
+					</h1>
+					<p class="pb-hero-description">
+						Private Balance es una aplicación de gestión financiera diseñada para
+						profesionales que necesitan relacionar ingresos, gastos, tiempo de trabajo,
+						temporadas y objetivos desde una experiencia privada y adaptada a su
+						actividad.
+					</p>
+					<div class="pb-actions">
+						<a
+							class="pb-button pb-button--primary"
+							href={productUrl}
+							target="_blank"
+							rel="noopener noreferrer"
+						>
+							Abrir Private Balance <span aria-hidden="true">↗</span>
+						</a>
+						<a class="pb-button" href={`${baseUrl}/#projects`}>
+							<span aria-hidden="true">←</span> Volver a proyectos
+						</a>
+					</div>
+				</div>
+
+				<dl class="pb-meta" data-reveal style="--delay: 140ms;">
+					<div>
+						<dt>Rol</dt>
+						<dd>{project.role}</dd>
+					</div>
+					<div>
+						<dt>Plataforma</dt>
+						<dd>PWA · Android</dd>
+					</div>
+					<div>
+						<dt>Arquitectura</dt>
+						<dd>Local-first</dd>
+					</div>
+					<div>
+						<dt>Estado</dt>
+						<dd>Pre-Release</dd>
+					</div>
+				</dl>
+			</div>
+
+			<figure class="pb-hero-media" data-reveal style="--delay: 220ms;">
+				<div class="pb-hero-frame">
+					<Picture
+						src={dashboardImage}
+						formats={["avif", "webp"]}
+						widths={[400, 640, 806]}
+						sizes="(max-width: 767px) 100vw, 1152px"
+						alt="Resumen financiero de demostración en el dashboard PWA de Private Balance"
+						loading="eager"
+						fetchpriority="high"
+						decoding="async"
+					/>
+				</div>
+				<figcaption class="sr-only">
+					Dashboard real de Private Balance con información ficticia de demostración.
+				</figcaption>
+			</figure>
+		</header>
+
+		<section class="pb-section" aria-labelledby="problem-title">
+			<div class="pb-section-heading" data-reveal>
+				<p class="pb-kicker">El punto de partida</p>
+				<h2 id="problem-title">Registrar dinero era solo una parte del problema.</h2>
+			</div>
+			<div class="pb-problem-grid">
+				<div class="pb-problem-copy">
+					<p>
+						Conocer cuánto entra o cuánto sale no siempre explica cómo está funcionando
+						una actividad profesional.
+					</p>
+					<p>
+						El verdadero reto era relacionar el trabajo realizado con el tiempo dedicado,
+						los ingresos generados, los gastos asociados y los objetivos de una temporada,
+						sin convertir el registro diario en otra carga de trabajo.
+					</p>
+					<p class="pb-problem-close">
+						Private Balance nace para convertir esas variables en una visión más útil de
+						la actividad.
+					</p>
+				</div>
+				<ol class="pb-flow" aria-label="Flujo conceptual del problema">
+					{["Trabajo", "Tiempo", "Ingresos", "Gastos", "Resultado", "Objetivo"].map(
+						(step) => <li>{step}</li>,
+					)}
+				</ol>
+			</div>
+		</section>
+
+		<section class="pb-section" aria-labelledby="principles-title">
+			<div class="pb-section-heading" data-reveal>
+				<p class="pb-kicker">Principios de producto</p>
+				<h2 id="principles-title">Cuatro decisiones antes de elegir tecnología.</h2>
+			</div>
+			<div class="pb-principles">
+				{principles.map((principle, index) => (
+					<article class="pb-principle">
+						<span class="pb-principle-number">0{index + 1}</span>
+						<h3>{principle.title}</h3>
+						<p>{principle.copy}</p>
+					</article>
+				))}
+			</div>
+		</section>
+
+		<section class="pb-section" aria-labelledby="evolution-title">
+			<div class="pb-section-heading" data-reveal>
+				<p class="pb-kicker">Evolución</p>
+				<h2 id="evolution-title">De una necesidad a un producto.</h2>
+				<p>
+					Private Balance no nació con su arquitectura actual. El producto fue creciendo
+					a medida que aparecían nuevas necesidades, restricciones y aprendizajes
+					durante su desarrollo.
+				</p>
+			</div>
+			<ol class="pb-timeline" aria-label="Evolución del producto">
+				{evolution.map((stage) => <li>{stage}</li>)}
+			</ol>
+			<p class="pb-timeline-close">
+				Cada etapa añadió capacidades, pero también obligó a revisar decisiones
+				anteriores y simplificar aquello que había dejado de aportar valor.
+			</p>
+		</section>
+
+		<section class="pb-section" aria-labelledby="architecture-title">
+			<div class="pb-section-heading" data-reveal>
+				<p class="pb-kicker">Arquitectura</p>
+				<h2 id="architecture-title">
+					Local-first no fue una feature. Fue una decisión de arquitectura.
+				</h2>
+			</div>
+			<div class="pb-architecture-layout">
+				<div>
+					<dl class="pb-architecture-decisions">
+						<div>
+							<dt>Necesidad</dt>
+							<dd>Trabajar con información financiera potencialmente sensible.</dd>
+						</div>
+						<div>
+							<dt>Decisión</dt>
+							<dd>
+								Mantener el núcleo de los datos en el dispositivo y reducir la dependencia
+								de infraestructura remota para el funcionamiento principal.
+							</dd>
+						</div>
+						<div>
+							<dt>Beneficio</dt>
+							<dd>
+								Mayor control sobre los datos, disponibilidad local y una arquitectura
+								coherente con el enfoque de privacidad del producto.
+							</dd>
+						</div>
+						<div>
+							<dt>Coste</dt>
+							<dd>
+								Backup, restauración, recuperación y una posible sincronización futura
+								requieren mecanismos específicos.
+							</dd>
+						</div>
+					</dl>
+					<p class="pb-architecture-close">
+						La arquitectura busca proteger una propiedad del producto —la privacidad—
+						antes que maximizar infraestructura.
+					</p>
+				</div>
+				<ArchitectureDiagram />
+			</div>
+		</section>
+
+		<section class="pb-section" aria-labelledby="finance-title">
+			<div class="pb-section-heading" data-reveal>
+				<p class="pb-kicker">Modelo de producto</p>
+				<h2 id="finance-title">Del movimiento aislado a una visión de la actividad.</h2>
+				<p>
+					Un ingreso o un gasto por sí solo cuenta muy poco. Private Balance organiza
+					los movimientos dentro del contexto en el que se producen para ayudar a
+					interpretar la actividad de una forma más completa.
+				</p>
+			</div>
+			<div class="pb-finance-layout">
+				<dl class="pb-concept-list">
+					{financialConcepts.map(([term, description]) => (
+						<div>
+							<dt>{term}</dt>
+							<dd>{description}</dd>
+						</div>
+					))}
+				</dl>
+				<figure class="pb-evidence">
+					<div class="pb-evidence-frame pb-evidence-frame--wide">
+						<Picture
+							src={movementsImage}
+							formats={["avif", "webp"]}
+							widths={[400, 640, 806]}
+							sizes="(max-width: 1023px) 100vw, 680px"
+							alt="Vista de movimientos de Private Balance con un ingreso y un egreso de demostración"
+							loading="lazy"
+							decoding="async"
+						/>
+					</div>
+					<figcaption>
+						<span>Detalle · Movimientos PWA</span>
+						<span>Datos ficticios</span>
+					</figcaption>
+				</figure>
+			</div>
+		</section>
+
+		<section class="pb-section" aria-labelledby="decisions-title">
+			<div class="pb-section-heading" data-reveal>
+				<p class="pb-kicker">Iterar también es diseñar</p>
+				<h2 id="decisions-title">Tres decisiones que cambiaron el producto.</h2>
+			</div>
+			<div class="pb-decision-list">
+				<article class="pb-decision pb-decision--media">
+					<span class="pb-decision-number" aria-hidden="true">01</span>
+					<div class="pb-decision-body">
+						<h3 class="pb-decision-theme">Agenda</h3>
+						<dl>
+							<div>
+								<dt>Problema</dt>
+								<dd>
+									Una cita programada podía iniciar un servicio antes de su hora y las
+									acciones repetidas sobre el mismo control podían producir estados
+									simultáneos no deseados.
+								</dd>
+							</div>
+							<div>
+								<dt>Decisión</dt>
+								<dd>
+									Convertir la hora programada en parte de la regla de negocio, proteger
+									la acción frente a ejecuciones repetidas y eliminar el cronómetro de
+									Agenda cuando las alarmas ya cubrían esa necesidad.
+								</dd>
+							</div>
+							<div>
+								<dt>Aprendizaje</dt>
+								<dd>Simplificar también es diseñar.</dd>
+							</div>
+						</dl>
+					</div>
+					<figure class="pb-evidence pb-decision-media">
+						<div class="pb-evidence-frame">
+							<Picture
+								src={agendaImage}
+								formats={["avif", "webp"]}
+								widths={[400, 640, 806]}
+								sizes="(max-width: 1023px) 100vw, 420px"
+								alt="Agenda PWA de Private Balance con una cita de demostración programada"
+								loading="lazy"
+								decoding="async"
+							/>
+						</div>
+						<figcaption>
+							<span>Contexto general · Agenda</span>
+							<span>Evidencia sustituible</span>
+						</figcaption>
+					</figure>
+				</article>
+
+				<article class="pb-decision">
+					<span class="pb-decision-number" aria-hidden="true">02</span>
+					<div class="pb-decision-body">
+						<h3 class="pb-decision-theme">Ingresos reportados</h3>
+						<dl>
+							<div>
+								<dt>Problema</dt>
+								<dd>
+									Una preferencia destinada a ocultar avisos de ingresos pendientes podía
+									confundirse con una modificación del comportamiento financiero.
+								</dd>
+							</div>
+							<div>
+								<dt>Decisión</dt>
+								<dd>
+									Separar explícitamente la preferencia de interfaz de las reglas del dominio.
+									Desactivar la opción modifica qué avisos y controles se muestran, pero no
+									altera los cálculos financieros.
+								</dd>
+							</div>
+							<div>
+								<dt>Aprendizaje</dt>
+								<dd>Una preferencia de UX no debe modificar una regla financiera.</dd>
+							</div>
+						</dl>
+					</div>
+				</article>
+
+				<article class="pb-decision">
+					<span class="pb-decision-number" aria-hidden="true">03</span>
+					<div class="pb-decision-body">
+						<h3 class="pb-decision-theme">Determinismo antes que IA</h3>
+						<dl>
+							<div>
+								<dt>Problema</dt>
+								<dd>
+									Incorporar lenguaje natural facilita la interacción, pero una interpretación
+									probabilística no debe convertirse automáticamente en autoridad para
+									modificar información financiera.
+								</dd>
+							</div>
+							<div>
+								<dt>Decisión</dt>
+								<dd>
+									Separar consultas de acciones transaccionales y mantener reglas deterministas
+									y confirmación explícita allí donde una operación puede modificar datos.
+								</dd>
+							</div>
+							<div>
+								<dt>Aprendizaje</dt>
+								<dd>
+									La inteligencia debe ampliar la interfaz, no sustituir las garantías del
+									dominio.
+								</dd>
+							</div>
+						</dl>
+					</div>
+				</article>
+			</div>
+		</section>
+
+		<section class="pb-section pb-intelligence" aria-labelledby="copilot-title">
+			<div class="pb-section-heading" data-reveal>
+				<p class="pb-kicker">Copiloto</p>
+				<h2 id="copilot-title">La IA puede interpretar. El usuario conserva la decisión.</h2>
+				<p>
+					El Copiloto permite expresar consultas y determinadas acciones mediante
+					lenguaje natural, pero interpretar una intención no equivale a tener permiso
+					para modificar información.
+				</p>
+			</div>
+			<ol class="pb-flow pb-intelligence-flow" aria-label="Flujo de una acción del Copiloto">
+				{["Usuario", "Intención", "Propuesta", "Confirmación", "Acción"].map(
+					(step) => <li>{step}</li>,
+				)}
+			</ol>
+			<div class="pb-intelligence-layout">
+				<div>
+					<dl class="pb-intelligence-steps">
+						<div>
+							<dt>Consultar</dt>
+							<dd>
+								Las operaciones de lectura pueden responder sin modificar el estado financiero.
+							</dd>
+						</div>
+						<div>
+							<dt>Proponer</dt>
+							<dd>
+								Cuando la intención implica una acción, el sistema puede convertirla en una
+								propuesta estructurada.
+							</dd>
+						</div>
+						<div>
+							<dt>Confirmar</dt>
+							<dd>
+								El usuario revisa y conserva la decisión final antes de ejecutar una
+								modificación.
+							</dd>
+						</div>
+					</dl>
+					<blockquote class="pb-quote">
+						Interpretar una intención no equivale a tener permiso para modificar los datos.
+					</blockquote>
+				</div>
+				<figure class="pb-evidence">
+					<div class="pb-evidence-frame pb-evidence-frame--copilot">
+						<Picture
+							src={copilotImage}
+							formats={["avif", "webp"]}
+							widths={[480, 720, 914]}
+							sizes="(max-width: 1023px) 100vw, 680px"
+							alt="Propuesta de gasto del Copiloto con explicación, datos estructurados y botones Editar, Cancelar y Confirmar"
+							loading="lazy"
+							decoding="async"
+						/>
+					</div>
+					<figcaption>
+						<span>Propuesta transaccional · Sandbox local</span>
+						<span>Sin confirmación ejecutada</span>
+					</figcaption>
+				</figure>
+			</div>
+		</section>
+
+		<section class="pb-section" aria-labelledby="platforms-title">
+			<div class="pb-section-heading" data-reveal>
+				<p class="pb-kicker">Multiplataforma</p>
+				<h2 id="platforms-title">Un producto. Dos superficies.</h2>
+				<p>
+					Private Balance mantiene el mismo dominio y las mismas reglas fundamentales
+					mientras adapta su experiencia a diferentes formas de acceso.
+				</p>
+			</div>
+			<div class="pb-platforms">
+				<article class="pb-platform">
+					<span class="pb-platform-label">PWA</span>
+					<h3>Instalable desde la web.</h3>
+					<p>
+						Una experiencia web instalable y responsive que permite utilizar el producto
+						directamente desde el navegador o como aplicación instalada.
+					</p>
+					<figure class="pb-evidence">
+						<div class="pb-evidence-frame pb-pwa-detail">
+							<Picture
+								src={movementsImage}
+								formats={["avif", "webp"]}
+								widths={[400, 640, 806]}
+								sizes="(max-width: 767px) 100vw, 620px"
+								alt="Detalle de la interfaz PWA responsive de Private Balance"
+								loading="lazy"
+								decoding="async"
+							/>
+						</div>
+						<figcaption><span>Superficie PWA</span><span>Detalle responsive</span></figcaption>
+					</figure>
+				</article>
+				<article class="pb-platform">
+					<span class="pb-platform-label">Android</span>
+					<h3>La misma base, otro entorno.</h3>
+					<p>
+						La aplicación utiliza Capacitor para llevar la experiencia del producto al
+						entorno Android sin mantener un segundo dominio funcional independiente.
+					</p>
+					<figure class="pb-evidence pb-device">
+						<div class="pb-device-screen">
+							<Picture
+								src={androidImage}
+								formats={["avif", "webp"]}
+								widths={[320, 540, 900]}
+								sizes="(max-width: 767px) 72vw, 320px"
+								alt="Resumen financiero de Private Balance ejecutado en Android con los importes ocultos"
+								loading="lazy"
+								decoding="async"
+							/>
+						</div>
+						<figcaption class="sr-only">Evidencia real de la superficie Android.</figcaption>
+					</figure>
+				</article>
+			</div>
+			<p class="pb-platform-close">Dos superficies. Un mismo producto.</p>
+		</section>
+
+		<section class="pb-section" aria-labelledby="quality-title">
+			<div class="pb-section-heading" data-reveal>
+				<p class="pb-kicker">Calidad</p>
+				<h2 id="quality-title">Que funcione no significa que esté listo.</h2>
+				<p>
+					El desarrollo funcional es solo una parte del proceso. Antes de considerar una
+					versión preparada para distribución, Private Balance pasa por una estrategia
+					Pre-Release orientada a reducir regresiones y validar el producto en diferentes
+					condiciones de uso.
+				</p>
+			</div>
+			<div class="pb-quality-metrics" aria-label="Evidencia verificada de calidad">
+				<div class="pb-quality-metric">
+					<strong>208</strong>
+					<span>Combinaciones ruta × viewport × tema auditadas</span>
+				</div>
+				<div class="pb-quality-metric">
+					<strong>2095</strong>
+					<span>Tests en el cierre documentado del Sprint A</span>
+				</div>
+				<div class="pb-quality-metric">
+					<strong>PWA + APK</strong>
+					<span>Builds validados</span>
+				</div>
+			</div>
+			<ol class="pb-roadmap" aria-label="Roadmap de validación Pre-Release">
+				{qualityRoadmap.map((stage) => <li>{stage}</li>)}
+			</ol>
+			<p class="pb-quality-close">
+				El objetivo no es únicamente que una funcionalidad pase una prueba, sino
+				aumentar progresivamente la confianza en el producto completo.
+			</p>
+		</section>
+
+		<section class="pb-section" aria-labelledby="result-title">
+			<div class="pb-section-heading" data-reveal>
+				<p class="pb-kicker">Resultado</p>
+				<h2 id="result-title">Construir el producto también cambió mi forma de construir.</h2>
+			</div>
+			<dl class="pb-learning-list">
+				<div>
+					<dt>Producto</dt>
+					<dd>
+						Una interacción aparentemente pequeña puede esconder una regla importante del
+						dominio.
+					</dd>
+				</div>
+				<div>
+					<dt>Ingeniería</dt>
+					<dd>
+						La arquitectura correcta no es necesariamente la más compleja, sino la que
+						protege mejor las restricciones importantes del producto.
+					</dd>
+				</div>
+				<div>
+					<dt>UX</dt>
+					<dd>
+						Eliminar una interacción innecesaria puede aportar tanto valor como desarrollar
+						una nueva funcionalidad.
+					</dd>
+				</div>
+			</dl>
+
+			<div class="pb-result-editorial">
+				<ul class="pb-result-line" aria-label="Resultado del producto">
+					<li>Producto funcional</li>
+					<li>Local-first</li>
+					<li>PWA</li>
+					<li>Android</li>
+					<li>Licenciamiento</li>
+					<li>Pre-Release</li>
+				</ul>
+				<div class="pb-result-statement">
+					<h3>De la idea al deploy.</h3>
+					<p>
+						Private Balance representa mi forma de construir producto: entender el problema,
+						convertirlo en decisiones, implementar, validar y volver a iterar.
+					</p>
+				</div>
+				<div class="pb-actions">
+					<a
+						class="pb-button pb-button--primary"
+						href={productUrl}
+						target="_blank"
+						rel="noopener noreferrer"
+					>
+						Abrir Private Balance <span aria-hidden="true">↗</span>
+					</a>
+					<a class="pb-button" href={`${baseUrl}/#projects`}>Ver otros proyectos</a>
+				</div>
+			</div>
+		</section>
+	</article>
+</Layout>

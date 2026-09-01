@@ -3,13 +3,20 @@ import "../styles/global.css";
 
 interface Props {
 	baseUrl: string;
+	title?: string;
+	description?: string;
 }
 
-const { baseUrl } = Astro.props;
+const {
+	baseUrl,
+	title = "OrPiRa | Portfolio",
+	description =
+		"Portfolio profesional de Orlando Pineda Raad (OrPiRa): proyectos, servicios y experiencia en ingenieria informatica.",
+} = Astro.props;
 const siteBase = baseUrl ?? "";
-const pageTitle = "OrPiRa | Portfolio";
-const description =
-	"Portfolio profesional de Orlando Pineda Raad (OrPiRa): proyectos, servicios y experiencia en ingenieria informatica.";
+const pageTitle = title;
+const isHome = Astro.url.pathname === `${siteBase}/`;
+const homeLink = (hash: string) => (isHome ? hash : `${siteBase}/${hash}`);
 const canonical = Astro.site
 	? new URL(Astro.url.pathname, Astro.site).toString()
 	: Astro.url.toString();
@@ -92,7 +99,7 @@ const ogImage = Astro.site
 				class="site-nav max-w-7xl mx-auto px-4 sm:px-6 py-3"
 			>
 				<div class="min-w-0">
-					<a href="#top" class="brand-lockup" aria-label="OrPiRa, ir al inicio">
+					<a href={homeLink("#top")} class="brand-lockup" aria-label="OrPiRa, ir al inicio">
 						<span class="brand-cube" aria-hidden="true">
 							<img
 								src={`${siteBase}/opr-cubo.png`}
@@ -123,16 +130,16 @@ const ogImage = Astro.site
 					class="micro-label hidden lg:flex items-center gap-5 text-[0.72rem] uppercase tracking-[0.2em]"
 				>
 					<li>
-						<a href="#top" class="nav-title-link" >Inicio</a>
+						<a href={homeLink("#top")} class="nav-title-link" >Inicio</a>
 					</li>
 					<li>
-						<a href="#services" class="nav-title-link">Servicios</a>
+						<a href={homeLink("#services")} class="nav-title-link">Servicios</a>
 					</li>
 					<li>
-						<a href="#projects" class="nav-title-link">Proyectos</a>
+						<a href={homeLink("#projects")} class="nav-title-link">Proyectos</a>
 					</li>
 					<li>
-						<a href="#contact" class="nav-title-link">Contacto</a>
+						<a href={homeLink("#contact")} class="nav-title-link">Contacto</a>
 					</li>
 				</ul>
 
@@ -216,24 +223,24 @@ const ogImage = Astro.site
 					class="micro-label px-4 py-4 space-y-3 text-xs uppercase tracking-[0.2em]"
 				>
 					<li>
-						<a href="#top" class="nav-title-link block py-2 mobile-menu-link"
+						<a href={homeLink("#top")} class="nav-title-link block py-2 mobile-menu-link"
 							>Inicio</a
 						>
 					</li>
 					<li>
-						<a href="#services" class="nav-title-link block py-2 mobile-menu-link"
+						<a href={homeLink("#services")} class="nav-title-link block py-2 mobile-menu-link"
 							>Servicios</a
 						>
 					</li>
 					<li>
 						<a
-							href="#projects"
+							href={homeLink("#projects")}
 							class="nav-title-link block py-2 mobile-menu-link">Proyectos</a
 						>
 					</li>
 					<li>
 						<a
-							href="#contact"
+							href={homeLink("#contact")}
 							class="nav-title-link block py-2 mobile-menu-link">Contacto</a
 						>
 					</li>
