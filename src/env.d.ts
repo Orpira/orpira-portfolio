@@ -5,6 +5,8 @@ interface ImportMetaEnv {
 	readonly PUBLIC_SUPABASE_ANON_KEY: string;
 	readonly SUPABASE_SERVICE_ROLE_KEY: string;
 	readonly CONTACT_WEBHOOK_URL?: string;
+	readonly ADMIN_PASSWORD: string;
+	readonly ADMIN_SESSION_SECRET: string;
 }
 
 interface ImportMeta {

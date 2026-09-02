@@ -44,6 +44,23 @@ npm run dev
 
 El sitio estará disponible en `http://localhost:4321`
 
+### Variables de entorno
+
+Copia los nombres de `.env.example` en tu entorno local y en Vercel. No
+versiones valores reales.
+
+- `ADMIN_PASSWORD`: contrasena unica para acceder al CRM.
+- `ADMIN_SESSION_SECRET`: secreto aleatorio de al menos 32 caracteres para
+  firmar sesiones. Puedes generarlo con `openssl rand -base64 48`.
+- `PUBLIC_SUPABASE_URL`, `PUBLIC_SUPABASE_ANON_KEY` y
+  `SUPABASE_SERVICE_ROLE_KEY`: conexion de Supabase para contacto y CRM.
+- `CONTACT_WEBHOOK_URL`: webhook opcional del formulario de contacto.
+
+Antes de desplegar el endurecimiento de la demo financiera, ejecuta
+`supabase/finance_movements.sql` en Supabase para retirar el acceso anonimo a
+los datos historicos. La demo del portfolio guarda ahora sus movimientos solo
+en el navegador del visitante.
+
 ## 📜 Scripts Disponibles
 
 - `npm run dev` - Inicia el servidor de desarrollo

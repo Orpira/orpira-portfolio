@@ -1,6 +1,11 @@
 ---
 const error =
   Astro.url.searchParams.get("error");
+
+const errorMessage =
+  error === "2"
+    ? "Demasiados intentos. Espera 15 minutos"
+    : "Contrasena incorrecta";
 ---
 
 <html lang="es">
@@ -14,7 +19,7 @@ const error =
 
 {error && (
   <p style="color:red;">
-    Contraseña incorrecta
+    {errorMessage}
   </p>
 )}
 

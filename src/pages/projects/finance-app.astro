@@ -1,8 +1,5 @@
 ---
 import ProjectLayout from "../../layouts/ProjectLayout.astro";
-
-const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
 ---
 
 <ProjectLayout
@@ -70,6 +67,9 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
 					<h2 class="mt-2 font-display text-2xl font-semibold text-orange-100">
 						Movimientos personales
 					</h2>
+					<p class="mt-2 text-sm text-brand-muted">
+						Los datos de esta demo se guardan solo en tu navegador.
+					</p>
 				</div>
 				<a
 					href="#android-preview"
@@ -292,7 +292,7 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
 		</section>
 	</section>
 
-	<script is:inline define:vars={{ supabaseUrl, supabaseAnonKey }}>
+	<script is:inline>
 		const form = document.getElementById("finance-form");
 		const message = document.getElementById("finance-message");
 		const submitButton = document.getElementById("submit-finance-movement");
@@ -315,6 +315,33 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
 			"mobile-clear-finance-movements",
 		);
 		const mobileDemo = document.getElementById("mobile-demo");
+		const STORAGE_KEY = "orpira_finance_demo_v1";
+		const initialMovements = [
+			{
+				id: "demo-income",
+				type: "income",
+				description: "Nomina demo",
+				amount: 1850,
+				category: "Ingresos",
+				created_at: "2026-08-26T08:00:00.000Z",
+			},
+			{
+				id: "demo-rent",
+				type: "expense",
+				description: "Alquiler demo",
+				amount: 650,
+				category: "Vivienda",
+				created_at: "2026-08-25T08:00:00.000Z",
+			},
+			{
+				id: "demo-food",
+				type: "expense",
+				description: "Supermercado demo",
+				amount: 86.4,
+				category: "Comida",
+				created_at: "2026-08-24T08:00:00.000Z",
+			},
+		];
 
 		const moneyFormatter = new Intl.NumberFormat("es-ES", {
 			style: "currency",
@@ -349,43 +376,33 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
 				.replaceAll('"', "&quot;")
 				.replaceAll("'", "&#039;");
 
+		const writeMovements = (movements) => {
+			localStorage.setItem(STORAGE_KEY, JSON.stringify(movements.slice(0, 50)));
+		};
+
 		const fetchMovements = async () => {
-			if (!supabaseUrl || !supabaseAnonKey) {
-				throw new Error("Faltan variables publicas de Supabase.");
+			const stored = localStorage.getItem(STORAGE_KEY);
+			if (!stored) {
+				writeMovements(initialMovements);
+				return [...initialMovements];
 			}
 
-			const response = await fetch(
-				`${supabaseUrl}/rest/v1/finance_movements?select=id,type,description,amount,category,created_at&order=created_at.desc&limit=50`,
-				{
-					headers: {
-						apikey: supabaseAnonKey,
-						Authorization: `Bearer ${supabaseAnonKey}`,
-					},
-				},
-			);
-
-			if (!response.ok) {
-				throw new Error("No se pudieron cargar los movimientos demo.");
+			try {
+				const movements = JSON.parse(stored);
+				return Array.isArray(movements) ? movements : [];
+			} catch {
+				writeMovements(initialMovements);
+				return [...initialMovements];
 			}
-
-			return response.json();
 		};
 
 		const deleteMovements = async (payload) => {
-			const response = await fetch("/api/finance-demo", {
-				method: "DELETE",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify(payload),
-			});
-			const result = await response.json();
-
-			if (!response.ok || !result.success) {
-				throw new Error(result.error || "No se pudieron borrar los datos demo.");
-			}
-
-			return result;
+			const movements = await fetchMovements();
+			writeMovements(
+				payload.all
+					? []
+					: movements.filter((movement) => movement.id !== payload.id),
+			);
 		};
 
 		const setDeletingState = (isDeleting) => {
@@ -543,7 +560,7 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
 				setMessage("Cargando movimientos demo...");
 				const movements = await fetchMovements();
 				renderMovements(movements);
-				setMessage("Demo conectada a Supabase.");
+				setMessage("Movimientos cargados correctamente.");
 			} catch (error) {
 				setMessage(error.message || "Error al cargar la demo.", "error");
 				if (tableBody) {
@@ -634,23 +651,19 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
 			}
 
 			try {
-				const response = await fetch("/api/finance-demo", {
-					method: "POST",
-					headers: {
-						"Content-Type": "application/json",
-					},
-					body: JSON.stringify({
+				const movements = await fetchMovements();
+				const id = globalThis.crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random()}`;
+				writeMovements([
+					{
+						id,
 						type,
-						description,
-						category,
-						amount,
-					}),
-				});
-				const result = await response.json();
-
-				if (!response.ok || !result.success) {
-					throw new Error(result.error || "No se pudo guardar el movimiento.");
-				}
+						description: description.slice(0, 120),
+						category: category.slice(0, 80) || "Demo",
+						amount: Number(amount.toFixed(2)),
+						created_at: new Date().toISOString(),
+					},
+					...movements,
+				]);
 
 				form.reset();
 				setMessage("Movimiento demo guardado correctamente.", "success");

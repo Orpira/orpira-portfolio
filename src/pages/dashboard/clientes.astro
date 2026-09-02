@@ -1,10 +1,22 @@
 ---
 import CRMLayout from "../../layouts/CRMLayout.astro";
 import { supabaseAdmin } from "../../lib/supabase-admin";
+import {
+  ADMIN_SESSION_COOKIE,
+  verifyAdminSession,
+} from "../../lib/admin-session";
+
+if (
+  !verifyAdminSession(
+    Astro.cookies.get(ADMIN_SESSION_COOKIE)?.value
+  )
+) {
+  return Astro.redirect("/dashboard", 303);
+}
 
 const { data: clientes } = await supabaseAdmin
   .from("contacts")
-  .select("*")
+  .select("id, name, email, priority, lead_score")
   .eq("lead_type", "cliente")
   .order("lead_score", {
     ascending: false,
