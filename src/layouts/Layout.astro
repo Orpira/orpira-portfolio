@@ -1,5 +1,6 @@
 ---
 import "../styles/global.css";
+import OrpiraLoader from "../components/OrpiraLoader.astro";
 
 interface Props {
 	baseUrl: string;
@@ -77,6 +78,7 @@ const ogImage = Astro.site
 	<body
 		class="relative bg-zinc-100 dark:bg-brand-bg text-zinc-900 dark:text-brand-text font-sans selection:bg-brand-accent/30 selection:text-brand-text"
 	>
+		<OrpiraLoader />
 		<div aria-hidden="true" class="pointer-events-none fixed inset-0 -z-10">
 			<div
 				class="absolute -top-28 left-[18%] h-72 w-72 rounded-full bg-brand-accent/20 blur-3xl"
