@@ -20,7 +20,27 @@
 				<div class="orpira-loader__panel"><span class="orpira-loader__mark">Or</span></div>
 			</div>
 			<div class="orpira-loader__face orpira-loader__face--back">
-				<div class="orpira-loader__panel"><span class="orpira-loader__mark orpira-loader__mark--lan">LAN</span></div>
+				<div class="orpira-loader__panel">
+					<div class="orpira-loader__lan-wrap">
+						<svg class="orpira-loader__lan" viewBox="0 0 220 220" role="img" aria-label="LAN">
+							<defs>
+								<linearGradient id="orpira-loader-metal-lan" x1="0" y1="0" x2="1" y2="1">
+									<stop offset="0" stop-color="#fff" />
+									<stop offset=".2" stop-color="#d3d3d7" />
+									<stop offset=".44" stop-color="#777980" />
+									<stop offset=".63" stop-color="#f5f5f6" />
+									<stop offset=".82" stop-color="#8f9096" />
+									<stop offset="1" stop-color="#ececef" />
+								</linearGradient>
+							</defs>
+							<path d="M110 52 L57 150 M110 52 L163 150 M57 150 L163 150" fill="none" stroke="url(#orpira-loader-metal-lan)" stroke-width="15" stroke-linecap="round" stroke-linejoin="round" />
+							<rect x="87" y="29" width="46" height="46" rx="11" fill="url(#orpira-loader-metal-lan)" stroke="#fff" stroke-width="2" />
+							<rect x="34" y="127" width="46" height="46" rx="11" fill="url(#orpira-loader-metal-lan)" stroke="#fff" stroke-width="2" />
+							<rect x="140" y="127" width="46" height="46" rx="11" fill="url(#orpira-loader-metal-lan)" stroke="#fff" stroke-width="2" />
+							<circle cx="110" cy="117" r="12" fill="#b5b6bb" stroke="#f7f7f8" stroke-width="2" />
+						</svg>
+					</div>
+				</div>
 			</div>
 			<div class="orpira-loader__face orpira-loader__face--bottom">
 				<div class="orpira-loader__panel"><span class="orpira-loader__mark">Do</span></div>
@@ -90,7 +110,7 @@
 		width: var(--loader-size);
 		height: var(--loader-size);
 		transform-style: preserve-3d;
-		animation: orpira-loader-motion 6s linear infinite;
+		animation: orpira-loader-motion 4s linear infinite;
 		will-change: transform;
 	}
 
@@ -157,7 +177,17 @@
 	}
 
 	.orpira-loader__mark--pi { font-size: clamp(106px, calc(var(--loader-size) * 0.44), 148px); letter-spacing: 0; }
-	.orpira-loader__mark--lan { font-family: "JetBrains Mono", monospace; font-size: clamp(31px, calc(var(--loader-size) * 0.16), 43px); letter-spacing: 0.08em; }
+	.orpira-loader__lan-wrap {
+		position: relative;
+		z-index: 2;
+		width: 74%;
+		height: 74%;
+		display: grid;
+		place-items: center;
+		transform: translateZ(22px);
+		filter: drop-shadow(4px 8px 7px rgba(0, 0, 0, 0.82));
+	}
+	.orpira-loader__lan { width: 100%; height: 100%; overflow: visible; }
 	.orpira-loader__wordmark { font-size: clamp(2.2rem, 7vw, 3.5rem); line-height: 0.9; font-style: italic; font-weight: 600; letter-spacing: -0.045em; }
 	.orpira-loader__tagline { color: #85868d; font-family: "Manrope", sans-serif; font-size: 0.68rem; letter-spacing: 0.18em; text-align: center; text-transform: uppercase; }
 	.orpira-loader__skip { margin-top: 0.45rem; border: 1px solid rgba(255, 255, 255, 0.24); border-radius: 999px; padding: 0.55rem 1rem; color: #d7d7da; background: transparent; font: 600 0.65rem/1 "Manrope", sans-serif; letter-spacing: 0.18em; text-transform: uppercase; cursor: pointer; }
@@ -201,7 +231,7 @@
 				console.warn("No se pudo guardar la sesion del loader", error);
 			}
 			loader.classList.add("is-exiting");
-			window.setTimeout(() => loader.remove(), 600);
+			window.setTimeout(() => loader.remove(), 500);
 		};
 
 		if (alreadySeen) {
