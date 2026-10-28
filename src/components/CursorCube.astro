@@ -1,0 +1,175 @@
+---
+/**
+ * Cubo acompañante del puntero, solo dentro de la sección que lo contiene (el hero).
+ *
+ * - El puntero normal NO se oculta: el cubo va al lado, con retardo suave.
+ * - Gira en 3D según la velocidad y dirección del movimiento.
+ * - Solo con ratón (hover + pointer: fine) y sin prefers-reduced-motion.
+ * - El bucle de animación se detiene cuando el cubo está quieto o fuera del hero.
+ * - Se oculta sobre el cubo grande (no duplicar) y sobre enlaces y botones (no tapar su texto).
+ */
+interface Props {
+	/** Selector del contenedor donde se activa. Por defecto, la sección padre. */
+	zone?: string;
+	size?: number;
+}
+
+const { zone = "#inicio", size = 32 } = Astro.props;
+---
+
+<div class="cursor-cube" aria-hidden="true" data-cursor-cube data-zone={zone} style={`--c: ${size}px;`}>
+	<div class="cursor-cube__body">
+		<span class="cursor-cube__face cursor-cube__face--front"><span class="cursor-cube__pi">π</span></span>
+		<span class="cursor-cube__face cursor-cube__face--back"><span class="cursor-cube__pi">π</span></span>
+		<span class="cursor-cube__face cursor-cube__face--right"><span class="cursor-cube__pi">π</span></span>
+		<span class="cursor-cube__face cursor-cube__face--left"><span class="cursor-cube__pi">π</span></span>
+		<span class="cursor-cube__face cursor-cube__face--top"></span>
+		<span class="cursor-cube__face cursor-cube__face--bottom"></span>
+	</div>
+</div>
+
+<style>
+	.cursor-cube {
+		--half: calc(var(--c) / 2);
+		position: fixed;
+		left: 0;
+		top: 0;
+		z-index: 40;
+		width: var(--c);
+		height: var(--c);
+		pointer-events: none;
+		opacity: 0;
+		perspective: calc(var(--c) * 8);
+		transform: translate3d(-100px, -100px, 0) scale(0.6);
+		transition: opacity 0.25s var(--ease-out);
+		will-change: transform, opacity;
+		display: none;
+	}
+
+	.cursor-cube.is-ready {
+		display: block;
+	}
+
+	.cursor-cube.is-visible {
+		opacity: 1;
+	}
+
+	.cursor-cube__body {
+		position: relative;
+		width: 100%;
+		height: 100%;
+		transform-style: preserve-3d;
+		transform: rotateX(var(--rx, -20deg)) rotateY(var(--ry, -32deg));
+	}
+
+	.cursor-cube__face {
+		position: absolute;
+		inset: 0;
+		display: grid;
+		place-items: center;
+		border-radius: 22%;
+		background: linear-gradient(145deg, #2a2d33 0%, #15171b 55%, #0c0d10 100%);
+		box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.22);
+		backface-visibility: hidden;
+	}
+
+	.cursor-cube__face--front { transform: translateZ(var(--half)); }
+	.cursor-cube__face--back { transform: rotateY(180deg) translateZ(var(--half)); }
+	.cursor-cube__face--right { transform: rotateY(90deg) translateZ(var(--half)); }
+	.cursor-cube__face--left { transform: rotateY(-90deg) translateZ(var(--half)); }
+	.cursor-cube__face--top { transform: rotateX(90deg) translateZ(var(--half)); }
+	.cursor-cube__face--bottom { transform: rotateX(-90deg) translateZ(var(--half)); }
+
+	.cursor-cube__pi {
+		font-family: var(--font-heading);
+		font-size: calc(var(--c) * 0.62);
+		line-height: 1;
+		color: rgb(255 155 83);
+	}
+</style>
+
+<script>
+	const cube = document.querySelector<HTMLElement>("[data-cursor-cube]");
+	const canHover = window.matchMedia("(hover: hover) and (pointer: fine)");
+	const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+	if (cube && canHover.matches && !reduceMotion.matches) {
+		const zone = document.querySelector<HTMLElement>(cube.dataset.zone ?? "#inicio");
+		const body = cube.querySelector<HTMLElement>(".cursor-cube__body");
+
+		if (zone && body) {
+			cube.classList.add("is-ready");
+
+			const OFFSET = 20; // px a la derecha y abajo de la punta del puntero
+			let targetX = 0;
+			let targetY = 0;
+			let x = 0;
+			let y = 0;
+			let rx = -20;
+			let ry = -32;
+			let scale = 0.6;
+			let targetScale = 0.6;
+			let frame = 0;
+			let inside = false;
+
+			const tick = () => {
+				const dx = targetX - x;
+				const dy = targetY - y;
+				x += dx * 0.18;
+				y += dy * 0.18;
+				// El giro sigue al movimiento: horizontal → eje Y, vertical → eje X.
+				ry += dx * 0.9;
+				rx -= dy * 0.9;
+				scale += (targetScale - scale) * 0.2;
+
+				cube.style.transform = `translate3d(${x}px, ${y}px, 0) scale(${scale})`;
+				body.style.setProperty("--rx", `${rx}deg`);
+				body.style.setProperty("--ry", `${ry}deg`);
+
+				const settled =
+					Math.abs(dx) < 0.3 && Math.abs(dy) < 0.3 && Math.abs(targetScale - scale) < 0.01;
+				frame = settled ? 0 : requestAnimationFrame(tick);
+			};
+
+			const run = () => {
+				if (!frame) frame = requestAnimationFrame(tick);
+			};
+
+			zone.addEventListener("pointermove", (event) => {
+				if (event.pointerType !== "mouse") return;
+				targetX = event.clientX + OFFSET;
+				targetY = event.clientY + OFFSET;
+
+				if (!inside) {
+					// Al entrar aparece junto al puntero, sin cruzar la pantalla.
+					inside = true;
+					x = targetX;
+					y = targetY;
+					cube.classList.add("is-visible");
+				}
+
+				// Se esconde sobre el cubo grande y sobre enlaces y botones (no tapa su texto).
+				const over = event.target as Element | null;
+				const hidden = Boolean(over?.closest("[data-hero-cube], a, button"));
+				cube.classList.toggle("is-visible", !hidden);
+				targetScale = hidden ? 0.6 : 1;
+				run();
+			});
+
+			zone.addEventListener("pointerleave", () => {
+				inside = false;
+				targetScale = 0.6;
+				cube.classList.remove("is-visible");
+				run();
+			});
+
+			// Si se hace scroll y el hero sale de la vista, se oculta.
+			new IntersectionObserver(([entry]) => {
+				if (!entry.isIntersecting) {
+					inside = false;
+					cube.classList.remove("is-visible");
+				}
+			}).observe(zone);
+		}
+	}
+</script>
