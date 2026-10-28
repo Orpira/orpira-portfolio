@@ -1,0 +1,29 @@
+---
+/**
+ * Marca de dato pendiente. Visible en local y en vistas previas;
+ * en producción no se renderiza (ver src/data/home.ts → isProduction).
+ */
+import { isProduction } from "../../data/home";
+
+interface Props {
+	hint?: string;
+	class?: string;
+}
+
+const { hint, class: className = "" } = Astro.props;
+---
+
+{
+	!isProduction && (
+		<span
+			class:list={[
+				"t-data inline-flex items-center gap-1.5 rounded-ds-sm border border-dashed border-accent-ink/70 bg-accent/10 px-2 py-0.5 text-accent-ink",
+				className,
+			]}
+			title={hint}
+			data-pending={hint}
+		>
+			<span aria-hidden="true">●</span> Pendiente{hint ? `: ${hint}` : ""}
+		</span>
+	)
+}

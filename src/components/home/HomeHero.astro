@@ -1,0 +1,26 @@
+---
+import Button from "../ui/Button.astro";
+import HeroCube from "../HeroCube.astro";
+import { hero } from "../../data/home";
+---
+
+<section id="inicio" aria-labelledby="inicio-titulo" class="pb-16 pt-12 md:pb-24 md:pt-20">
+	<div class="container-site grid items-center gap-10 md:grid-cols-12 md:gap-12">
+		<div class="md:col-span-8">
+			<p class="t-data text-ink-muted">{hero.eyebrow}</p>
+			<h1 id="inicio-titulo" class="t-display mt-6 max-w-[14ch]">
+				{hero.titleStart} <span class="t-accent">{hero.titleAccent}</span>
+			</h1>
+			<p class="t-lead mt-7 max-w-[56ch]">{hero.lead}</p>
+			<div class="mt-9 flex flex-wrap items-center gap-3">
+				<Button href={hero.primaryCta.href} size="lg" arrow>{hero.primaryCta.label}</Button>
+				<Button href={hero.secondaryCta.href} size="lg" variant="secondary">
+					{hero.secondaryCta.label}
+				</Button>
+			</div>
+		</div>
+		<div class="flex justify-center md:col-span-4 md:justify-end">
+			<HeroCube />
+		</div>
+	</div>
+</section>

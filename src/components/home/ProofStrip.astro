@@ -1,0 +1,39 @@
+---
+import Pending from "../ui/Pending.astro";
+import { stats, publishable } from "../../data/home";
+
+const items = publishable(stats);
+---
+
+{
+	items.length > 0 && (
+		<section aria-label="Algunas cifras" class="border-t border-line">
+			<div class="container-site">
+				<dl class="grid grid-cols-2 lg:grid-cols-4">
+					{items.map((stat, i) => (
+						<div
+							class:list={[
+								"border-line py-8 pr-4 md:py-10",
+								i % 2 === 1 && "border-l pl-4 md:pl-6",
+								i >= 2 && "border-t lg:border-t-0",
+								i === 2 && "lg:border-l lg:pl-6",
+							]}
+						>
+							<dt class="t-data order-2 mt-2 text-ink-muted">{stat.label}</dt>
+							<dd class="order-1 font-heading text-[clamp(2.5rem,1.9rem+2.4vw,3.75rem)] leading-none text-ink">
+								{stat.value ?? <Pending hint={stat.pendingHint} class="align-middle text-[0.75rem]" />}
+							</dd>
+						</div>
+					))}
+				</dl>
+			</div>
+		</section>
+	)
+}
+
+<style>
+	dl > div {
+		display: flex;
+		flex-direction: column;
+	}
+</style>

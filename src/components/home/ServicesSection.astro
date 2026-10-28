@@ -1,0 +1,49 @@
+---
+import Section from "../ui/Section.astro";
+import Pending from "../ui/Pending.astro";
+import { services, isProduction } from "../../data/home";
+---
+
+<Section
+	id="servicios"
+	index="02"
+	eyebrow="Servicios"
+	title="Tres formas de <em class='t-accent'>trabajar juntos.</em>"
+	intro="Proyectos con alcance cerrado y un resultado que se puede usar desde el primer día."
+>
+	<ol class="grid gap-px overflow-hidden rounded-ds-lg border border-line bg-line md:grid-cols-3">
+		{
+			services.map((service, i) => (
+				<li class="flex flex-col bg-paper p-7 md:p-8">
+					<p class="t-data text-accent-ink">{String(i + 1).padStart(2, "0")}</p>
+					<h3 class="t-h3 mt-5">{service.title}</h3>
+					<p class="mt-3 text-ink-soft">{service.summary}</p>
+					<ul class="mt-6 space-y-2.5 text-[0.9375rem]">
+						{service.includes.map((item) => (
+							<li class="flex gap-3">
+								<span aria-hidden="true" class="mt-[0.7em] h-px w-3 shrink-0 bg-ink-muted" />
+								<span>{item}</span>
+							</li>
+						))}
+					</ul>
+					<div class="mt-auto pt-8">
+					<dl class="t-data space-y-1 border-t border-line pt-5 text-ink-muted">
+						<div class="flex gap-2">
+							<dt>Ejemplo:</dt>
+							<dd class="text-ink-soft">{service.example}</dd>
+						</div>
+						{(service.format || !isProduction) && (
+							<div class="flex flex-wrap gap-2">
+								<dt>Formato:</dt>
+								<dd class="text-ink-soft">
+									{service.format ?? <Pending hint={service.pendingHint} />}
+								</dd>
+							</div>
+						)}
+					</dl>
+					</div>
+				</li>
+			))
+		}
+	</ol>
+</Section>

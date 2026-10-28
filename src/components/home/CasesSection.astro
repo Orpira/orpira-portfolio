@@ -1,0 +1,34 @@
+---
+import Section from "../ui/Section.astro";
+import CaseRow from "../ui/CaseRow.astro";
+import { featuredCases } from "../../data/home";
+---
+
+<Section
+	id="casos"
+	index="01"
+	eyebrow="Casos"
+	title="Problemas reales, <em class='t-accent'>en producción.</em>"
+	intro="Tres proyectos que resumen cómo trabajo: formación, gestión con IA y producto propio. Cada caso cuenta el problema, las decisiones y el resultado."
+>
+	<ol class="list-none">
+		{
+			featuredCases.map((c, i) => (
+				<CaseRow
+					index={String(i + 1).padStart(2, "0")}
+					title={c.title}
+					result={c.result}
+					year={c.year}
+					href={c.href}
+					external={c.external}
+					role={c.role}
+					tags={c.tags}
+					image={c.image}
+					imageAlt={c.imageAlt}
+					status={c.status}
+					statusLabel={c.statusLabel}
+				/>
+			))
+		}
+	</ol>
+</Section>

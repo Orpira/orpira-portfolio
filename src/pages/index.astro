@@ -1,25 +1,27 @@
 ---
+// Portada (fase 2C) sobre el sistema "Editorial técnico".
+// Textos y cifras en src/data/home.ts (null = pendiente).
 export const prerender = true;
-// src/pages/index.astro
 
-import Footer from "../components/Footer.astro";
-import Layout from "../layouts/Layout.astro";
-import HeroSection from "../components/HeroSection.astro";
-import SkillsSection from "../components/ServicesSection.astro";
-import ProjectsSection from "../components/ProjectsSection.astro";
-import ContactSection from "../components/ContactSection.astro";
-
-// Obtener la base URL para los assets
-const baseUrl =
-	import.meta.env.BASE_URL === "/"
-		? ""
-		: import.meta.env.BASE_URL.replace(/\/$/, "");
+import SiteLayout from "../layouts/SiteLayout.astro";
+import HomeHero from "../components/home/HomeHero.astro";
+import ProofStrip from "../components/home/ProofStrip.astro";
+import CasesSection from "../components/home/CasesSection.astro";
+import ServicesSection from "../components/home/ServicesSection.astro";
+import ProcessSection from "../components/home/ProcessSection.astro";
+import AboutSection from "../components/home/AboutSection.astro";
+import LabSection from "../components/home/LabSection.astro";
+import ContactSection from "../components/home/ContactSection.astro";
+import { seo } from "../data/home";
 ---
 
-<Layout baseUrl={baseUrl}>
-	<HeroSection baseUrl={baseUrl} />
-	<SkillsSection />
-	<ProjectsSection baseUrl={baseUrl} />	
-	<ContactSection baseUrl={baseUrl} />
-	<Footer />
-</Layout>
+<SiteLayout title={seo.title} description={seo.description} isHome>
+	<HomeHero />
+	<ProofStrip />
+	<CasesSection />
+	<ServicesSection />
+	<ProcessSection />
+	<AboutSection />
+	<LabSection />
+	<ContactSection />
+</SiteLayout>

@@ -1,0 +1,60 @@
+---
+import Section from "../ui/Section.astro";
+import Tag from "../ui/Tag.astro";
+import Pending from "../ui/Pending.astro";
+import { labProjects, isProduction } from "../../data/home";
+---
+
+<Section
+	id="laboratorio"
+	index="05"
+	eyebrow="Laboratorio"
+	title="Proyectos propios <em class='t-accent'>para probar ideas.</em>"
+	intro="Juegos y herramientas que construyo para explorar tiempo real, 3D y nuevas formas de aprender."
+>
+	<ul class="grid gap-6 md:grid-cols-3">
+		{
+			labProjects.map((project) => {
+				const Wrapper = project.href ? "a" : "div";
+				const attrs = project.href
+					? { href: project.href, target: "_blank", rel: "noopener noreferrer" }
+					: {};
+				return (
+					<li>
+						<Wrapper
+							{...attrs}
+							class:list={[
+								"group flex h-full flex-col rounded-ds-lg border border-line p-6 transition-colors duration-200",
+								project.href && "hover:border-ink/40",
+							]}
+						>
+							<div class="flex items-center justify-between gap-3">
+								<Tag variant="status" status={project.status}>
+									{project.statusLabel}
+								</Tag>
+								{project.href && (
+									<span aria-hidden="true" class="text-ink transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
+										↗
+									</span>
+								)}
+							</div>
+							<h3 class="mt-6 font-heading text-3xl leading-tight text-ink">
+								{project.title}
+								{project.href && <span class="sr-only"> (se abre en otra pestaña)</span>}
+							</h3>
+							<p class="mt-2 text-[0.9375rem] text-ink-soft">{project.summary}</p>
+							<div class="mt-auto flex flex-wrap items-center gap-1.5 pt-6">
+								{project.tags.map((tag) => (
+									<Tag>{tag}</Tag>
+								))}
+								{!project.href && !isProduction && project.pendingHint && (
+									<Pending hint={project.pendingHint} />
+								)}
+							</div>
+						</Wrapper>
+					</li>
+				);
+			})
+		}
+	</ul>
+</Section>

@@ -14,7 +14,8 @@ interface Props {
 	title: string;
 	result: string;
 	year: string;
-	href: string;
+	/** Sin href, la fila no es enlace (caso en preparación). */
+	href?: string;
 	role?: string;
 	tags?: string[];
 	image?: ImageMetadata;
@@ -38,13 +39,17 @@ const {
 	status,
 	statusLabel,
 } = Astro.props;
+
+const Wrapper = href ? "a" : "div";
+const linkAttrs = href
+	? { href, ...(external ? { target: "_blank", rel: "noopener noreferrer" } : {}) }
+	: {};
 ---
 
 <li class="case-row group relative border-t border-line last:border-b">
-	<a
-		href={href}
+	<Wrapper
 		class="grid gap-4 py-7 md:grid-cols-12 md:items-baseline md:gap-6 md:py-9"
-		{...external ? { target: "_blank", rel: "noopener noreferrer" } : {}}
+		{...linkAttrs}
 	>
 		{
 			image && (
@@ -63,7 +68,7 @@ const {
 		<span class="t-data text-ink-muted md:col-span-1">{index}</span>
 		<div class="md:col-span-7">
 			<h3 class="font-heading text-[clamp(1.9rem,1.4rem+1.8vw,2.9rem)] leading-[1.05] tracking-[-0.015em] text-ink">
-				<span class="case-title transition-colors duration-200 group-hover:text-accent-ink group-focus-visible:text-accent-ink">
+				<span class:list={["case-title transition-colors duration-200", href && "group-hover:text-accent-ink group-focus-visible:text-accent-ink"]}>
 					{title}
 				</span>
 				{external && <span class="sr-only"> (se abre en otra pestaña)</span>}
@@ -91,14 +96,16 @@ const {
 		</div>
 		<span class="t-data flex items-center justify-between text-ink-muted md:col-span-1 md:justify-end">
 			{year}
-			<span
-				aria-hidden="true"
-				class="ml-3 inline-block text-ink transition-transform duration-200 group-hover:translate-x-1"
-			>
-				{external ? "↗" : "→"}
-			</span>
+			{href && (
+				<span
+					aria-hidden="true"
+					class="ml-3 inline-block text-ink transition-transform duration-200 group-hover:translate-x-1"
+				>
+					{external ? "↗" : "→"}
+				</span>
+			)}
 		</span>
-	</a>
+	</Wrapper>
 
 	{
 		image && (
