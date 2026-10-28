@@ -3,9 +3,11 @@ import Button from "../ui/Button.astro";
 
 interface Props {
 	isHome?: boolean;
+	/** Llamada a la acción grande del pie. Se oculta donde la página ya tiene la suya. */
+	showCta?: boolean;
 }
 
-const { isHome = false } = Astro.props;
+const { isHome = false, showCta = !isHome } = Astro.props;
 const link = (hash: string) => (isHome ? hash : `/${hash}`);
 const year = new Date().getFullYear();
 
@@ -18,8 +20,8 @@ const channels = [
 
 <footer class="border-t border-line">
 	<div class="container-site py-20 md:py-24">
-		{/* En la portada la sección de contacto va justo antes: no se repite la llamada. */}
-		{!isHome && (
+		{/* Portada y casos ya terminan con su propia llamada: no se repite. */}
+		{showCta && (
 		<>
 		<div class="grid gap-10 md:grid-cols-12 md:items-end">
 			<p class="font-heading text-[clamp(2.1rem,1.5rem+2.6vw,3.5rem)] leading-[1.04] tracking-[-0.015em] text-ink md:col-span-8">

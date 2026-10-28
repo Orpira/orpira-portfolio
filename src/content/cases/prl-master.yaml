@@ -1,0 +1,98 @@
+# Redactado solo con hechos conocidos. Lo que falta está en `pending` o en valores null.
+title: PRL Master
+order: 1
+headline: >-
+  Un examen de prevención de riesgos laborales en Word convertido en una app para
+  estudiar, examinarse y obtener el certificado.
+summary: >-
+  Formación en prevención de riesgos laborales con modo estudio, modo examen, certificado
+  y asistente con IA, sobre un banco de 174 preguntas.
+seoDescription: >-
+  Caso de estudio de PRL Master: plataforma de formación en prevención de riesgos
+  laborales con modo estudio, examen, certificado y asistente con IA.
+year: "2026"
+role: Producto · Full Stack · Experiencia interactiva
+platform: Web
+status: live
+statusLabel: En producción
+tags: [React, Vite, Express, Socket.IO, Supabase]
+links:
+  - label: Abrir PRL Master
+    href: https://prl.orpira.es/
+
+problem:
+  title: El temario y el examen vivían en un documento Word.
+  paragraphs:
+    - >-
+      Un documento se lee, pero no se puede practicar con él, no corrige y no deja
+      constancia de quién ha aprobado. La formación en prevención de riesgos laborales
+      necesita las tres cosas.
+  pending:
+    - Quién usaba ese material (empresa, academia, alumnos) y cuántas personas se forman al año
+    - Cómo se hacía antes el examen y la corrección, y cuánto tiempo costaba
+
+decisions:
+  - title: Las preguntas son datos, no páginas
+    context: El examen original estaba en Word, mezclando formato y contenido.
+    decision: >-
+      Convertir el documento en un banco estructurado en JSON con 174 preguntas, separado
+      de la aplicación.
+    why: >-
+      Actualizar o ampliar el temario pasa a ser editar datos, sin tocar la interfaz, y
+      cada pregunta se puede reutilizar en estudio, examen o nuevas formaciones.
+  - title: Estudiar y examinarse son experiencias distintas
+    context: Practicar con ayuda y demostrar lo aprendido tienen reglas diferentes.
+    decision: >-
+      Separar un modo estudio, con corrección inmediata, de un modo examen que evalúa al
+      final y emite el certificado si se aprueba.
+    why: El alumno aprende sin presión y el examen conserva su valor como prueba.
+  - title: Un asistente para resolver dudas sobre el temario
+    context: Las dudas aparecen mientras se estudia, no cuando hay alguien para resolverlas.
+    decision: Incorporar un chat con IA dentro de la propia formación.
+    why: El alumno resuelve dudas en el momento, sin salir de la app.
+
+gallery: []
+galleryPending: Capturas del modo estudio, del modo examen y del certificado (2–4 imágenes)
+
+architecture:
+  summary: >-
+    Interfaz en React, un servidor Express con comunicación en tiempo real y el banco de
+    preguntas como datos independientes.
+  layers:
+    - label: Interfaz
+      items: [React, Vite, Tailwind CSS]
+      note: Modo estudio, modo examen y certificado.
+    - label: Servidor
+      items: [Express, Socket.IO]
+    - label: Contenido y datos
+      items: [Banco de 174 preguntas en JSON, Supabase]
+    - label: Despliegue
+      items: [Vercel]
+
+stack:
+  - layer: Interfaz
+    tech: [React, Vite, Tailwind CSS]
+    why: Una experiencia interactiva rápida, pensada para estudiar desde cualquier dispositivo.
+  - layer: Servidor
+    tech: [Express, Socket.IO]
+    why: API propia y comunicación en tiempo real.
+  - layer: Datos
+    tech: [JSON, Supabase]
+    why: El contenido formativo queda separado de la aplicación.
+  - layer: Despliegue
+    tech: [Vercel]
+    why: Publicación continua desde el repositorio.
+
+results:
+  - value: "174"
+    label: preguntas en el banco, convertidas desde el examen en Word
+  - value: null
+    label: personas formadas
+    pendingHint: Alumnos o empresas que han usado PRL Master
+  - value: null
+    label: tiempo ahorrado en corrección
+    pendingHint: Tiempo que costaba corregir antes frente a ahora
+
+next: >-
+  Reutilizar la misma base para nuevas formaciones a partir de otros temarios, con
+  informes de progreso para quien organiza la formación.

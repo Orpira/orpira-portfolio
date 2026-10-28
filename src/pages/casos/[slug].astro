@@ -1,0 +1,316 @@
+---
+/**
+ * Plantilla de caso de estudio (fase 2D).
+ * Contenido en src/content/cases/*.yaml. Los null y `pending` se marcan
+ * en vistas previas y se ocultan en producción.
+ */
+export const prerender = true;
+
+import { getCollection, type CollectionEntry } from "astro:content";
+import { Image } from "astro:assets";
+import type { ImageMetadata } from "astro";
+import SiteLayout from "../../layouts/SiteLayout.astro";
+import Section from "../../components/ui/Section.astro";
+import Button from "../../components/ui/Button.astro";
+import Tag from "../../components/ui/Tag.astro";
+import Pending from "../../components/ui/Pending.astro";
+import CaseArchitecture from "../../components/case/CaseArchitecture.astro";
+import { isProduction } from "../../data/home";
+
+export async function getStaticPaths() {
+	const cases = (await getCollection("cases")).sort((a, b) => a.data.order - b.data.order);
+	return cases.map((entry, i) => ({
+		params: { slug: entry.id },
+		props: {
+			entry,
+			prev: cases[i - 1] ?? null,
+			next: cases[i + 1] ?? null,
+		},
+	}));
+}
+
+interface Props {
+	entry: CollectionEntry<"cases">;
+	prev: CollectionEntry<"cases"> | null;
+	next: CollectionEntry<"cases"> | null;
+}
+
+const { entry, prev, next } = Astro.props as Props;
+const c = entry.data;
+// image() de la colección y <Image> difieren solo en `format` opcional (tipado de Astro 7).
+const asImage = (img: unknown) => img as ImageMetadata;
+
+const results = isProduction ? c.results.filter((r) => r.value !== null) : c.results;
+const showGallery = c.gallery.length > 0 || (!isProduction && c.galleryPending);
+const showProblemPending = !isProduction && c.problem.pending.length > 0;
+
+// Numeración de secciones según las que existan en este caso.
+let n = 0;
+const idx = () => String(++n).padStart(2, "0");
+---
+
+<SiteLayout
+	title={`${c.title} · Caso de estudio | OrPiRa`}
+	description={c.seoDescription}
+	type="article"
+	footerCta={false}
+>
+	<article>
+		<header class="pb-14 pt-10 md:pb-20 md:pt-16">
+			<div class="container-site">
+				<nav aria-label="Ruta de navegación" class="t-data text-ink-muted">
+					<ol class="flex flex-wrap items-center gap-2">
+						<li><a href="/" class="link-underline hover:text-ink">Inicio</a></li>
+						<li aria-hidden="true">/</li>
+						<li><a href="/#casos" class="link-underline hover:text-ink">Casos</a></li>
+						<li aria-hidden="true">/</li>
+						<li aria-current="page" class="text-ink-soft">{c.title}</li>
+					</ol>
+				</nav>
+
+				<div class="mt-10 grid gap-10 md:grid-cols-12">
+					<div class="md:col-span-8">
+						<Tag variant="status" status={c.status}>{c.statusLabel}</Tag>
+						<h1 class="t-display mt-5">{c.title}</h1>
+						<p class="t-lead mt-6 max-w-[52ch]">{c.headline}</p>
+						{
+							c.links.length > 0 && (
+								<div class="mt-8 flex flex-wrap gap-3">
+									{c.links.map((link, i) => (
+										<Button href={link.href} external arrow variant={i === 0 ? "primary" : "secondary"}>
+											{link.label}
+										</Button>
+									))}
+								</div>
+							)
+						}
+					</div>
+					<dl class="t-data grid content-start gap-5 text-ink-muted sm:grid-cols-2 md:col-span-4 md:grid-cols-1 md:border-l md:border-line md:pl-8">
+						<div>
+							<dt>Rol</dt>
+							<dd class="mt-1 text-ink-soft">{c.role}</dd>
+						</div>
+						<div>
+							<dt>Plataforma</dt>
+							<dd class="mt-1 text-ink-soft">{c.platform}</dd>
+						</div>
+						<div>
+							<dt>Año</dt>
+							<dd class="mt-1 text-ink-soft">{c.year}</dd>
+						</div>
+						<div>
+							<dt>Stack</dt>
+							<dd class="mt-1 text-ink-soft">{c.tags.join(" · ")}</dd>
+						</div>
+					</dl>
+				</div>
+			</div>
+
+			{
+				c.cover && (
+					<div class="container-site mt-14">
+						<Image
+							src={asImage(c.cover)}
+							alt={c.coverAlt ?? ""}
+							widths={[480, 800, 1200, 1600]}
+							sizes="(min-width: 1216px) 1136px, 100vw"
+							loading="eager"
+							fetchpriority="high"
+							class="w-full rounded-ds-lg border border-line bg-surface"
+						/>
+					</div>
+				)
+			}
+		</header>
+
+		<Section id="problema" index={idx()} eyebrow="El problema" title={c.problem.title}>
+			<div class="grid gap-10 md:grid-cols-12">
+				<div class="space-y-5 text-[1.125rem] leading-relaxed md:col-span-7 md:col-start-4">
+					{c.problem.paragraphs.map((p) => <p>{p}</p>)}
+					{
+						showProblemPending && (
+							<ul class="space-y-2 pt-2">
+								{c.problem.pending.map((hint) => (
+									<li>
+										<Pending hint={hint} />
+									</li>
+								))}
+							</ul>
+						)
+					}
+				</div>
+			</div>
+		</Section>
+
+		{
+			c.principles.length > 0 && (
+				<Section id="principios" index={idx()} eyebrow="Principios" title="Decisiones antes de elegir tecnología.">
+					<ol class="grid gap-px overflow-hidden rounded-ds-lg border border-line bg-line sm:grid-cols-2 lg:grid-cols-4">
+						{c.principles.map((p, i) => (
+							<li class="bg-paper p-6">
+								<p class="t-data text-accent-ink">{String(i + 1).padStart(2, "0")}</p>
+								<h3 class="t-h3 mt-4">{p.title}</h3>
+								<p class="mt-2 text-[0.9375rem] text-ink-soft">{p.text}</p>
+							</li>
+						))}
+					</ol>
+				</Section>
+			)
+		}
+
+		<Section
+			id="solucion"
+			index={idx()}
+			eyebrow="La solución"
+			title={`${c.decisions.length === 3 ? "Tres" : c.decisions.length} decisiones <em class='t-accent'>que definen el producto.</em>`}
+		>
+			<ol class="space-y-0">
+				{
+					c.decisions.map((d, i) => (
+						<li class="grid gap-6 border-t border-line py-10 last:border-b md:grid-cols-12">
+							<p class="font-heading text-5xl leading-none text-accent-ink md:col-span-1">{i + 1}</p>
+							<h3 class="t-h3 md:col-span-3">{d.title}</h3>
+							<dl class="grid gap-5 md:col-span-8 md:grid-cols-3">
+								<div>
+									<dt class="t-data text-ink-muted">Contexto</dt>
+									<dd class="mt-2 text-[0.9375rem]">{d.context}</dd>
+								</div>
+								<div>
+									<dt class="t-data text-ink-muted">Decisión</dt>
+									<dd class="mt-2 text-[0.9375rem] text-ink">{d.decision}</dd>
+								</div>
+								<div>
+									<dt class="t-data text-ink-muted">Por qué</dt>
+									<dd class="mt-2 text-[0.9375rem]">{d.why}</dd>
+								</div>
+							</dl>
+						</li>
+					))
+				}
+			</ol>
+		</Section>
+
+		{
+			showGallery && (
+				<Section id="capturas" index={idx()} eyebrow="Capturas" title="El producto, por dentro.">
+					{c.gallery.length > 0 ? (
+						<ul class="grid gap-8 md:grid-cols-2">
+							{c.gallery.map((shot) => (
+								<li class:list={[shot.shape === "portrait" && "md:row-span-2"]}>
+									<figure>
+										<Image
+											src={asImage(shot.src)}
+											alt={shot.alt}
+											widths={shot.shape === "portrait" ? [360, 560] : [480, 720, 1040]}
+											sizes="(min-width: 768px) 50vw, 100vw"
+											loading="lazy"
+											class:list={[
+												"w-full rounded-ds-lg border border-line bg-surface",
+												shot.shape === "portrait" && "mx-auto max-w-[22rem]",
+											]}
+										/>
+										<figcaption class="t-data mt-3 text-ink-muted">{shot.caption}</figcaption>
+									</figure>
+								</li>
+							))}
+						</ul>
+					) : (
+						<div class="grid place-items-center rounded-ds-lg border border-dashed border-line p-12 text-center">
+							<Pending hint={c.galleryPending ?? undefined} />
+						</div>
+					)}
+				</Section>
+			)
+		}
+
+		<Section id="arquitectura" index={idx()} eyebrow="Arquitectura" title="Cómo encajan las piezas." intro={c.architecture.summary}>
+			<CaseArchitecture title={`Arquitectura de ${c.title}`} layers={c.architecture.layers} />
+		</Section>
+
+		<Section id="stack" index={idx()} eyebrow="Stack" title="Cada tecnología, con su motivo.">
+			<ul class="border-b border-line">
+				{
+					c.stack.map((row) => (
+						<li class="grid gap-3 border-t border-line py-6 md:grid-cols-12 md:items-baseline md:gap-6">
+							<p class="t-data text-ink-muted md:col-span-2">{row.layer}</p>
+							<ul class="flex flex-wrap gap-1.5 md:col-span-4">
+								{row.tech.map((t) => (
+									<li>
+										<Tag>{t}</Tag>
+									</li>
+								))}
+							</ul>
+							<p class="text-[0.9375rem] md:col-span-6">{row.why}</p>
+						</li>
+					))
+				}
+			</ul>
+		</Section>
+
+		{
+			(results.length > 0 || c.learned.length > 0) && (
+				<Section id="resultado" index={idx()} eyebrow="Resultado" title="Lo que se puede medir hoy.">
+					{results.length > 0 && (
+						<dl class="grid gap-px overflow-hidden rounded-ds-lg border border-line bg-line sm:grid-cols-2 lg:grid-cols-3">
+							{results.map((r) => (
+								<div class="flex flex-col bg-paper p-6 md:p-8">
+									<dt class="t-data order-2 mt-3 text-ink-muted">{r.label}</dt>
+									<dd class="order-1 font-heading text-[clamp(2.5rem,1.9rem+2.4vw,3.75rem)] leading-none text-ink">
+										{r.value ?? <Pending hint={r.pendingHint} class="align-middle text-[0.75rem]" />}
+									</dd>
+								</div>
+							))}
+						</dl>
+					)}
+					{c.learned.length > 0 && (
+						<div class="mt-14 grid gap-6 md:grid-cols-12">
+							<h3 class="t-data text-ink-muted md:col-span-3">Lo aprendido</h3>
+							<ul class="space-y-4 md:col-span-9">
+								{c.learned.map((l) => (
+									<li class="font-heading text-[clamp(1.4rem,1.2rem+0.8vw,1.9rem)] leading-snug text-ink">
+										{l}
+									</li>
+								))}
+							</ul>
+						</div>
+					)}
+				</Section>
+			)
+		}
+
+		<Section id="siguiente" index={idx()} eyebrow="Siguiente paso" title="Hacia dónde va.">
+			<div class="grid gap-10 md:grid-cols-12">
+				<p class="t-lead md:col-span-7 md:col-start-4">{c.next}</p>
+			</div>
+			<div class="mt-16 flex flex-col items-start justify-between gap-6 rounded-ds-lg bg-ink p-8 text-paper md:flex-row md:items-center md:p-12">
+				<p class="font-heading text-[clamp(1.9rem,1.4rem+1.8vw,2.9rem)] leading-tight text-paper">
+					¿Necesitas algo parecido?
+				</p>
+				<Button href="/#contacto" size="lg" arrow>Cuéntame tu proyecto</Button>
+			</div>
+		</Section>
+	</article>
+
+	<nav aria-label="Otros casos" class="border-t border-line">
+		<div class="container-site grid gap-px py-0 sm:grid-cols-2">
+			{
+				prev ? (
+					<a href={`/casos/${prev.id}`} class="group block py-10 pr-6">
+						<p class="t-data text-ink-muted">← Caso anterior</p>
+						<p class="mt-2 font-heading text-3xl text-ink group-hover:text-accent-ink">{prev.data.title}</p>
+					</a>
+				) : (
+					<span />
+				)
+			}
+			{
+				next && (
+					<a href={`/casos/${next.id}`} class="group block py-10 text-right sm:border-l sm:border-line sm:pl-6">
+						<p class="t-data text-ink-muted">Siguiente caso →</p>
+						<p class="mt-2 font-heading text-3xl text-ink group-hover:text-accent-ink">{next.data.title}</p>
+					</a>
+				)
+			}
+		</div>
+	</nav>
+</SiteLayout>

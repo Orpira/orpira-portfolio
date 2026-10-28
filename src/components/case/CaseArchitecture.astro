@@ -1,0 +1,52 @@
+---
+/**
+ * Diagrama de arquitectura por capas: cada capa es una fila y una flecha
+ * indica el flujo hacia la siguiente. HTML semántico (lista ordenada),
+ * legible sin CSS y por lectores de pantalla.
+ */
+interface Layer {
+	label: string;
+	items: string[];
+	note?: string;
+}
+
+interface Props {
+	title: string;
+	layers: Layer[];
+}
+
+const { title, layers } = Astro.props;
+---
+
+<figure class="rounded-ds-lg border border-line bg-surface/60 p-5 md:p-8">
+	<figcaption class="sr-only">{title}</figcaption>
+	<ol class="space-y-0">
+		{
+			layers.map((layer, i) => (
+				<li class="relative">
+					<div class="grid gap-3 rounded-ds-md border border-line bg-paper p-4 md:grid-cols-12 md:items-center md:gap-6 md:p-5">
+						<p class="t-data text-accent-ink md:col-span-3">
+							<span class="text-ink-muted">{String(i + 1).padStart(2, "0")} · </span>
+							{layer.label}
+						</p>
+						<ul class="flex flex-wrap gap-2 md:col-span-5">
+							{layer.items.map((item) => (
+								<li class="rounded-ds-sm border border-ink/15 px-2.5 py-1 text-[0.9375rem] font-medium text-ink">
+									{item}
+								</li>
+							))}
+						</ul>
+						{layer.note && <p class="text-sm text-ink-muted md:col-span-4">{layer.note}</p>}
+					</div>
+					{i < layers.length - 1 && (
+						<div aria-hidden="true" class="flex h-8 items-center justify-center text-ink-muted">
+							<svg width="12" height="20" viewBox="0 0 12 20" fill="none" stroke="currentColor" stroke-width="1.5">
+								<path d="M6 0v18M1 13l5 5 5-5" />
+							</svg>
+						</div>
+					)}
+				</li>
+			))
+		}
+	</ol>
+</figure>

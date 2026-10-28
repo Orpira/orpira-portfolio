@@ -6,8 +6,6 @@
  * - En producción (VERCEL_ENV=production) el elemento se oculta entero,
  *   para que nunca se publique un hueco ni una cifra inventada.
  */
-import type { ImageMetadata } from "astro";
-import privateBalanceImage from "../assets/images/private-balance/dashboard-pwa.webp";
 
 export const isProduction = process.env.VERCEL_ENV === "production";
 
@@ -52,57 +50,7 @@ export const stats: Stat[] = [
 	},
 ];
 
-export interface FeaturedCase {
-	title: string;
-	result: string;
-	year: string;
-	role: string;
-	tags: string[];
-	href?: string;
-	external?: boolean;
-	image?: ImageMetadata;
-	imageAlt?: string;
-	status: "live" | "building";
-	statusLabel: string;
-}
-
-export const featuredCases: FeaturedCase[] = [
-	{
-		title: "PRL Master",
-		result:
-			"Formación en prevención de riesgos laborales con modo estudio, modo examen, certificado y asistente con IA, sobre un banco de 174 preguntas.",
-		year: "2026",
-		role: "Producto · Full Stack · IA",
-		tags: ["React", "Express", "Socket.IO"],
-		href: "https://prl.orpira.es/",
-		external: true,
-		status: "live",
-		statusLabel: "En producción",
-	},
-	{
-		title: "EcoTogo",
-		result:
-			"Gestión de informes de ecografía veterinaria: tablero Kanban, notas de WhatsApp clasificadas con IA y generación de informes sobre plantillas Word.",
-		year: "2026",
-		role: "Producto · Full Stack · IA",
-		tags: ["React", "Node.js", "PostgreSQL", "Claude API"],
-		status: "building",
-		statusLabel: "Caso en preparación",
-	},
-	{
-		title: "Private Balance",
-		result:
-			"Finanzas personales con privacidad por diseño: los datos se quedan en el dispositivo. Web, PWA y app Android con bloqueo por PIN.",
-		year: "2026",
-		role: "Producto · Arquitectura · UX",
-		tags: ["React", "TypeScript", "IndexedDB", "PWA", "Capacitor"],
-		href: "/projects/private-balance",
-		image: privateBalanceImage,
-		imageAlt: "Panel principal de Private Balance en la PWA",
-		status: "live",
-		statusLabel: "En producción",
-	},
-];
+// Los casos destacados viven en src/content/cases (colección "cases").
 
 export interface Service {
 	title: string;

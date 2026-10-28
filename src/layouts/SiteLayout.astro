@@ -20,6 +20,8 @@ interface Props {
 	noindex?: boolean;
 	isHome?: boolean;
 	type?: "website" | "article";
+	/** Muestra la llamada a la acción grande del pie (por defecto, fuera de la portada). */
+	footerCta?: boolean;
 }
 
 const {
@@ -30,6 +32,7 @@ const {
 	noindex = false,
 	isHome = false,
 	type = "website",
+	footerCta,
 } = Astro.props;
 
 const site = Astro.site ?? new URL(Astro.url.origin);
@@ -94,6 +97,6 @@ const ogImage = new URL(image, site).toString();
 		<main id="contenido" tabindex="-1" class="outline-none">
 			<slot />
 		</main>
-		<SiteFooter isHome={isHome} />
+		<SiteFooter isHome={isHome} showCta={footerCta ?? !isHome} />
 	</body>
 </html>

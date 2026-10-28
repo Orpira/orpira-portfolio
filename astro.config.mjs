@@ -16,4 +16,10 @@ export default defineConfig({
 	],
 
 	base: "/",
+
+	// Casos movidos a /casos/ en la fase 2D (301 permanentes).
+	redirects: {
+		"/projects/private-balance": { status: 301, destination: "/casos/private-balance" },
+		"/projects/finance-app": { status: 301, destination: "/casos/private-balance" },
+	},
 });

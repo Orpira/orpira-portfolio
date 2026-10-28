@@ -49,7 +49,7 @@ export const brandProjects: BrandProject[] = [
 			"Capacitor",
 			"Vercel",
 		],
-		href: "/projects/private-balance",
+		href: "/casos/private-balance",
 		year: "2026",
 		status: "En línea",
 		cta: "Ver Case Study",

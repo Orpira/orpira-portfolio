@@ -1,7 +1,11 @@
 ---
+import { getCollection } from "astro:content";
+import type { ImageMetadata } from "astro";
 import Section from "../ui/Section.astro";
 import CaseRow from "../ui/CaseRow.astro";
-import { featuredCases } from "../../data/home";
+
+// Los casos salen de la colección (src/content/cases): una sola fuente de verdad.
+const cases = (await getCollection("cases")).sort((a, b) => a.data.order - b.data.order);
 ---
 
 <Section
@@ -13,20 +17,19 @@ import { featuredCases } from "../../data/home";
 >
 	<ol class="list-none">
 		{
-			featuredCases.map((c, i) => (
+			cases.map((entry, i) => (
 				<CaseRow
 					index={String(i + 1).padStart(2, "0")}
-					title={c.title}
-					result={c.result}
-					year={c.year}
-					href={c.href}
-					external={c.external}
-					role={c.role}
-					tags={c.tags}
-					image={c.image}
-					imageAlt={c.imageAlt}
-					status={c.status}
-					statusLabel={c.statusLabel}
+					title={entry.data.title}
+					result={entry.data.summary}
+					year={entry.data.year}
+					href={`/casos/${entry.id}`}
+					role={entry.data.role.split(" · ").slice(0, 3).join(" · ")}
+					tags={entry.data.tags}
+					image={entry.data.cover as ImageMetadata | undefined}
+					imageAlt={entry.data.coverAlt}
+					status={entry.data.status}
+					statusLabel={entry.data.statusLabel}
 				/>
 			))
 		}

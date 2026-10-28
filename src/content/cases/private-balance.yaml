@@ -1,0 +1,134 @@
+# Caso migrado desde src/pages/projects/private-balance.astro (fase 2D).
+title: Private Balance
+order: 3
+headline: Finanzas privadas diseñadas alrededor del trabajo real, con los datos guardados en el dispositivo.
+summary: >-
+  Finanzas personales con privacidad por diseño: los datos se quedan en el dispositivo.
+  Web, PWA y app Android con bloqueo por PIN.
+seoDescription: >-
+  Caso de estudio de Private Balance: app de finanzas local-first para web, PWA y Android.
+  Problema, decisiones de arquitectura, Copiloto con IA y stack.
+year: "2026"
+role: Producto · Arquitectura · Full Stack · UX
+platform: Web · PWA · Android
+status: live
+statusLabel: Pre-release
+tags: [React, TypeScript, IndexedDB, PWA, Capacitor]
+links:
+  - label: Abrir la PWA
+    href: https://private-balance.orpira.es/
+  - label: Código en GitHub
+    href: https://github.com/Orpira/finance-app
+cover: ../../assets/images/private-balance/dashboard-pwa.webp
+coverAlt: Resumen financiero de demostración en el panel de la PWA de Private Balance
+
+problem:
+  title: Registrar dinero era solo una parte del problema.
+  paragraphs:
+    - >-
+      Saber cuánto entra o cuánto sale no siempre explica cómo está funcionando una
+      actividad profesional.
+    - >-
+      El verdadero reto era relacionar el trabajo realizado con el tiempo dedicado, los
+      ingresos, los gastos y los objetivos de una temporada, sin convertir el registro
+      diario en otra carga de trabajo. Y hacerlo con información financiera sensible que
+      no debería vivir en el servidor de otro.
+
+principles:
+  - title: Privacidad
+    text: La información financiera permanece bajo control del usuario.
+  - title: Local-first
+    text: El núcleo funciona sin depender de forma permanente de infraestructura remota.
+  - title: Menos fricción
+    text: Registrar y consultar exige el mínimo esfuerzo razonable.
+  - title: Producto antes que tecnología
+    text: Una tecnología entra cuando resuelve una necesidad, no porque sea posible.
+
+decisions:
+  - title: Local-first como decisión de arquitectura
+    context: El producto trabaja con información financiera potencialmente sensible.
+    decision: >-
+      Mantener el núcleo de los datos en el dispositivo (IndexedDB) y reducir la
+      dependencia de servidores para el funcionamiento principal.
+    why: >-
+      Más control sobre los datos y disponibilidad sin conexión. El coste es asumir
+      mecanismos propios de copia, restauración y una futura sincronización.
+  - title: Determinismo antes que IA
+    context: >-
+      El Copiloto entiende lenguaje natural, pero una interpretación probabilística no
+      debe convertirse en permiso para modificar datos financieros.
+    decision: >-
+      Separar consultas de acciones. Las consultas responden sin tocar nada; las acciones
+      se convierten en una propuesta estructurada que el usuario revisa y confirma.
+    why: La inteligencia amplía la interfaz, pero no sustituye las garantías del dominio.
+  - title: Una preferencia de interfaz no cambia una regla financiera
+    context: >-
+      La opción de ocultar avisos de ingresos pendientes podía confundirse con un cambio
+      en los cálculos.
+    decision: >-
+      Separar de forma explícita las preferencias de interfaz de las reglas del dominio:
+      la opción cambia qué se muestra, nunca cómo se calcula.
+    why: El usuario tiene que poder confiar en que los números no dependen de un ajuste visual.
+
+gallery:
+  - src: ../../assets/images/private-balance/movements-pwa.webp
+    alt: Vista de movimientos de Private Balance con un ingreso y un egreso de demostración
+    caption: Movimientos en la PWA, con datos ficticios.
+  - src: ../../assets/images/private-balance/copilot-pwa.webp
+    alt: Propuesta de gasto del Copiloto con explicación, datos estructurados y botones Editar, Cancelar y Confirmar
+    caption: El Copiloto propone; el usuario confirma antes de que se guarde nada.
+  - src: ../../assets/images/private-balance/agenda-pwa.webp
+    alt: Agenda de Private Balance con una cita de demostración programada
+    caption: Agenda. La hora programada forma parte de la regla de negocio.
+  - src: ../../assets/images/private-balance/android-dashboard.webp
+    alt: Panel de Private Balance en la app Android
+    caption: La misma base de código en Android, empaquetada con Capacitor.
+    shape: portrait
+
+architecture:
+  summary: >-
+    Un único dominio en React y TypeScript, con los datos en el dispositivo y dos formas
+    de llegar al usuario.
+  layers:
+    - label: Interfaz
+      items: [React, TypeScript]
+    - label: Producto
+      items: [Finanzas, Agenda, Temporadas, Copiloto]
+      note: Reglas deterministas; la IA solo propone.
+    - label: Datos locales
+      items: [IndexedDB, Dexie]
+      note: Los datos financieros no salen del dispositivo.
+    - label: Distribución
+      items: [PWA instalable, Android con Capacitor]
+
+stack:
+  - layer: Interfaz
+    tech: [React, TypeScript, Vite, Tailwind CSS]
+    why: Tipado estricto en un dominio con reglas financieras y una interfaz rápida de iterar.
+  - layer: Datos
+    tech: [IndexedDB, Dexie]
+    why: Almacenamiento local con migraciones versionadas, coherente con el enfoque local-first.
+  - layer: Distribución
+    tech: [PWA, Capacitor, Vercel]
+    why: Una sola base de código para web instalable y Android.
+  - layer: Calidad
+    tech: [Vitest]
+    why: Las reglas financieras se prueban como funciones puras.
+
+results:
+  - value: "3"
+    label: plataformas desde una sola base de código (web, PWA y Android)
+  - value: "96"
+    label: archivos de tests automatizados sobre las reglas del dominio
+  - value: null
+    label: usuarios activos
+    pendingHint: Usuarios activos o en periodo de prueba
+
+learned:
+  - Simplificar también es diseñar. Quitar el cronómetro de la Agenda mejoró el producto.
+  - Una preferencia de UX nunca debe modificar una regla financiera.
+  - Interpretar una intención no equivale a tener permiso para modificar los datos.
+
+next: >-
+  Sincronización privada entre dispositivos (iPhone, iPad, Android y PC) sin renunciar al
+  enfoque local-first, y salida comercial con licencias.
