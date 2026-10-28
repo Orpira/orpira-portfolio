@@ -5,6 +5,7 @@ headline: Finanzas privadas diseñadas alrededor del trabajo real, con los datos
 summary: >-
   Finanzas personales con privacidad por diseño: los datos se quedan en el dispositivo.
   Web, PWA y app Android con bloqueo por PIN.
+ogLine: Finanzas privadas, con los datos en el dispositivo.
 seoDescription: >-
   Caso de estudio de Private Balance: app de finanzas local-first para web, PWA y Android.
   Problema, decisiones de arquitectura, Copiloto con IA y stack.

@@ -23,21 +23,8 @@ export default {
 					ink: "rgb(var(--accent-ink) / <alpha-value>)",
 					on: "rgb(var(--on-accent) / <alpha-value>)",
 				},
-				// Paleta antigua: se retira al migrar portada y casos (2C/2D)
-				brand: {
-					bg: "#090b10",
-					card: "#121826",
-					text: "#f8f5ef",
-					muted: "#bcc6db",
-					accent: "#ff9b53",
-					accentSoft: "#ffd9c2",
-				},
 			},
 			fontFamily: {
-				sans: ["Manrope", "sans-serif"],
-				serif: ["Cormorant Garamond", "serif"],
-				display: ["Syne", "sans-serif"],
-				mono: ["JetBrains Mono", "monospace"],
 				heading: ["var(--font-heading)"],
 				body: ["var(--font-body)"],
 				data: ["var(--font-data)"],

@@ -13,20 +13,18 @@
 		"deploy-quick": "git add . && git commit -m 'Quick deploy' && git push origin main",
 		"deploy-message": "./deploy.sh",
 		"preview": "astro preview",
-		"astro": "astro"
+		"astro": "astro",
+		"og": "node scripts/generate-og.mjs"
 	},
 	"dependencies": {
 		"@astrojs/check": "^0.9.10",
-		"@astrojs/react": "^6.0.5",
 		"@astrojs/vercel": "^11.0.10",
 		"@fontsource-variable/geist": "^5.3.0",
 		"@fontsource-variable/geist-mono": "^5.3.0",
 		"@fontsource/instrument-serif": "^5.3.0",
 		"@supabase/supabase-js": "^2.100.1",
+		"@vercel/analytics": "^2.0.1",
 		"astro": "^7.3.2",
-		"clsx": "^2.1.1",
-		"motion": "^12.23.12",
-		"tailwind-merge": "^3.3.1",
 		"tailwindcss": "^3.4.17",
 		"typescript": "^5.8.3"
 	},
@@ -34,11 +32,8 @@
 		"@tailwindcss/forms": "^0.5.10",
 		"@tailwindcss/typography": "^0.5.19",
 		"@types/node": "^25.9.2",
-		"@types/react": "^19.1.10",
-		"@types/react-dom": "^19.1.7",
 		"autoprefixer": "^10.5.0",
-		"react": "^19.1.1",
-		"react-dom": "^19.1.1"
+		"yaml": "^2.9.1"
 	},
 	"overrides": {
 		"tar": "^7.5.22",

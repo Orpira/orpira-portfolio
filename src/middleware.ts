@@ -12,8 +12,8 @@ const SECURITY_HEADERS: Record<string, string> = {
 	"Content-Security-Policy": [
 		"default-src 'self'",
 		"script-src 'self' 'unsafe-inline'",
-		"style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-		"font-src 'self' data: https://fonts.gstatic.com",
+		"style-src 'self' 'unsafe-inline'",
+		"font-src 'self' data:",
 		"img-src 'self' data:",
 		"connect-src 'self'",
 		"frame-ancestors 'none'",
@@ -65,6 +65,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
 	if (isDashboardRoute) {
 		response.headers.set("Cache-Control", "private, no-store");
 		response.headers.append("Vary", "Cookie");
+		response.headers.set("X-Robots-Tag", "noindex, nofollow");
 	}
 
 	return withSecurityHeaders(response);

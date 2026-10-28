@@ -25,6 +25,8 @@ const cases = defineCollection({
 			/** Versión corta para la portada (fila del índice). */
 			summary: z.string(),
 			seoDescription: z.string().max(170),
+			/** Frase corta para la imagen Open Graph (scripts/generate-og.mjs). */
+			ogLine: z.string().max(80).optional(),
 			year: z.string(),
 			role: z.string(),
 			platform: z.string(),

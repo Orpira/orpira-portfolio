@@ -16,6 +16,7 @@ import Tag from "../../components/ui/Tag.astro";
 import Pending from "../../components/ui/Pending.astro";
 import CaseArchitecture from "../../components/case/CaseArchitecture.astro";
 import { isProduction } from "../../data/home";
+import { caseJsonLd } from "../../data/seo";
 
 export async function getStaticPaths() {
 	const cases = (await getCollection("cases")).sort((a, b) => a.data.order - b.data.order);
@@ -54,6 +55,18 @@ const idx = () => String(++n).padStart(2, "0");
 	description={c.seoDescription}
 	type="article"
 	footerCta={false}
+	image={`/og/${entry.id}.jpg`}
+	imageAlt={`${c.title}, caso de estudio de OrPiRa`}
+	jsonLd={caseJsonLd({
+		slug: entry.id,
+		title: c.title,
+		description: c.seoDescription,
+		headline: c.headline,
+		year: c.year,
+		tags: c.tags,
+		platform: c.platform,
+		demoUrl: c.links[0]?.href,
+	})}
 >
 	<article>
 		<header class="pb-14 pt-10 md:pb-20 md:pt-16">

@@ -13,9 +13,10 @@ import AboutSection from "../components/home/AboutSection.astro";
 import LabSection from "../components/home/LabSection.astro";
 import ContactSection from "../components/home/ContactSection.astro";
 import { seo } from "../data/home";
+import { homeJsonLd } from "../data/seo";
 ---
 
-<SiteLayout title={seo.title} description={seo.description} isHome>
+<SiteLayout title={seo.title} description={seo.description} isHome jsonLd={homeJsonLd}>
 	<HomeHero />
 	<ProofStrip />
 	<CasesSection />
