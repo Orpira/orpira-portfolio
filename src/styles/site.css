@@ -1,0 +1,220 @@
+/*
+ * Sistema visual "Editorial técnico" (fase 2B).
+ * Lo usa SiteLayout. El layout antiguo (Layout.astro + global.css) sigue
+ * activo hasta que la portada y los casos se migren en las fases 2C y 2D.
+ */
+
+/* Fuentes autoalojadas: solo latin + latin-ext, con font-display: swap. */
+@import "@fontsource/instrument-serif/latin-400.css";
+@import "@fontsource/instrument-serif/latin-400-italic.css";
+@import "@fontsource/instrument-serif/latin-ext-400.css";
+@import "@fontsource/instrument-serif/latin-ext-400-italic.css";
+@import "@fontsource-variable/geist/wght.css";
+@import "@fontsource-variable/geist-mono/wght.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+ * Colores como tripletes RGB para poder usar opacidad en Tailwind
+ * (bg-ink/10, border-line/60...). Contrastes WCAG comprobados:
+ *  claro  · tinta/papel 16,4 · gris/papel 5,5 · naranja texto/papel 5,5
+ *           tinta sobre naranja (botón) 5,9
+ *  oscuro · tinta/papel 15,6 · gris/papel 6,6 · naranja/papel 9,1
+ *           tinta sobre naranja (botón) 8,7
+ * El naranja vivo claro (--accent) NO se usa para texto: 2,75 sobre papel.
+ */
+:root {
+	--paper: 246 243 238;
+	--surface: 237 232 224;
+	--ink: 20 22 26;
+	--ink-soft: 43 47 54;
+	--ink-muted: 92 98 112;
+	--line: 217 211 201;
+	--accent: 242 107 29;
+	--accent-ink: 174 61 12;
+	--on-accent: 20 22 26;
+
+	--font-heading: "Instrument Serif", "Iowan Old Style", Georgia, serif;
+	--font-body: "Geist Variable", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+	--font-data: "Geist Mono Variable", ui-monospace, "SFMono-Regular", Menlo, monospace;
+
+	--radius-sm: 0.375rem;
+	--radius-md: 0.75rem;
+	--radius-lg: 1.25rem;
+
+	--ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+	--header-h: 4rem;
+
+	color-scheme: light;
+}
+
+.dark {
+	--paper: 14 16 19;
+	--surface: 23 26 31;
+	--ink: 236 232 225;
+	--ink-soft: 201 196 187;
+	--ink-muted: 146 152 163;
+	--line: 42 46 53;
+	--accent: 255 155 83;
+	--accent-ink: 255 178 123;
+	--on-accent: 20 22 26;
+
+	color-scheme: dark;
+}
+
+@layer base {
+	html {
+		background-color: rgb(var(--paper));
+		color: rgb(var(--ink-soft));
+		font-family: var(--font-body);
+		font-size: 100%;
+		-webkit-text-size-adjust: 100%;
+		text-rendering: optimizeLegibility;
+		overflow-x: clip;
+		scroll-padding-top: calc(var(--header-h) + 1rem);
+	}
+
+	@media (prefers-reduced-motion: no-preference) {
+		html {
+			scroll-behavior: smooth;
+		}
+	}
+
+	body {
+		font-size: 1.0625rem;
+		line-height: 1.65;
+		overflow-x: clip;
+		-webkit-font-smoothing: antialiased;
+	}
+
+	h1,
+	h2,
+	h3,
+	h4 {
+		color: rgb(var(--ink));
+		text-wrap: balance;
+	}
+
+	p {
+		text-wrap: pretty;
+	}
+
+	::selection {
+		background: rgb(var(--accent) / 0.28);
+		color: rgb(var(--ink));
+	}
+
+	:focus-visible {
+		outline: 2px solid rgb(var(--accent-ink));
+		outline-offset: 3px;
+		border-radius: 2px;
+	}
+
+	a {
+		text-underline-offset: 0.2em;
+		text-decoration-thickness: 1px;
+	}
+}
+
+@layer components {
+	/* Escala tipográfica fluida (de móvil 360 px a escritorio 1440 px). */
+	.t-display {
+		font-family: var(--font-heading);
+		font-weight: 400;
+		font-size: clamp(2.75rem, 1.6rem + 5vw, 5.75rem);
+		line-height: 0.98;
+		letter-spacing: -0.02em;
+	}
+
+	.t-h2 {
+		font-family: var(--font-heading);
+		font-weight: 400;
+		font-size: clamp(2.1rem, 1.5rem + 2.6vw, 3.5rem);
+		line-height: 1.04;
+		letter-spacing: -0.015em;
+	}
+
+	.t-h3 {
+		font-family: var(--font-body);
+		font-weight: 600;
+		font-size: clamp(1.2rem, 1.1rem + 0.45vw, 1.45rem);
+		line-height: 1.25;
+		letter-spacing: -0.01em;
+	}
+
+	.t-lead {
+		font-size: clamp(1.125rem, 1.05rem + 0.35vw, 1.3rem);
+		line-height: 1.55;
+		color: rgb(var(--ink-soft));
+	}
+
+	.t-data {
+		font-family: var(--font-data);
+		font-size: 0.8125rem;
+		line-height: 1.4;
+		letter-spacing: 0.01em;
+		font-feature-settings: "zero" 1;
+	}
+
+	/* Cursiva naranja para la palabra clave de un titular. */
+	.t-accent {
+		font-style: italic;
+		color: rgb(var(--accent-ink));
+	}
+
+	.container-site {
+		width: 100%;
+		max-width: 76rem;
+		margin-inline: auto;
+		padding-inline: clamp(1.25rem, 4vw, 2.5rem);
+	}
+
+	.rule {
+		border: 0;
+		border-top: 1px solid rgb(var(--line));
+	}
+
+	.link-underline {
+		background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat;
+		transition: background-size 0.35s var(--ease-out);
+	}
+
+	.link-underline:hover,
+	.link-underline:focus-visible {
+		background-size: 100% 1px;
+	}
+
+	/* Aparición al entrar en pantalla, sin JS. Nunca en el hero (LCP). */
+	@supports (animation-timeline: view()) {
+		@media (prefers-reduced-motion: no-preference) {
+			.reveal {
+				animation: reveal-rise linear both;
+				animation-timeline: view();
+				animation-range: entry 0% entry 40%;
+			}
+		}
+	}
+}
+
+@keyframes reveal-rise {
+	from {
+		opacity: 0;
+		transform: translateY(8px);
+	}
+	to {
+		opacity: 1;
+		transform: none;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.01ms !important;
+	}
+}

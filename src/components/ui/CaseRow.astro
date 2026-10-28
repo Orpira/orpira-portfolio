@@ -1,0 +1,170 @@
+---
+/**
+ * Fila del índice editorial de casos.
+ * Escritorio (puntero fino): la captura aparece al pasar el ratón y sigue al cursor.
+ * Móvil / táctil: la captura se muestra siempre, encima del texto.
+ * Toda la fila es un único enlace (un solo tabulador por caso).
+ */
+import { Image } from "astro:assets";
+import type { ImageMetadata } from "astro";
+import Tag from "./Tag.astro";
+
+interface Props {
+	index: string;
+	title: string;
+	result: string;
+	year: string;
+	href: string;
+	role?: string;
+	tags?: string[];
+	image?: ImageMetadata;
+	imageAlt?: string;
+	external?: boolean;
+	status?: "live" | "building";
+	statusLabel?: string;
+}
+
+const {
+	index,
+	title,
+	result,
+	year,
+	href,
+	role,
+	tags = [],
+	image,
+	imageAlt = "",
+	external = false,
+	status,
+	statusLabel,
+} = Astro.props;
+---
+
+<li class="case-row group relative border-t border-line last:border-b">
+	<a
+		href={href}
+		class="grid gap-4 py-7 md:grid-cols-12 md:items-baseline md:gap-6 md:py-9"
+		{...external ? { target: "_blank", rel: "noopener noreferrer" } : {}}
+	>
+		{
+			image && (
+				<div class="case-thumb md:hidden overflow-hidden rounded-ds-md border border-line bg-surface">
+					<Image
+						src={image}
+						alt={imageAlt}
+						widths={[400, 720]}
+						sizes="100vw"
+						class="aspect-[16/10] w-full object-cover object-top"
+						loading="lazy"
+					/>
+				</div>
+			)
+		}
+		<span class="t-data text-ink-muted md:col-span-1">{index}</span>
+		<div class="md:col-span-7">
+			<h3 class="font-heading text-[clamp(1.9rem,1.4rem+1.8vw,2.9rem)] leading-[1.05] tracking-[-0.015em] text-ink">
+				<span class="case-title transition-colors duration-200 group-hover:text-accent-ink group-focus-visible:text-accent-ink">
+					{title}
+				</span>
+				{external && <span class="sr-only"> (se abre en otra pestaña)</span>}
+			</h3>
+			<p class="mt-2 max-w-[52ch] text-ink-soft">{result}</p>
+			{
+				tags.length > 0 && (
+					<ul class="mt-4 flex flex-wrap gap-1.5" aria-label="Tecnologías">
+						{tags.map((tag) => (
+							<li>
+								<Tag>{tag}</Tag>
+							</li>
+						))}
+					</ul>
+				)
+			}
+		</div>
+		<div class="t-data flex flex-wrap items-center gap-x-4 gap-y-1 text-ink-muted md:col-span-3 md:flex-col md:items-start">
+			{role && <span>{role}</span>}
+			{status && statusLabel && (
+				<Tag variant="status" status={status}>
+					{statusLabel}
+				</Tag>
+			)}
+		</div>
+		<span class="t-data flex items-center justify-between text-ink-muted md:col-span-1 md:justify-end">
+			{year}
+			<span
+				aria-hidden="true"
+				class="ml-3 inline-block text-ink transition-transform duration-200 group-hover:translate-x-1"
+			>
+				{external ? "↗" : "→"}
+			</span>
+		</span>
+	</a>
+
+	{
+		image && (
+			<div
+				class="case-preview pointer-events-none absolute left-0 top-0 z-20 hidden w-72 overflow-hidden rounded-ds-md border border-line bg-surface shadow-xl md:block"
+				aria-hidden="true"
+			>
+				<Image
+					src={image}
+					alt=""
+					widths={[288, 576]}
+					sizes="288px"
+					class="aspect-[16/10] w-full object-cover object-top"
+					loading="lazy"
+				/>
+			</div>
+		)
+	}
+</li>
+
+<style>
+	.case-preview {
+		opacity: 0;
+		transform: translate3d(var(--x, 0px), var(--y, 0px), 0) scale(0.96);
+		transition:
+			opacity 0.2s var(--ease-out),
+			transform 0.25s var(--ease-out);
+		will-change: transform;
+	}
+
+	@media (hover: hover) and (pointer: fine) {
+		.case-row:hover .case-preview {
+			opacity: 1;
+			transform: translate3d(var(--x, 0px), var(--y, 0px), 0) scale(1);
+		}
+	}
+
+	/* Sin ratón (tablet táctil ≥ md): no hay hover, así que no se muestra la flotante. */
+	@media not ((hover: hover) and (pointer: fine)) {
+		.case-preview {
+			display: none;
+		}
+	}
+</style>
+
+<script>
+	// Un único listener por página, aunque haya varias filas.
+	const rows = document.querySelectorAll<HTMLElement>(".case-row");
+	const fine = window.matchMedia("(hover: hover) and (pointer: fine)");
+
+	rows.forEach((row) => {
+		const preview = row.querySelector<HTMLElement>(".case-preview");
+		if (!preview) return;
+		let frame = 0;
+
+		row.addEventListener("pointermove", (event) => {
+			if (!fine.matches) return;
+			cancelAnimationFrame(frame);
+			frame = requestAnimationFrame(() => {
+				const box = row.getBoundingClientRect();
+				const x = event.clientX - box.left + 24;
+				const y = event.clientY - box.top - preview.offsetHeight / 2;
+				const maxX = box.width - preview.offsetWidth;
+				preview.style.setProperty("--x", `${Math.min(x, maxX)}px`);
+				preview.style.setProperty("--y", `${y}px`);
+			});
+		});
+	});
+</script>

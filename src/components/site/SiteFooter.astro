@@ -1,0 +1,79 @@
+---
+import Button from "../ui/Button.astro";
+
+interface Props {
+	isHome?: boolean;
+}
+
+const { isHome = false } = Astro.props;
+const link = (hash: string) => (isHome ? hash : `/${hash}`);
+const year = new Date().getFullYear();
+
+const channels = [
+	{ label: "WhatsApp", href: "https://wa.me/34643684541" },
+	{ label: "LinkedIn", href: "https://www.linkedin.com/in/orlando-pineda-raad-273402257" },
+	{ label: "GitHub", href: "https://github.com/Orpira" },
+];
+---
+
+<footer class="border-t border-line">
+	<div class="container-site py-20 md:py-24">
+		<div class="grid gap-10 md:grid-cols-12 md:items-end">
+			<p class="font-heading text-[clamp(2.1rem,1.5rem+2.6vw,3.5rem)] leading-[1.04] tracking-[-0.015em] text-ink md:col-span-8">
+				¿Tienes un proceso que debería ser <span class="t-accent">una app</span>?
+			</p>
+			<div class="md:col-span-4 md:justify-self-end">
+				<Button href={link("#contacto")} size="lg" arrow>Cuéntame tu proyecto</Button>
+			</div>
+		</div>
+
+		<hr class="rule my-14" />
+
+		<div class="grid gap-10 text-[0.9375rem] sm:grid-cols-2 md:grid-cols-12">
+			<div class="md:col-span-5">
+				<p class="font-heading text-2xl italic text-ink">OrPiRa</p>
+				<p class="mt-2 max-w-[36ch] text-ink-muted">
+					Orlando Pineda Raad. Desarrollo de producto y tecnología para formación corporativa.
+				</p>
+				<p class="t-data mt-4 text-ink-muted">Bilbao, España · Trabajo en remoto</p>
+			</div>
+
+			<nav aria-label="Pie de página" class="md:col-span-3">
+				<p class="t-data mb-3 text-ink-muted">Navegación</p>
+				<ul class="space-y-2">
+					<li><a class="link-underline text-ink-soft hover:text-ink" href={link("#casos")}>Casos</a></li>
+					<li><a class="link-underline text-ink-soft hover:text-ink" href={link("#servicios")}>Servicios</a></li>
+					<li><a class="link-underline text-ink-soft hover:text-ink" href={link("#proceso")}>Cómo trabajo</a></li>
+					<li><a class="link-underline text-ink-soft hover:text-ink" href={link("#sobre-mi")}>Sobre mí</a></li>
+				</ul>
+			</nav>
+
+			<div class="md:col-span-4">
+				<p class="t-data mb-3 text-ink-muted">Contacto</p>
+				<ul class="space-y-2">
+					{
+						channels.map((c) => (
+							<li>
+								<a
+									class="link-underline text-ink-soft hover:text-ink"
+									href={c.href}
+									target="_blank"
+									rel="noopener noreferrer"
+								>
+									{c.label}
+									<span aria-hidden="true"> ↗</span>
+									<span class="sr-only"> (se abre en otra pestaña)</span>
+								</a>
+							</li>
+						))
+					}
+				</ul>
+			</div>
+		</div>
+
+		<div class="t-data mt-14 flex flex-wrap items-center justify-between gap-4 text-ink-muted">
+			<p>© {year} Orlando Pineda Raad</p>
+			<a class="link-underline hover:text-ink" href="/privacidad">Política de privacidad</a>
+		</div>
+	</div>
+</footer>

@@ -1,0 +1,87 @@
+---
+/**
+ * Botón o enlace con aspecto de botón.
+ * - primary: fondo naranja, texto tinta (contraste 5,9 en claro / 8,7 en oscuro).
+ * - secondary: borde fino, fondo transparente.
+ * - ghost: solo texto subrayado al pasar el ratón.
+ * Con `href` se renderiza como <a>; sin él, como <button>.
+ */
+import type { HTMLAttributes } from "astro/types";
+
+interface Props {
+	href?: string;
+	variant?: "primary" | "secondary" | "ghost";
+	size?: "md" | "lg";
+	external?: boolean;
+	arrow?: boolean;
+	type?: "button" | "submit" | "reset";
+	class?: string;
+	[key: string]: unknown;
+}
+
+const {
+	href,
+	variant = "primary",
+	size = "md",
+	external = false,
+	arrow = false,
+	type = "button",
+	class: className = "",
+	...rest
+} = Astro.props;
+
+const base =
+	"btn group inline-flex items-center justify-center gap-2 font-body font-medium whitespace-nowrap rounded-full transition-[background-color,border-color,color,transform] duration-200 disabled:opacity-50 disabled:pointer-events-none";
+
+const sizes = {
+	md: "h-11 px-5 text-[0.9375rem]",
+	lg: "h-[3.25rem] px-7 text-base",
+};
+
+const variants = {
+	primary: "bg-accent text-accent-on hover:bg-accent/90 active:translate-y-px",
+	secondary:
+		"border border-ink/20 text-ink hover:border-ink/60 active:translate-y-px",
+	ghost: "h-auto px-0 text-ink link-underline rounded-none",
+};
+
+const classes = [
+	base,
+	variant === "ghost" ? "" : sizes[size],
+	variants[variant],
+	className,
+].join(" ");
+
+const externalAttrs: HTMLAttributes<"a"> = external
+	? { target: "_blank", rel: "noopener noreferrer" }
+	: {};
+---
+
+{
+	href ? (
+		<a href={href} class={classes} {...externalAttrs} {...rest}>
+			<slot />
+			{arrow && (
+				<span
+					aria-hidden="true"
+					class="transition-transform duration-200 group-hover:translate-x-0.5"
+				>
+					{external ? "↗" : "→"}
+				</span>
+			)}
+			{external && <span class="sr-only">(se abre en otra pestaña)</span>}
+		</a>
+	) : (
+		<button type={type} class={classes} {...rest}>
+			<slot />
+			{arrow && (
+				<span
+					aria-hidden="true"
+					class="transition-transform duration-200 group-hover:translate-x-0.5"
+				>
+					→
+				</span>
+			)}
+		</button>
+	)
+}

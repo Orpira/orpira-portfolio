@@ -1,0 +1,99 @@
+---
+/**
+ * Layout del sistema visual "Editorial técnico" (fase 2B).
+ * Sustituirá a Layout.astro cuando la portada y los casos se migren (2C/2D).
+ */
+import "../styles/site.css";
+import SiteHeader from "../components/site/SiteHeader.astro";
+import SiteFooter from "../components/site/SiteFooter.astro";
+
+import geistUrl from "@fontsource-variable/geist/files/geist-latin-wght-normal.woff2?url";
+import serifUrl from "@fontsource/instrument-serif/files/instrument-serif-latin-400-normal.woff2?url";
+import serifItalicUrl from "@fontsource/instrument-serif/files/instrument-serif-latin-400-italic.woff2?url";
+
+interface Props {
+	title: string;
+	description: string;
+	/** Ruta en /public o URL absoluta. 1200×630. */
+	image?: string;
+	imageAlt?: string;
+	noindex?: boolean;
+	isHome?: boolean;
+	type?: "website" | "article";
+}
+
+const {
+	title,
+	description,
+	image = "/orpira-social-card-v1.jpg",
+	imageAlt = "OrPiRa, portfolio profesional de Orlando Pineda Raad",
+	noindex = false,
+	isHome = false,
+	type = "website",
+} = Astro.props;
+
+const site = Astro.site ?? new URL(Astro.url.origin);
+const canonical = new URL(Astro.url.pathname, site).toString();
+const ogImage = new URL(image, site).toString();
+---
+
+<!doctype html>
+<html lang="es">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>{title}</title>
+		<meta name="description" content={description} />
+		<meta name="robots" content={noindex ? "noindex, nofollow" : "index, follow"} />
+		<link rel="canonical" href={canonical} />
+
+		<link rel="preload" href={geistUrl} as="font" type="font/woff2" crossorigin />
+		<link rel="preload" href={serifUrl} as="font" type="font/woff2" crossorigin />
+		<link rel="preload" href={serifItalicUrl} as="font" type="font/woff2" crossorigin />
+
+		<link rel="icon" type="image/png" sizes="32x32" href="/brand/favicon-32.png" />
+		<link rel="apple-touch-icon" href="/brand/apple-touch-icon.png" />
+		<meta name="theme-color" content="#F6F3EE" media="(prefers-color-scheme: light)" />
+		<meta name="theme-color" content="#0E1013" media="(prefers-color-scheme: dark)" />
+
+		<meta property="og:type" content={type} />
+		<meta property="og:locale" content="es_ES" />
+		<meta property="og:site_name" content="OrPiRa" />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:url" content={canonical} />
+		<meta property="og:image" content={ogImage} />
+		<meta property="og:image:width" content="1200" />
+		<meta property="og:image:height" content="630" />
+		<meta property="og:image:alt" content={imageAlt} />
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:title" content={title} />
+		<meta name="twitter:description" content={description} />
+		<meta name="twitter:image" content={ogImage} />
+		<meta name="twitter:image:alt" content={imageAlt} />
+
+		<!-- Tema antes del primer pintado: sin parpadeo. Sigue al sistema si no hay elección. -->
+		<script is:inline>
+			(() => {
+				let stored = null;
+				try {
+					stored = localStorage.getItem("theme");
+				} catch {}
+				const dark =
+					stored === "dark" ||
+					(stored !== "light" && window.matchMedia("(prefers-color-scheme: dark)").matches);
+				document.documentElement.classList.toggle("dark", dark);
+			})();
+		</script>
+
+		<slot name="head" />
+	</head>
+
+	<body class="bg-paper text-ink-soft">
+		<SiteHeader isHome={isHome} />
+		<main id="contenido" tabindex="-1" class="outline-none">
+			<slot />
+		</main>
+		<SiteFooter isHome={isHome} />
+	</body>
+</html>

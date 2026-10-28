@@ -1,0 +1,208 @@
+---
+/**
+ * Cubo OrPiRa interactivo para el hero (sustituye a la pantalla de carga).
+ *
+ * - Ligero: 6 caras con un degradado simple; sin text-shadow ni filtros.
+ * - Gira 90° al pasar el ratón (puntero fino), al pulsarlo o con Enter/Espacio.
+ * - Acompaña al scroll con un giro suave, solo mientras está en pantalla.
+ * - Con prefers-reduced-motion: sin giro por scroll y cambios instantáneos.
+ * - No bloquea nada: no se pinta antes que el titular ni retrasa el LCP.
+ */
+interface Props {
+	/** Lado del cubo en px a partir de 768 px de ancho. En móvil se usa el 70 %. */
+	size?: number;
+	class?: string;
+}
+
+const { size = 132, class: className = "" } = Astro.props;
+---
+
+<button
+	type="button"
+	class:list={["hero-cube", className]}
+	style={`--cube: ${size}px;`}
+	aria-label="Girar el cubo de OrPiRa"
+	data-hero-cube
+>
+	<span class="hero-cube__scene" aria-hidden="true">
+		<span class="hero-cube__shadow"></span>
+		<span class="hero-cube__scroll">
+			<span class="hero-cube__body">
+				<span class="hero-cube__face hero-cube__face--front"><span class="hero-cube__mark hero-cube__mark--pi" data-mark="π"></span></span>
+				<span class="hero-cube__face hero-cube__face--right"><span class="hero-cube__mark" data-mark="Ra"></span></span>
+				<span class="hero-cube__face hero-cube__face--back">
+					<svg class="hero-cube__lan" viewBox="0 0 220 220" focusable="false">
+						<path d="M110 52 L57 150 M110 52 L163 150 M57 150 L163 150" fill="none" stroke="currentColor" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" />
+						<rect x="87" y="29" width="46" height="46" rx="11" fill="currentColor" />
+						<rect x="34" y="127" width="46" height="46" rx="11" fill="currentColor" />
+						<rect x="140" y="127" width="46" height="46" rx="11" fill="currentColor" />
+					</svg>
+				</span>
+				<span class="hero-cube__face hero-cube__face--left"><span class="hero-cube__mark" data-mark="Or"></span></span>
+				<span class="hero-cube__face hero-cube__face--top"><span class="hero-cube__mark" data-mark="Or"></span></span>
+				<span class="hero-cube__face hero-cube__face--bottom"><span class="hero-cube__mark" data-mark="Do"></span></span>
+			</span>
+		</span>
+	</span>
+</button>
+
+<style>
+	.hero-cube {
+		--s: calc(var(--cube) * 0.7);
+		--half: calc(var(--s) / 2);
+		--rx: -20deg;
+		--ry: -32deg;
+		--scroll: 0deg;
+		position: relative;
+		display: inline-grid;
+		place-items: center;
+		width: calc(var(--s) * 1.7);
+		height: calc(var(--s) * 1.7);
+		padding: 0;
+		border: 0;
+		background: none;
+		cursor: pointer;
+		border-radius: var(--radius-lg);
+		-webkit-tap-highlight-color: transparent;
+	}
+
+	@media (min-width: 768px) {
+		.hero-cube {
+			--s: var(--cube);
+		}
+	}
+
+	.hero-cube__scene {
+		position: relative;
+		display: grid;
+		place-items: center;
+		width: var(--s);
+		height: var(--s);
+		perspective: calc(var(--s) * 8);
+	}
+
+	.hero-cube__shadow {
+		position: absolute;
+		left: 50%;
+		bottom: calc(var(--s) * -0.42);
+		width: calc(var(--s) * 1.1);
+		height: calc(var(--s) * 0.22);
+		transform: translateX(-50%);
+		border-radius: 50%;
+		background: radial-gradient(ellipse, rgb(var(--ink) / 0.28), transparent 70%);
+	}
+
+	.hero-cube__scroll,
+	.hero-cube__body {
+		position: relative;
+		display: block;
+		width: 100%;
+		height: 100%;
+		transform-style: preserve-3d;
+	}
+
+	.hero-cube__scroll {
+		transform: rotateY(var(--scroll));
+	}
+
+	.hero-cube__body {
+		transform: rotateX(var(--rx)) rotateY(var(--ry));
+		transition: transform 0.75s var(--ease-out);
+	}
+
+	.hero-cube__face {
+		position: absolute;
+		inset: 0;
+		display: grid;
+		place-items: center;
+		border-radius: calc(var(--s) * 0.12);
+		background: linear-gradient(145deg, #2a2d33 0%, #15171b 55%, #0c0d10 100%);
+		box-shadow:
+			inset 0 0 0 1px rgb(255 255 255 / 0.16),
+			inset 0 0 0 calc(var(--s) * 0.06) #1b1d22,
+			inset 0 0 0 calc(var(--s) * 0.06 + 1px) rgb(255 255 255 / 0.08);
+		color: #f3efe8;
+		backface-visibility: hidden;
+	}
+
+	.hero-cube__face--front { transform: translateZ(var(--half)); }
+	.hero-cube__face--back { transform: rotateY(180deg) translateZ(var(--half)); }
+	.hero-cube__face--right { transform: rotateY(90deg) translateZ(var(--half)); }
+	.hero-cube__face--left { transform: rotateY(-90deg) translateZ(var(--half)); }
+	.hero-cube__face--top { transform: rotateX(90deg) translateZ(var(--half)); }
+	.hero-cube__face--bottom { transform: rotateX(-90deg) translateZ(var(--half)); }
+
+	.hero-cube__mark {
+		font-family: var(--font-heading);
+		font-style: italic;
+		font-size: calc(var(--s) * 0.42);
+		line-height: 1;
+		letter-spacing: -0.03em;
+	}
+
+	/* Letras como contenido generado: son decorativas y no compiten con el aria-label. */
+	.hero-cube__mark::before {
+		content: attr(data-mark);
+	}
+
+	.hero-cube__mark--pi {
+		font-size: calc(var(--s) * 0.56);
+		font-style: normal;
+		color: rgb(255 155 83);
+	}
+
+	.hero-cube__lan {
+		width: 56%;
+		height: 56%;
+		color: #f3efe8;
+	}
+
+	.hero-cube:focus-visible {
+		outline-offset: 6px;
+	}
+</style>
+
+<script>
+	const cubes = document.querySelectorAll<HTMLButtonElement>("[data-hero-cube]");
+	const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+	const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)");
+
+	cubes.forEach((cube) => {
+		let step = 0;
+		let lastTurn = 0;
+
+		// Cada paso gira 90° en Y; cada cuatro, inclina para enseñar la base.
+		const turn = () => {
+			const now = performance.now();
+			if (now - lastTurn < 450) return; // evita giros encadenados con hover + click
+			lastTurn = now;
+			step += 1;
+			const ry = -32 - step * 90;
+			const rx = step % 4 === 0 ? 70 : -20;
+			cube.style.setProperty("--ry", `${ry}deg`);
+			cube.style.setProperty("--rx", `${rx}deg`);
+		};
+
+		cube.addEventListener("click", turn);
+		cube.addEventListener("pointerenter", () => {
+			if (finePointer.matches) turn();
+		});
+
+		// Giro ligado al scroll, solo mientras el cubo es visible.
+		let visible = false;
+		let frame = 0;
+		const onScroll = () => {
+			if (!visible || reduceMotion.matches) return;
+			cancelAnimationFrame(frame);
+			frame = requestAnimationFrame(() => {
+				cube.style.setProperty("--scroll", `${(window.scrollY * 0.18) % 360}deg`);
+			});
+		};
+
+		new IntersectionObserver(([entry]) => {
+			visible = entry.isIntersecting;
+		}).observe(cube);
+
+		window.addEventListener("scroll", onScroll, { passive: true });
+	});
+</script>

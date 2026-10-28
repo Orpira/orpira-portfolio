@@ -1,0 +1,218 @@
+---
+/**
+ * Guía de estilo interna del sistema "Editorial técnico".
+ * No indexable. Sirve para revisar tokens y componentes antes de la fase 2C.
+ */
+export const prerender = true;
+
+import SiteLayout from "../layouts/SiteLayout.astro";
+import Section from "../components/ui/Section.astro";
+import Button from "../components/ui/Button.astro";
+import Tag from "../components/ui/Tag.astro";
+import CaseRow from "../components/ui/CaseRow.astro";
+import HeroCube from "../components/HeroCube.astro";
+import dashboardImage from "../assets/images/private-balance/dashboard-pwa.webp";
+import movementsImage from "../assets/images/private-balance/movements-pwa.webp";
+
+const colors = [
+	{ token: "paper", label: "Papel", use: "Fondo general", light: "#F6F3EE", dark: "#0E1013" },
+	{ token: "surface", label: "Superficie", use: "Tarjetas, capturas", light: "#EDE8E0", dark: "#171A1F" },
+	{ token: "ink", label: "Tinta", use: "Titulares", light: "#14161A", dark: "#ECE8E1" },
+	{ token: "ink-soft", label: "Tinta suave", use: "Texto de párrafo", light: "#2B2F36", dark: "#C9C4BB" },
+	{ token: "ink-muted", label: "Gris", use: "Datos, metadatos (5,5:1 / 6,6:1)", light: "#5C6270", dark: "#9298A3" },
+	{ token: "line", label: "Línea", use: "Separadores (decorativa)", light: "#D9D3C9", dark: "#2A2E35" },
+	{ token: "accent", label: "Naranja", use: "Fondo del botón principal (no texto en claro)", light: "#F26B1D", dark: "#FF9B53" },
+	{ token: "accent-ink", label: "Naranja texto", use: "Cursivas, enlaces, cifras (5,5:1 / 10,8:1)", light: "#AE3D0C", dark: "#FFB27B" },
+];
+
+const swatchBg: Record<string, string> = {
+	paper: "bg-paper",
+	surface: "bg-surface",
+	ink: "bg-ink",
+	"ink-soft": "bg-ink-soft",
+	"ink-muted": "bg-ink-muted",
+	line: "bg-line",
+	accent: "bg-accent",
+	"accent-ink": "bg-accent-ink",
+};
+---
+
+<SiteLayout
+	title="Guía de estilo · OrPiRa"
+	description="Sistema visual Editorial técnico de OrPiRa: colores, tipografía y componentes."
+	noindex
+>
+	<!-- Muestra de hero: así se combinarán las piezas en la fase 2C -->
+	<section id="inicio" class="pb-20 pt-14 md:pb-28 md:pt-24">
+		<div class="container-site grid items-center gap-12 md:grid-cols-12">
+			<div class="md:col-span-8">
+				<p class="t-data text-ink-muted">
+					Desarrollo de producto · Formación corporativa · Bilbao
+				</p>
+				<h1 class="t-display mt-6 max-w-[14ch]">
+					Convierto procesos y formaciones en <span class="t-accent">software que la gente usa.</span>
+				</h1>
+				<p class="t-lead mt-7 max-w-[56ch]">
+					Diseño y desarrollo aplicaciones web a medida, de la idea al despliegue, para empresas
+					que necesitan formar, medir o gestionar sin depender de herramientas genéricas.
+				</p>
+				<div class="mt-9 flex flex-wrap items-center gap-3">
+					<Button href="#contacto" size="lg" arrow>Cuéntame tu proyecto</Button>
+					<Button href="#casos" size="lg" variant="secondary">Ver casos reales</Button>
+				</div>
+			</div>
+			<div class="flex justify-center md:col-span-4 md:justify-end">
+				<HeroCube />
+			</div>
+		</div>
+		<p class="container-site t-data mt-10 text-ink-muted">
+			Muestra del hero con textos provisionales. Pasa el ratón por el cubo o púlsalo.
+		</p>
+	</section>
+
+	<Section
+		id="colores"
+		index="01"
+		eyebrow="Color"
+		title="Un solo acento. <em class='t-accent'>El resto, tinta y papel.</em>"
+		intro="Cambia de tema con el botón de la cabecera para ver los dos juegos. Entre paréntesis, el contraste en claro / oscuro sobre papel."
+	>
+		<ul class="grid gap-px overflow-hidden rounded-ds-lg border border-line bg-line sm:grid-cols-2 lg:grid-cols-4">
+			{
+				colors.map((c) => (
+					<li class="bg-paper p-5">
+						<span class:list={["block h-20 rounded-ds-md border border-ink/10", swatchBg[c.token]]} />
+						<p class="mt-4 font-medium text-ink">{c.label}</p>
+						<p class="t-data text-ink-muted">--{c.token}</p>
+						<p class="t-data mt-2 text-ink-muted">
+							{c.light} · {c.dark}
+						</p>
+						<p class="mt-2 text-sm text-ink-soft">{c.use}</p>
+					</li>
+				))
+			}
+		</ul>
+	</Section>
+
+	<Section
+		id="tipografia"
+		index="02"
+		eyebrow="Tipografía"
+		title="Serif para la voz, <em class='t-accent'>grotesca para leer.</em>"
+		intro="Instrument Serif en titulares, Geist en texto y Geist Mono en datos. Tres archivos WOFF2 autoalojados, sin Google Fonts."
+	>
+		<div class="divide-y divide-line border-y border-line">
+			<div class="grid gap-3 py-8 md:grid-cols-12">
+				<p class="t-data text-ink-muted md:col-span-3">Display · Instrument Serif<br />44 → 92 px</p>
+				<p class="t-display md:col-span-9">Software a <span class="t-accent">medida</span></p>
+			</div>
+			<div class="grid gap-3 py-8 md:grid-cols-12">
+				<p class="t-data text-ink-muted md:col-span-3">H2 · Instrument Serif<br />34 → 56 px</p>
+				<p class="t-h2 md:col-span-9">Casos reales, con problema y resultado</p>
+			</div>
+			<div class="grid gap-3 py-8 md:grid-cols-12">
+				<p class="t-data text-ink-muted md:col-span-3">H3 · Geist 600<br />19 → 23 px</p>
+				<p class="t-h3 md:col-span-9">Plataformas de formación a medida</p>
+			</div>
+			<div class="grid gap-3 py-8 md:grid-cols-12">
+				<p class="t-data text-ink-muted md:col-span-3">Entradilla · Geist 400<br />18 → 21 px</p>
+				<p class="t-lead max-w-[60ch] md:col-span-9">
+					Tests interactivos, bancos de preguntas, seguimiento del progreso e informes para RR. HH.
+				</p>
+			</div>
+			<div class="grid gap-3 py-8 md:grid-cols-12">
+				<p class="t-data text-ink-muted md:col-span-3">Texto · Geist 400<br />17 px / 1,65</p>
+				<p class="max-w-[65ch] md:col-span-9">
+					Llevo más de 15 años resolviendo problemas de IT y operaciones, y los últimos años los he
+					dedicado a construir el software que me habría gustado tener. Por eso hablo el idioma de
+					quien usa la herramienta y el de quien la programa.
+				</p>
+			</div>
+			<div class="grid gap-3 py-8 md:grid-cols-12">
+				<p class="t-data text-ink-muted md:col-span-3">Datos · Geist Mono<br />13 px</p>
+				<p class="t-data text-ink-soft md:col-span-9">React · Astro · Supabase · PostgreSQL · Claude API — 2026</p>
+			</div>
+		</div>
+	</Section>
+
+	<Section id="componentes" index="03" eyebrow="Componentes" title="Botones y etiquetas">
+		<div class="grid gap-10 md:grid-cols-2">
+			<div>
+				<p class="t-data mb-4 text-ink-muted">Botones</p>
+				<div class="flex flex-wrap items-center gap-3">
+					<Button arrow>Cuéntame tu proyecto</Button>
+					<Button variant="secondary">Ver casos</Button>
+					<Button variant="ghost" href="#casos" arrow>Leer el caso</Button>
+					<Button variant="secondary" href="https://github.com/Orpira" external arrow>GitHub</Button>
+				</div>
+			</div>
+			<div>
+				<p class="t-data mb-4 text-ink-muted">Etiquetas</p>
+				<div class="flex flex-wrap items-center gap-2">
+					<Tag>React</Tag>
+					<Tag>Supabase</Tag>
+					<Tag>PWA</Tag>
+					<Tag variant="status" status="live">En producción</Tag>
+					<Tag variant="status" status="building">En desarrollo</Tag>
+					<Tag variant="plain">2026</Tag>
+				</div>
+			</div>
+		</div>
+	</Section>
+
+	<Section
+		id="casos"
+		index="04"
+		eyebrow="Índice de casos"
+		title="Así se presentarán los proyectos"
+		intro="En escritorio, pasa el ratón por una fila con captura. En móvil, la captura aparece encima. Textos de ejemplo."
+	>
+		<ol class="list-none">
+			<CaseRow
+				index="01"
+				title="Private Balance"
+				result="Finanzas personales sin servidores de terceros: los datos nunca salen del dispositivo."
+				year="2026"
+				href="/projects/private-balance"
+				role="Producto · Full Stack · UX"
+				tags={["React", "IndexedDB", "PWA", "Capacitor"]}
+				image={dashboardImage}
+				imageAlt="Panel principal de Private Balance en la PWA"
+				status="live"
+				statusLabel="En producción"
+			/>
+			<CaseRow
+				index="02"
+				title="PRL Master"
+				result="Formación en prevención de riesgos laborales: modo estudio, modo examen y certificado, sobre un banco de 174 preguntas."
+				year="2026"
+				href="https://prl.orpira.es/"
+				external
+				role="Full Stack · Arquitectura"
+				tags={["React", "Express", "Socket.IO"]}
+				image={movementsImage}
+				imageAlt="Captura provisional"
+				status="live"
+				statusLabel="En producción"
+			/>
+			<CaseRow
+				index="03"
+				title="EcoTogo"
+				result="Informes de ecografía veterinaria con tablero Kanban, notas de WhatsApp clasificadas con IA y plantillas Word."
+				year="2026"
+				href="#casos"
+				role="Producto · Full Stack · IA"
+				tags={["React", "Node.js", "PostgreSQL", "Claude API"]}
+				status="building"
+				statusLabel="En desarrollo"
+			/>
+		</ol>
+	</Section>
+
+	<Section id="contacto" index="05" eyebrow="Ancla de prueba" title="Sección de contacto (fase 2C)">
+		<p class="max-w-[60ch]">
+			Aquí irá el formulario. Los botones «Hablemos» y «Cuéntame tu proyecto» de esta página traen hasta
+			aquí.
+		</p>
+	</Section>
+</SiteLayout>

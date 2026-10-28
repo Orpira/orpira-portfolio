@@ -1,0 +1,59 @@
+---
+/**
+ * Sección editorial: número + antetítulo en mono, titular serif y entradilla.
+ * El titular es siempre un <h2> enlazado con aria-labelledby.
+ */
+interface Props {
+	id: string;
+	index?: string;
+	eyebrow?: string;
+	title?: string;
+	intro?: string;
+	class?: string;
+	bordered?: boolean;
+}
+
+const {
+	id,
+	index,
+	eyebrow,
+	title,
+	intro,
+	class: className = "",
+	bordered = true,
+} = Astro.props;
+
+const titleId = `${id}-titulo`;
+const hasTitle = Boolean(title) || Astro.slots.has("title");
+---
+
+<section
+	id={id}
+	aria-labelledby={hasTitle ? titleId : undefined}
+	class:list={["py-20 md:py-28", bordered && "border-t border-line", className]}
+>
+	<div class="container-site">
+		{
+			(eyebrow || hasTitle || intro) && (
+				<header class="mb-12 grid gap-6 md:mb-16 md:grid-cols-12">
+					{(index || eyebrow) && (
+						<p class="t-data text-ink-muted md:col-span-3 md:pt-3">
+							{index && <span class="text-accent-ink">{index}</span>}
+							{index && eyebrow && <span aria-hidden="true"> / </span>}
+							{eyebrow}
+						</p>
+					)}
+					<div class:list={["md:col-span-9", !(index || eyebrow) && "md:col-start-4"]}>
+						{hasTitle && (
+							<h2 id={titleId} class="t-h2 max-w-[20ch]">
+								{title ? <Fragment set:html={title} /> : <slot name="title" />}
+							</h2>
+						)}
+						{intro && <p class="t-lead mt-5 max-w-[60ch]">{intro}</p>}
+					</div>
+				</header>
+			)
+		}
+		<slot />
+	</div>
+</section>
