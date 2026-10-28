@@ -2,6 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Evita scroll horizontal por elementos decorativos (órbita del hero, halos). */
+html,
+body {
+	overflow-x: clip;
+}
+
 :root {
 	--text-muted: #5d6474;
 	--text-muted-light: #747c8f;

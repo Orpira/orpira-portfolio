@@ -1,6 +1,5 @@
 ---
 import "../styles/global.css";
-import OrpiraLoader from "../components/OrpiraLoader.astro";
 
 interface Props {
 	baseUrl: string;
@@ -54,7 +53,8 @@ const ogImage = Astro.site
 			name="twitter:image:alt"
 			content="OrPiRa, portfolio profesional de Orlando Pineda Raad"
 		/>
-		<link rel="icon" type="image/png" href={`${siteBase}/opr-cubo.png`} />
+		<link rel="icon" type="image/png" sizes="32x32" href={`${siteBase}/brand/favicon-32.png`} />
+		<link rel="apple-touch-icon" href={`${siteBase}/brand/apple-touch-icon.png`} />
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 		<link
@@ -78,8 +78,7 @@ const ogImage = Astro.site
 	<body
 		class="relative bg-zinc-100 dark:bg-brand-bg text-zinc-900 dark:text-brand-text font-sans selection:bg-brand-accent/30 selection:text-brand-text"
 	>
-		<OrpiraLoader />
-		<div aria-hidden="true" class="pointer-events-none fixed inset-0 -z-10">
+		<div aria-hidden="true" class="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
 			<div
 				class="absolute -top-28 left-[18%] h-72 w-72 rounded-full bg-brand-accent/20 blur-3xl"
 			>
@@ -104,7 +103,7 @@ const ogImage = Astro.site
 					<a href={homeLink("#top")} class="brand-lockup" aria-label="OrPiRa, ir al inicio">
 						<span class="brand-cube" aria-hidden="true">
 							<img
-								src={`${siteBase}/opr-cubo.png`}
+								src={`${siteBase}/brand/opr-cubo-192.webp`}
 								alt=""
 								width="48"
 								height="48"
@@ -113,7 +112,7 @@ const ogImage = Astro.site
 						</span>
 						<span class="brand-name" aria-hidden="true">
 							<img
-								src={`${siteBase}/OrPiRa-SF.png`}
+								src={`${siteBase}/brand/orpira-wordmark-480.webp`}
 								alt=""
 								width="120"
 								height="80"

@@ -6,6 +6,8 @@ import {
 
 const PUBLIC_DASHBOARD_PATHS = new Set(["/dashboard", "/dashboard/login"]);
 
+// Mantener sincronizado con vercel.json: las páginas prerenderizadas
+// (portada, privacidad, proyectos) no pasan por este middleware en producción.
 const SECURITY_HEADERS: Record<string, string> = {
 	"Content-Security-Policy": [
 		"default-src 'self'",

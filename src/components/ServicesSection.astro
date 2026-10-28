@@ -72,7 +72,7 @@ const ejecucion = [
   <div class="grid gap-8 md:grid-cols-2">
     <!-- Card Hero -->
     <article class="p-6 md:p-10 rounded-3xl bg-gradient-to-br from-orange-100/80 to-white shadow-xl border-2 border-orange-300 dark:bg-gradient-to-br dark:from-zinc-900 dark:via-orange-900/40 dark:to-zinc-800 dark:border-orange-500 md:col-span-2">
-      <h2 class="font-display section-title-contrast font-semibold text-3xl md:text-5xl mb-4 text-orange-800 dark:text-orange-100">{hero.title}</h2>
+      <h3 class="font-display section-title-contrast font-semibold text-3xl md:text-5xl mb-4 text-orange-800 dark:text-orange-100">{hero.title}</h3>
       <p class="skill-card-copy mt-4 text-lg leading-relaxed text-orange-900 dark:text-orange-100 mb-6">{hero.summary}</p>
       <div class="flex flex-wrap gap-2">
         {hero.stack.map(tool => <span class="bg-orange-200 text-orange-900 px-3 py-1 rounded-full text-sm font-semibold border border-orange-300 dark:bg-orange-800/60 dark:text-orange-100 dark:border-orange-400">{tool}</span>)}
@@ -82,18 +82,18 @@ const ejecucion = [
     <!-- Card Identidad -->
     <article class="p-4 md:p-6 rounded-3xl bg-gradient-to-br from-orange-100/80 to-white shadow-xl border-2 border-orange-300 dark:bg-gradient-to-br dark:from-zinc-900 dark:via-orange-900/40 dark:to-zinc-800 dark:border-orange-500">
       <h3 class="font-display section-title-contrast font-semibold text-3xl md:text-4xl mb-2 text-orange-800 dark:text-orange-100">{identidad.title}</h3>
-      <p class="skill-card-copy text-gray-700 dark:text-brand.muted">Profesional IT / Full Stack Developer con enfoque estratégico y visión global.</p>
-      <p class="skill-card-copy text-gray-700 dark:text-brand.muted">Capacidad para alinear tecnología, procesos y objetivos de negocio, asegurando ejecución eficiente y resultados medibles.</p>
+      <p class="skill-card-copy text-gray-700 dark:text-brand-muted">Profesional IT / Full Stack Developer con enfoque estratégico y visión global.</p>
+      <p class="skill-card-copy text-gray-700 dark:text-brand-muted">Capacidad para alinear tecnología, procesos y objetivos de negocio, asegurando ejecución eficiente y resultados medibles.</p>
     </article>
 
     <!-- Cards Capacidades -->
     {capacidades.map(cap => (
       <article class="p-4 md:p-6 rounded-3xl bg-gradient-to-br from-orange-100/80 to-white shadow-xl border-2 border-orange-300 dark:bg-gradient-to-br dark:from-zinc-900 dark:via-orange-900/40 dark:to-zinc-800 dark:border-orange-500">
         <div class="flex items-center mb-1">
-          <h4 class="font-display section-title-contrast font-semibold text-2xl md:text-3xl text-orange-800 dark:text-orange-100 mb-0 flex-1">{cap.title}</h4>
+          <h3 class="font-display section-title-contrast font-semibold text-2xl md:text-3xl text-orange-800 dark:text-orange-100 mb-0 flex-1">{cap.title}</h3>
           <span class="micro-accent text-[0.74rem] uppercase tracking-[0.14em] rounded-full border border-orange-400/60 px-4 py-2 text-orange-700 dark:text-orange-200 bg-orange-100/60 dark:bg-orange-900/40 ml-auto">{cap.level}</span>
         </div>
-        <p class="skill-card-copy text-gray-700 dark:text-brand.muted">{cap.summary}</p>
+        <p class="skill-card-copy text-gray-700 dark:text-brand-muted">{cap.summary}</p>
         {Array.isArray(cap.stack) && (
           <div class="project-stack mt-6">
             {cap.stack.map((tool) => (
@@ -107,8 +107,8 @@ const ejecucion = [
     <!-- Cards Ejecución -->
     {ejecucion.map(eje => (
       <article class="p-4 md:p-6 rounded-3xl bg-gradient-to-br from-orange-100/80 to-white shadow-xl border-2 border-orange-300 dark:bg-gradient-to-br dark:from-zinc-900 dark:via-orange-900/40 dark:to-zinc-800 dark:border-orange-500">
-        <h4 class="font-display section-title-contrast font-semibold text-2xl md:text-3xl mb-1 text-orange-800 dark:text-orange-100">{eje.title}</h4>
-        <p class="skill-card-copy text-gray-700 dark:text-brand.muted">{eje.summary}</p>
+        <h3 class="font-display section-title-contrast font-semibold text-2xl md:text-3xl mb-1 text-orange-800 dark:text-orange-100">{eje.title}</h3>
+        <p class="skill-card-copy text-gray-700 dark:text-brand-muted">{eje.summary}</p>
         {Array.isArray(eje.stack) && (
           <div class="project-stack mt-6">
             {eje.stack.map((tool) => (

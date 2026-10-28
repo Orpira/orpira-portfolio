@@ -111,7 +111,7 @@ export const brandProjects: BrandProject[] = [
 		title: "Orpira Portfolio",
 		summary:
 			"Diseñado y desarrollado como parte de la identidad digital OrPiRa, combinando rendimiento, accesibilidad, responsive, SEO y una experiencia visual propia.",
-		domain: "https://Proyecto actual·orpira.es",
+		domain: "https://orpira.es/",
 		stack: ["Astro", "Tailwind", "Vercel", "SEO"],
 		href: "#top",
 		year: "2026",
