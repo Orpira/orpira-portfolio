@@ -22,7 +22,6 @@ const cases = (await getCollection("cases")).sort((a, b) => a.data.order - b.dat
 					index={String(i + 1).padStart(2, "0")}
 					title={entry.data.title}
 					result={entry.data.summary}
-					year={entry.data.year}
 					href={`/casos/${entry.id}`}
 					role={entry.data.role.split(" · ").slice(0, 3).join(" · ")}
 					tags={entry.data.tags}

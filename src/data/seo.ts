@@ -90,7 +90,6 @@ interface CaseLd {
 	title: string;
 	description: string;
 	headline: string;
-	year: string;
 	tags: string[];
 	platform: string;
 	demoUrl?: string;

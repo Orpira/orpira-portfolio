@@ -9,7 +9,6 @@ ogLine: Finanzas privadas, con los datos en el dispositivo.
 seoDescription: >-
   Caso de estudio de Private Balance: app de finanzas local-first para web, PWA y Android.
   Problema, decisiones de arquitectura, Copiloto con IA y stack.
-year: "2026"
 role: Producto · Arquitectura · Full Stack · UX
 platform: Web · PWA · Android
 status: live

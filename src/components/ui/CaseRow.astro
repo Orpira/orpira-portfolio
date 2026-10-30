@@ -13,7 +13,6 @@ interface Props {
 	index: string;
 	title: string;
 	result: string;
-	year: string;
 	/** Sin href, la fila no es enlace (caso en preparación). */
 	href?: string;
 	role?: string;
@@ -29,7 +28,6 @@ const {
 	index,
 	title,
 	result,
-	year,
 	href,
 	role,
 	tags = [],
@@ -95,7 +93,6 @@ const linkAttrs = href
 			)}
 		</div>
 		<span class="t-data flex items-center justify-between text-ink-muted md:col-span-1 md:justify-end">
-			{year}
 			{href && (
 				<span
 					aria-hidden="true"

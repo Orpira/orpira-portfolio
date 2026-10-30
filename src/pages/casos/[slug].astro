@@ -62,7 +62,6 @@ const idx = () => String(++n).padStart(2, "0");
 		title: c.title,
 		description: c.seoDescription,
 		headline: c.headline,
-		year: c.year,
 		tags: c.tags,
 		platform: c.platform,
 		demoUrl: c.links[0]?.href,
@@ -106,10 +105,6 @@ const idx = () => String(++n).padStart(2, "0");
 						<div>
 							<dt>Plataforma</dt>
 							<dd class="mt-1 text-ink-soft">{c.platform}</dd>
-						</div>
-						<div>
-							<dt>Año</dt>
-							<dd class="mt-1 text-ink-soft">{c.year}</dd>
 						</div>
 						<div>
 							<dt>Stack</dt>

@@ -27,7 +27,6 @@ const cases = defineCollection({
 			seoDescription: z.string().max(170),
 			/** Frase corta para la imagen Open Graph (scripts/generate-og.mjs). */
 			ogLine: z.string().max(80).optional(),
-			year: z.string(),
 			role: z.string(),
 			platform: z.string(),
 			status: z.enum(["live", "building"]),

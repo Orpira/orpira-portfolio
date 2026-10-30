@@ -78,7 +78,7 @@ for (const name of (await readdir(casesDir)).filter((f) => f.endsWith(".yaml")))
 	const data = parse(await readFile(path.join(casesDir, name), "utf8"));
 	pages.push({
 		file: `${name.replace(/\.yaml$/, "")}.jpg`,
-		kicker: `Caso de estudio · ${data.year}`,
+		kicker: "Caso de estudio",
 		title: data.title,
 		accent: data.ogLine ?? short(data.headline),
 		footer: data.tags.slice(0, 4).join(" · "),
