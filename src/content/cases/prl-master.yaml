@@ -21,6 +21,9 @@ links:
   - label: Abrir PRL Master
     href: https://prl.orpira.es/
 
+cover: ../../assets/images/prl-master/resultado-examen.webp
+coverAlt: Resultado de examen APTO con un 80 %, botón para descargar el certificado y desglose por categoría
+
 problem:
   title: El temario y el examen vivían en un documento Word.
   paragraphs:
@@ -52,8 +55,14 @@ decisions:
     decision: Incorporar un chat con IA dentro de la propia formación.
     why: El alumno resuelve dudas en el momento, sin salir de la app.
 
-gallery: []
-galleryPending: Capturas del modo estudio, del modo examen y del certificado (2–4 imágenes)
+gallery:
+  - src: ../../assets/images/prl-master/estudio-teoria.webp
+    alt: Modo estudio de PRL Master con los puntos clave de la categoría Equipos de Protección
+    caption: Modo estudio. Cada categoría resume lo esencial antes de practicar.
+  - src: ../../assets/images/prl-master/estudio-practica.webp
+    alt: Pregunta de práctica sobre los EPI con la respuesta correcta en verde y la elegida en rojo
+    caption: La práctica corrige al momento y enseña cuál era la respuesta correcta.
+galleryPending: null
 
 architecture:
   summary: >-
