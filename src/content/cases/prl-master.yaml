@@ -1,36 +1,40 @@
 # Redactado solo con hechos conocidos. Lo que falta está en `pending` o en valores null.
+# Describe la app en producción (prl.orpira.es), repo Orpira/test_interactivo-prl.
 title: PRL Master
 order: 1
 headline: >-
-  Un examen de prevención de riesgos laborales en Word convertido en una app para
-  estudiar, examinarse y obtener el certificado.
+  Un examen de prevención de riesgos laborales en Word convertido en una app de tests
+  para el aula: individual, por turnos o en red, con ranking en tiempo real.
 summary: >-
-  Formación en prevención de riesgos laborales con modo estudio, modo examen, certificado
-  y asistente con IA, sobre 100 preguntas en 31 categorías.
-ogLine: Del examen en Word a una app para estudiar y certificarse.
+  Tests de prevención de riesgos laborales para formadores: 174 preguntas, modo individual,
+  multijugador y salas en red con ranking en directo.
+ogLine: Del examen en Word a una app de tests para el aula.
 seoDescription: >-
-  Caso de estudio de PRL Master: plataforma de formación en prevención de riesgos
-  laborales con modo estudio, examen, certificado y asistente con IA.
+  Caso de estudio de PRL Master: tests de prevención de riesgos laborales con modo
+  individual, multijugador local y salas en red con ranking en tiempo real.
 year: "2026"
-role: Producto · Full Stack · IA
+role: Producto · Full Stack · Tiempo real
 platform: Web
 status: live
 statusLabel: En producción
-tags: [React, TypeScript, Supabase, Express, OpenAI]
+tags: [React, Vite, Tailwind CSS, Express, Socket.IO]
 links:
   - label: Abrir PRL Master
     href: https://prl.orpira.es/
+  - label: Ver el código
+    href: https://github.com/Orpira/test_interactivo-prl
 
-cover: ../../assets/images/prl-master/resultado-examen.webp
-coverAlt: Resultado de examen APTO con un 80 %, botón para descargar el certificado y desglose por categoría
+cover: ../../assets/images/prl-master/portada.webp
+coverAlt: Portada de PRL Master en verde con el lema Aprende Prevención de Riesgos Laborales
 
 problem:
   title: El temario y el examen vivían en un documento Word.
   paragraphs:
     - >-
-      Un documento se lee, pero no se puede practicar con él, no corrige y no deja
-      constancia de quién ha aprobado. La formación en prevención de riesgos laborales
-      necesita las tres cosas.
+      Un documento se lee, pero no se puede practicar con él, no corrige y no sirve para
+      evaluar a un grupo a la vez. Quien imparte formación en prevención de riesgos
+      laborales necesita una herramienta ágil para comprobar en el aula lo que se ha
+      aprendido.
   pending:
     - Quién usaba ese material (empresa, academia, alumnos) y cuántas personas se forman al año
     - Cómo se hacía antes el examen y la corrección, y cuánto tiempo costaba
@@ -39,79 +43,76 @@ decisions:
   - title: Las preguntas son datos, no páginas
     context: El examen original estaba en Word, mezclando formato y contenido.
     decision: >-
-      Convertir el documento en un banco tipado de 100 preguntas en 31 categorías, cada
-      una con su resumen de teoría, separado de la interfaz.
+      Convertir el documento en un banco JSON de 174 preguntas, cada una con su categoría,
+      y agrupar las 26 categorías en 7 bloques temáticos con buscador y recuento.
     why: >-
-      Actualizar o ampliar el temario pasa a ser editar datos, y cada pregunta se reutiliza
-      en estudio, examen y estadísticas.
-  - title: Estudiar y examinarse son experiencias distintas
-    context: Practicar con ayuda y demostrar lo aprendido tienen reglas diferentes.
+      Ampliar el temario es editar datos, y el formador elige qué evaluar sin tocar la
+      aplicación.
+  - title: Tres formas de examinar, la misma app
+    context: No es lo mismo repasar en casa que evaluar a una clase.
     decision: >-
-      Separar un modo estudio, con teoría por categoría y corrección inmediata, de un
-      examen cronometrado (90 s por pregunta) que corrige al final, desglosa el resultado
-      por categoría y emite un certificado en PDF a partir del 60 %.
-    why: El alumno aprende sin presión y el examen conserva su valor como prueba.
-  - title: Probar sin cuenta, comprometerse con cuenta
-    context: Pedir registro antes de enseñar nada espanta a quien solo quiere ver cómo es.
+      Modo individual, multijugador por turnos en un solo dispositivo y modo en red, donde
+      cada alumno entra desde su móvil con un código de sala (PRL-XXXX).
+    why: Sirve igual con un proyector y un portátil que con una clase entera conectada.
+  - title: El ranking se actualiza mientras la clase termina
+    context: En el aula, esperar a que acaben todos para ver resultados enfría la sesión.
     decision: >-
-      Un modo demo con 4 temas, 5 preguntas por tema y un examen, sin asistente IA. Con
-      cuenta se abre todo el temario, el historial y las estadísticas.
-    why: Se ve el valor antes de dar el email, y el coste de IA solo lo generan usuarios registrados.
-  - title: La IA ayuda al alumno y a quien gestiona el contenido
-    context: >-
-      Las dudas aparecen mientras se estudia, y el temario nuevo llega en PDF o JSON sin
-      clasificar.
+      Un servidor Express con Socket.IO reparte las mismas preguntas barajadas a toda la
+      sala y publica el ranking con medallas a medida que llegan los resultados. Si el
+      anfitrión se desconecta, otro participante pasa a serlo.
+    why: El formador ve en directo quién ha terminado y cómo va el grupo.
+  - title: Corrección inmediata y ritmo configurable
+    context: Un test sirve para aprender si explica el fallo en el momento.
     decision: >-
-      Un asistente de PRL dentro de la app y un panel de administración que extrae el texto
-      de cada fuente y propone sus categorías con IA, siempre a través del servidor.
-    why: La clave de la API no llega al navegador y el administrador revisa antes de guardar.
+      Mostrar la respuesta correcta tras cada pregunta, barajar con Fisher-Yates en cada
+      intento y dejar elegir cuántas preguntas (5 a 174) y un temporizador opcional por
+      pregunta o por test.
+    why: El mismo banco sirve para un repaso rápido o para un examen con tiempo.
 
 gallery:
-  - src: ../../assets/images/prl-master/panel.webp
-    alt: Panel principal de PRL Master con estadísticas, accesos rápidos y el temario de 31 categorías
-    caption: Panel principal con el progreso del alumno y el temario completo.
-  - src: ../../assets/images/prl-master/estudio-teoria.webp
-    alt: Modo estudio de PRL Master con los puntos clave de la categoría Equipos de Protección
-    caption: Modo estudio. Cada categoría resume lo esencial antes de practicar.
-  - src: ../../assets/images/prl-master/estudio-practica.webp
-    alt: Pregunta de práctica sobre los EPI con la respuesta correcta en verde y la elegida en rojo
-    caption: La práctica corrige al momento y enseña cuál era la respuesta correcta.
+  - src: ../../assets/images/prl-master/categorias.webp
+    alt: Selector de categorías agrupadas por bloques temáticos con buscador y número de preguntas
+    caption: Las 26 categorías, en 7 bloques, con buscador y recuento de preguntas.
+  - src: ../../assets/images/prl-master/pregunta.webp
+    alt: Pregunta de riesgos químicos con la respuesta correcta en verde y la elegida en rojo
+    caption: Corrección inmediata. La respuesta correcta se marca en verde.
+  - src: ../../assets/images/prl-master/sala-en-red.webp
+    alt: Sala en red con el código PRL-5XL5 y cuatro participantes conectados
+    caption: Modo en red. La formadora comparte el código y la clase entra desde sus dispositivos.
+  - src: ../../assets/images/prl-master/ranking-en-red.webp
+    alt: Ranking final de la sala con medallas de oro, plata y bronce y la puntuación de cada participante
+    caption: Ranking en tiempo real cuando la sala termina. Nombres de demostración.
 galleryPending: null
 
 architecture:
   summary: >-
-    Una SPA en React con Supabase para cuentas, roles y resultados, y un servidor Express
-    que hace de puente con la IA.
+    Una SPA en React que funciona sola para los modos individual y por turnos, y un
+    servidor Express con Socket.IO para las salas en red.
   layers:
     - label: Interfaz
-      items: [React, TypeScript, Vite, Tailwind CSS, Zustand]
-      note: Modo estudio, examen, certificado, estadísticas y administración.
-    - label: Datos y cuentas
-      items: [Supabase Auth, PostgreSQL]
-      note: Perfiles con rol, resultados de examen y fuentes del temario.
-    - label: Servidor
-      items: [Express, OpenAI API, pdf-parse]
-      note: Asistente y clasificación de fuentes; la clave vive aquí.
-    - label: Documentos
-      items: [jsPDF]
+      items: [React, Vite, Tailwind CSS]
+      note: Modos individual, por turnos y en red.
+    - label: Contenido
+      items: [Banco de 174 preguntas en JSON]
+      note: 26 categorías en 7 bloques temáticos.
+    - label: Tiempo real
+      items: [Express, Socket.IO]
+      note: Salas con código, ranking en directo y reconexión automática.
 
 stack:
   - layer: Interfaz
-    tech: [React, TypeScript, Tailwind CSS, Zustand]
-    why: Estado del alumno y del examen en un solo sitio, tipado de punta a punta.
-  - layer: Datos
-    tech: [Supabase, PostgreSQL]
-    why: Autenticación, roles de usuario y administrador, e historial de exámenes.
-  - layer: IA
-    tech: [OpenAI API, Express]
-    why: Asistente de PRL y clasificación de PDF o JSON sin exponer la clave.
-  - layer: Certificado
-    tech: [jsPDF]
-    why: El certificado se genera en el navegador al aprobar.
+    tech: [React, Vite, Tailwind CSS]
+    why: Rápida en cualquier dispositivo del aula, incluido el móvil del alumno.
+  - layer: Tiempo real
+    tech: [Express, Socket.IO]
+    why: WebSocket con alternativa por polling y reconexión transparente.
+  - layer: Contenido
+    tech: [JSON]
+    why: El temario queda separado de la aplicación y se amplía sin tocar código.
 
 results:
-  - value: "100"
-    label: preguntas en 31 categorías, convertidas desde el examen en Word
+  - value: "174"
+    label: preguntas en el banco, convertidas desde el examen en Word
   - value: null
     label: personas formadas
     pendingHint: Alumnos o empresas que han usado PRL Master
