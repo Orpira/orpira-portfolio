@@ -20,7 +20,7 @@ links:
   - label: Código en GitHub
     href: https://github.com/Orpira/finance-app
 cover: ../../assets/images/private-balance/dashboard-pwa.webp
-coverAlt: Resumen financiero de demostración en el panel de la PWA de Private Balance
+coverAlt: Inicio de Private Balance con el resultado, los ingresos y los egresos de una temporada de demostración
 
 problem:
   title: Registrar dinero era solo una parte del problema.
@@ -72,17 +72,17 @@ decisions:
 
 gallery:
   - src: ../../assets/images/private-balance/movements-pwa.webp
-    alt: Vista de movimientos de Private Balance con un ingreso y un egreso de demostración
-    caption: Movimientos en la PWA, con datos ficticios.
+    alt: Lista de movimientos con servicios y gastos de demostración ordenados por fecha
+    caption: Movimientos de la temporada, con datos ficticios.
   - src: ../../assets/images/private-balance/copilot-pwa.webp
-    alt: Propuesta de gasto del Copiloto con explicación, datos estructurados y botones Editar, Cancelar y Confirmar
-    caption: El Copiloto propone; el usuario confirma antes de que se guarde nada.
+    alt: Propuesta de ingreso del Copiloto con explicación, evidencias y botones Editar, Cancelar y Confirmar
+    caption: Demostración del Copiloto. Propone, y el usuario confirma antes de guardar nada.
   - src: ../../assets/images/private-balance/agenda-pwa.webp
-    alt: Agenda de Private Balance con una cita de demostración programada
+    alt: Agenda del día con tres citas de demostración, su duración, importe y alarma
     caption: Agenda. La hora programada forma parte de la regla de negocio.
   - src: ../../assets/images/private-balance/android-dashboard.webp
-    alt: Panel de Private Balance en la app Android
-    caption: La misma base de código en Android, empaquetada con Capacitor.
+    alt: Inicio de Private Balance en una pantalla de móvil
+    caption: En móvil. La misma base se empaqueta para Android con Capacitor.
     shape: portrait
 
 architecture:
