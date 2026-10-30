@@ -1,7 +1,7 @@
 # Redactado solo con hechos conocidos. Lo que falta está en `pending` o en valores null.
 # Describe la app en producción (prl.orpira.es), repo Orpira/test_interactivo-prl.
 title: PRL Master
-order: 1
+order: 3
 headline: >-
   Un examen de prevención de riesgos laborales en Word convertido en una app de tests
   para el aula: individual, por turnos o en red, con ranking en tiempo real.
