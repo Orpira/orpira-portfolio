@@ -1,0 +1,130 @@
+# Redactado solo con hechos conocidos. Lo que falta está en `pending` o en valores null.
+# Repo Orpira/OrPiRa-domino-3d, en producción en domino-3d.orpira.es.
+title: Dominó 3D
+order: 4
+headline: >-
+  Dominó latino para cuatro en una mesa 3D: contra bots, en el mismo móvil o con amigos
+  en salas online, con un servidor que no deja hacer trampas.
+summary: >-
+  Juego de dominó con mesa 3D en Three.js, tres modalidades de reglas, salas online por
+  código, liga, amigos y app Android.
+ogLine: Dominó latino para cuatro en una mesa 3D.
+seoDescription: >-
+  Caso de estudio de Dominó 3D: dominó latino con mesa 3D, reglas Latino, Con robo y All
+  Fives, salas online con servidor autoritativo, liga y app Android.
+role: Producto · Full Stack · Juego en tiempo real
+platform: Web y Android
+status: live
+statusLabel: En producción
+tags: [React, Three.js, TypeScript, Node.js, Capacitor]
+links:
+  - label: Jugar al Dominó 3D
+    href: https://domino-3d.orpira.es/
+  - label: Ver el código
+    href: https://github.com/Orpira/OrPiRa-domino-3d
+
+cover: ../../assets/images/domino-3d/portada.webp
+coverAlt: Inicio de Domino3D-OrPiRa con el acceso a jugar ahora, practicar sin conexión y jugar online
+
+problem:
+  title: Jugar al dominó a cuatro, como en la mesa de siempre, desde el móvil.
+  paragraphs:
+    - >-
+      El dominó latino se juega a cuatro, por turnos y con reglas que cada mesa conoce de
+      memoria. Llevarlo a una pantalla pide que la mesa se sienta real, que funcione sin
+      conexión y que, cuando se juega con amigos a distancia, nadie pueda ver fichas ajenas
+      ni jugar fuera de turno.
+  pending:
+    - Para quién se pensó primero y cuántas personas juegan al mes
+
+decisions:
+  - title: Un motor de reglas determinista, separado de la interfaz
+    context: Una regla mal aplicada arruina la partida y la confianza en el juego.
+    decision: >-
+      Escribir las reglas como un paquete aparte (Latino, Con robo y All Fives, individual o
+      por parejas, a 100, 150 o 200) y fijar el Latino con un golden master y partidas
+      generativas que solo admiten jugadas legales.
+    why: Cliente, bots y servidor aplican exactamente las mismas reglas.
+  - title: El servidor decide, el cliente solo propone
+    context: En una partida online, quien controla el estado controla la partida.
+    decision: >-
+      Cada sesión está ligada a un asiento; el cliente envía comandos con la revisión que
+      espera, el servidor los procesa en serie y solo devuelve a cada jugador su propia vista
+      de la mano.
+    why: Nadie ve fichas ajenas ni juega por otro, y un reintento no duplica jugadas.
+  - title: Una mesa 3D que se juega con un dedo
+    context: Una mesa bonita no sirve si colocar una ficha en el móvil es difícil.
+    decision: >-
+      Mesa procedural en Three.js con brillo en los extremos jugables: se arrastra la ficha
+      o se toca y se toca el brillo. Incluye movimiento reducido, sonido opcional y una mesa
+      que se encoge si la jugada no cabe.
+    why: La misma partida funciona en escritorio, en un móvil estrecho y en la app Android.
+  - title: Jugar con gente, no solo contra la máquina
+    context: El dominó es un juego social.
+    decision: >-
+      Salas privadas por código, invitación por enlace o WhatsApp, amigos con presencia,
+      frases rápidas en la mesa con límite de envío, reloj de turno y una liga mensual.
+    why: Se puede quedar con los de siempre aunque no estén en la misma casa.
+
+gallery:
+  - src: ../../assets/images/domino-3d/mesa-latino.webp
+    alt: Mesa 3D con una partida Latino en curso, una ficha seleccionada en la mano y el brillo del extremo donde encaja
+    caption: Práctica contra tres bots. La ficha seleccionada señala dónde encaja.
+  - src: ../../assets/images/domino-3d/all-fives.webp
+    alt: Partida All Fives con la cruz de cuatro brazos, la suma de extremos y el marcador en la mesa
+    caption: All Fives. Cruz de cuatro brazos, suma de extremos y pozo para robar.
+  - src: ../../assets/images/domino-3d/sala-online.webp
+    alt: Sala online privada con cuatro jugadores conectados, marcador y reloj de turno
+    caption: Sala online por código con cuatro jugadores y reloj de turno. Nombres de demostración.
+  - src: ../../assets/images/domino-3d/movil.webp
+    alt: Partida de dominó en una pantalla de móvil con la mesa 3D, la mano y la barra de navegación inferior
+    caption: En móvil, con la misma base que la app Android.
+    shape: portrait
+galleryPending: null
+
+architecture:
+  summary: >-
+    Un monorepo con el motor de reglas y los bots como paquetes, un cliente React con la
+    mesa en Three.js y una API Node.js que hace de árbitro de las partidas online.
+  layers:
+    - label: Reglas y bots
+      items: [Motor determinista, Bots]
+      note: Latino, Con robo y All Fives; individual o parejas.
+    - label: Cliente
+      items: [React, Three.js, Vite]
+      note: Web en Vercel y APK Android con Capacitor.
+    - label: Servidor
+      items: [Node.js, API HTTP propia]
+      note: Salas, liga, amigos, chat de frases y reloj de turno.
+    - label: Despliegue
+      items: [Docker, Nginx Proxy Manager, VPS]
+
+stack:
+  - layer: Interfaz
+    tech: [React, TypeScript]
+    why: Marcador, mano, salas, liga y cuenta en una sola aplicación.
+  - layer: 3D
+    tech: [Three.js]
+    why: Mesa procedural ligera, sin modelos pesados que descargar.
+  - layer: Servidor
+    tech: [Node.js, Docker]
+    why: Árbitro de las partidas online, sin dependencias externas en el adaptador HTTP.
+  - layer: Móvil
+    tech: [Capacitor]
+    why: La misma web empaquetada como app Android.
+  - layer: Calidad
+    tech: [Pruebas de aceptación, Golden master]
+    why: Reglas, bots, cliente y servidor se prueban en cada cambio.
+
+results:
+  - value: "3"
+    label: modalidades de reglas sobre el mismo motor
+  - value: "4"
+    label: formas de jugar, de la práctica sin conexión a la sala online
+  - value: null
+    label: jugadores al mes
+    pendingHint: Partidas jugadas o jugadores activos al mes
+
+next: >-
+  Seguir acercando la experiencia a los juegos comerciales de dominó, con torneos y una
+  comunidad propia, sin perder la base de reglas probadas.
