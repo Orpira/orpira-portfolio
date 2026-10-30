@@ -6,6 +6,7 @@
 import "../styles/site.css";
 import SiteHeader from "../components/site/SiteHeader.astro";
 import SiteFooter from "../components/site/SiteFooter.astro";
+import BackToTop from "../components/site/BackToTop.astro";
 import Analytics from "@vercel/analytics/astro";
 
 import geistUrl from "@fontsource-variable/geist/files/geist-latin-wght-normal.woff2?url";
@@ -109,6 +110,7 @@ const ogImage = new URL(image, site).toString();
 			<slot />
 		</main>
 		<SiteFooter isHome={isHome} showCta={footerCta ?? !isHome} />
+		<BackToTop />
 		{withAnalytics && <Analytics />}
 	</body>
 </html>
