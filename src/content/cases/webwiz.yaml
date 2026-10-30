@@ -1,0 +1,141 @@
+# Redactado solo con hechos conocidos. Lo que falta está en `pending` o en valores null.
+title: WebWiz
+order: 2
+headline: >-
+  Una plataforma para entrenar el trabajo real de un desarrollador: quizzes que miden la
+  confianza, bugs que se depuran desde un ticket y código de IA que hay que revisar.
+summary: >-
+  Práctica de desarrollo web con quizzes con confianza, retos con tests en vivo,
+  incidencias reales, revisión de código generado por IA y repaso espaciado.
+ogLine: No memorices respuestas. Entrena el trabajo de un dev.
+seoDescription: >-
+  Caso de estudio de WebWiz: plataforma de práctica para desarrolladores con quizzes,
+  retos con tests, incidencias, revisión de código de IA y laboratorios de SQL y Git.
+year: "2026"
+role: Producto · Full Stack · IA
+platform: Web y Android
+status: live
+statusLabel: En producción
+tags: [React, TypeScript, Supabase, Claude API, Capacitor]
+links:
+  - label: Abrir WebWiz
+    href: https://webwiz.orpira.es/
+  - label: Ver el código
+    href: https://github.com/Orpira/test_interactivo-supabase
+cover: ../../assets/images/webwiz/landing.webp
+coverAlt: Portada de WebWiz con una pregunta de event loop y el selector de confianza
+
+problem:
+  title: Acertar un test no es lo mismo que saber hacer el trabajo.
+  paragraphs:
+    - >-
+      Los cuestionarios de programación premian memorizar respuestas. El trabajo diario
+      es otro: leer un ticket, reproducir un fallo, revisar código ajeno (cada vez más,
+      generado por IA) y no olvidar lo aprendido la semana anterior.
+    - >-
+      WebWiz empezó como una app de quizzes de HTML, CSS y JavaScript y ha crecido por
+      fases hasta cubrir esas tareas, en español, en web y en Android.
+  pending:
+    - Para quién se pensó primero (bootcamp, autoaprendizaje, equipos) y cuántas personas la usan
+
+decisions:
+  - title: Preguntar por la confianza, no solo por la respuesta
+    context: Un acierto adivinando y un acierto seguro no significan lo mismo.
+    decision: >-
+      Pedir la confianza antes de comprobar (Adivino, Creo que sí, Seguro) y usarla en el
+      repaso espaciado FSRS por concepto: un fallo seguro vuelve antes que un acierto seguro.
+    why: El repaso trae de vuelta lo que estás a punto de olvidar, no lo que ya dominas.
+  - title: Los retos se corrigen con tests de verdad
+    context: Validar código comparando texto no distingue una solución buena de una casualidad.
+    decision: >-
+      Ejecutar el código en un iframe aislado o en un Web Worker, con 2 s por test y
+      protección frente a bucles infinitos. En CI se comprueba que el código inicial falla
+      y que la solución pasa.
+    why: Cada reto está verificado antes de publicarse.
+  - title: Incidencias con tests ocultos y de regresión
+    context: Depurar exige reproducir el fallo sin romper lo que ya funcionaba.
+    decision: >-
+      Cada incidencia trae un ticket, una mini-app rota, DevTools simuladas (Elementos,
+      Consola, Red), tests de aceptación ocultos y tests de regresión visibles. El ticket
+      solo se cierra si pasan los dos grupos.
+    why: Se practica el ciclo completo de un bug, del reporte al arreglo mínimo.
+  - title: La IA revisa, pero la clave nunca llega al cliente
+    context: >-
+      «Explícalo tú» corrige respuestas abiertas con Claude, y eso tiene coste y datos
+      sensibles (la rúbrica).
+    decision: >-
+      Llamar a Claude desde una Supabase Edge Function, con la rúbrica fuera de la base de
+      datos pública, validación del JSON de respuesta, caché por hash y límite diario por
+      usuario.
+    why: Coste acotado y una interfaz que no se rompe si la IA responde mal.
+
+gallery:
+  - src: ../../assets/images/webwiz/incidencia.webp
+    alt: >-
+      Espacio de trabajo de una incidencia con el ticket, el editor de CSS, la vista previa
+      móvil y la consola mostrando el error
+    caption: "Incidencia #482. Ticket, editor, vista previa a 390 px y DevTools simuladas."
+  - src: ../../assets/images/webwiz/hoy.webp
+    alt: >-
+      Pantalla Hoy con la racha semanal, el diagnóstico inicial, el repaso del día, la
+      incidencia del día y el mapa de habilidades
+    caption: «Hoy» reúne el repaso, la incidencia del día y el mapa de habilidades.
+  - src: ../../assets/images/webwiz/revision-ia.webp
+    alt: Revisión de un PR generado por IA con tres fallos ocultos en un widget de comentarios
+    caption: Revisa el código de la IA. Hay que señalar la línea y la categoría del fallo.
+  - src: ../../assets/images/webwiz/laboratorio-sql.webp
+    alt: >-
+      Laboratorio SQL con una consulta, el esquema de tablas y el resultado comparado con
+      el esperado
+    caption: PostgreSQL real en el navegador con PGlite. Cada ejecución se deshace al terminar.
+
+architecture:
+  summary: >-
+    Una SPA que ejecuta los retos en el navegador y usa Supabase para cuentas, progreso
+    y ranking. La IA vive en una Edge Function.
+  layers:
+    - label: Cliente
+      items: [React, TypeScript, Vite, Zustand]
+      note: Web y Android (Capacitor) desde el mismo código
+    - label: Ejecución en el navegador
+      items: [iframe aislado, Web Worker, PGlite, axe-core]
+    - label: Servidor
+      items: [Supabase Auth, PostgreSQL con RLS, Edge Functions]
+    - label: IA
+      items: [Claude API]
+      note: Corrección de «Explícalo tú» y etiquetado del banco con revisión humana
+
+stack:
+  - layer: Interfaz
+    tech: [React, TypeScript, Tailwind CSS, Zustand]
+    why: Tema oscuro y claro con contraste AA, atajos de teclado y paleta de comandos.
+  - layer: Ejecución
+    tech: [Web Worker, iframe sandbox, PGlite]
+    why: El código del usuario se ejecuta aislado, sin acceso a la sesión.
+  - layer: Backend
+    tech: [Supabase, PostgreSQL, Cloudflare Turnstile]
+    why: Autenticación con Google, GitHub o email, RLS en cada tabla y CAPTCHA en el acceso.
+  - layer: IA
+    tech: [Claude API, Supabase Edge Functions]
+    why: La clave y la rúbrica se quedan en el servidor.
+  - layer: Calidad
+    tech: [Vitest, Playwright, GitHub Actions]
+    why: Cada reto e incidencia se verifica en CI antes de publicarse.
+  - layer: Móvil
+    tech: [Capacitor]
+    why: APK y AAB para Android con la misma base de código.
+
+results:
+  - value: "60"
+    label: retos con tests automáticos
+  - value: 1.081 → 580 kB
+    label: bundle inicial tras la carga diferida de rutas
+  - value: "100"
+    label: Lighthouse Accesibilidad en la pantalla de quiz
+  - value: null
+    label: usuarios activos
+    pendingHint: Usuarios registrados o activos al mes
+
+next: >-
+  Seguir ampliando temas y abrir /crear a más editores para que la comunidad proponga
+  retos e incidencias validados automáticamente.
