@@ -6,23 +6,23 @@ headline: >-
   estudiar, examinarse y obtener el certificado.
 summary: >-
   Formación en prevención de riesgos laborales con modo estudio, modo examen, certificado
-  y asistente con IA, sobre un banco de 174 preguntas.
+  y asistente con IA, sobre 100 preguntas en 31 categorías.
 ogLine: Del examen en Word a una app para estudiar y certificarse.
 seoDescription: >-
   Caso de estudio de PRL Master: plataforma de formación en prevención de riesgos
   laborales con modo estudio, examen, certificado y asistente con IA.
 year: "2026"
-role: Producto · Full Stack · Experiencia interactiva
+role: Producto · Full Stack · IA
 platform: Web
 status: live
 statusLabel: En producción
-tags: [React, Vite, Express, Socket.IO, Supabase]
+tags: [React, TypeScript, Supabase, Express, OpenAI]
 links:
   - label: Abrir PRL Master
     href: https://prl.orpira.es/
 
 cover: ../../assets/images/prl-master/resultado-examen.webp
-coverAlt: Resultado de examen APTO con un 80 %, botón para descargar el certificado y desglose por categoría
+coverAlt: Resultado de examen APTO con un 80 %, botón para descargar el certificado y desglose por categoría
 
 problem:
   title: El temario y el examen vivían en un documento Word.
@@ -39,23 +39,37 @@ decisions:
   - title: Las preguntas son datos, no páginas
     context: El examen original estaba en Word, mezclando formato y contenido.
     decision: >-
-      Convertir el documento en un banco estructurado en JSON con 174 preguntas, separado
-      de la aplicación.
+      Convertir el documento en un banco tipado de 100 preguntas en 31 categorías, cada
+      una con su resumen de teoría, separado de la interfaz.
     why: >-
-      Actualizar o ampliar el temario pasa a ser editar datos, sin tocar la interfaz, y
-      cada pregunta se puede reutilizar en estudio, examen o nuevas formaciones.
+      Actualizar o ampliar el temario pasa a ser editar datos, y cada pregunta se reutiliza
+      en estudio, examen y estadísticas.
   - title: Estudiar y examinarse son experiencias distintas
     context: Practicar con ayuda y demostrar lo aprendido tienen reglas diferentes.
     decision: >-
-      Separar un modo estudio, con corrección inmediata, de un modo examen que evalúa al
-      final y emite el certificado si se aprueba.
+      Separar un modo estudio, con teoría por categoría y corrección inmediata, de un
+      examen cronometrado (90 s por pregunta) que corrige al final, desglosa el resultado
+      por categoría y emite un certificado en PDF a partir del 60 %.
     why: El alumno aprende sin presión y el examen conserva su valor como prueba.
-  - title: Un asistente para resolver dudas sobre el temario
-    context: Las dudas aparecen mientras se estudia, no cuando hay alguien para resolverlas.
-    decision: Incorporar un chat con IA dentro de la propia formación.
-    why: El alumno resuelve dudas en el momento, sin salir de la app.
+  - title: Probar sin cuenta, comprometerse con cuenta
+    context: Pedir registro antes de enseñar nada espanta a quien solo quiere ver cómo es.
+    decision: >-
+      Un modo demo con 4 temas, 5 preguntas por tema y un examen, sin asistente IA. Con
+      cuenta se abre todo el temario, el historial y las estadísticas.
+    why: Se ve el valor antes de dar el email, y el coste de IA solo lo generan usuarios registrados.
+  - title: La IA ayuda al alumno y a quien gestiona el contenido
+    context: >-
+      Las dudas aparecen mientras se estudia, y el temario nuevo llega en PDF o JSON sin
+      clasificar.
+    decision: >-
+      Un asistente de PRL dentro de la app y un panel de administración que extrae el texto
+      de cada fuente y propone sus categorías con IA, siempre a través del servidor.
+    why: La clave de la API no llega al navegador y el administrador revisa antes de guardar.
 
 gallery:
+  - src: ../../assets/images/prl-master/panel.webp
+    alt: Panel principal de PRL Master con estadísticas, accesos rápidos y el temario de 31 categorías
+    caption: Panel principal con el progreso del alumno y el temario completo.
   - src: ../../assets/images/prl-master/estudio-teoria.webp
     alt: Modo estudio de PRL Master con los puntos clave de la categoría Equipos de Protección
     caption: Modo estudio. Cada categoría resume lo esencial antes de practicar.
@@ -66,36 +80,38 @@ galleryPending: null
 
 architecture:
   summary: >-
-    Interfaz en React, un servidor Express con comunicación en tiempo real y el banco de
-    preguntas como datos independientes.
+    Una SPA en React con Supabase para cuentas, roles y resultados, y un servidor Express
+    que hace de puente con la IA.
   layers:
     - label: Interfaz
-      items: [React, Vite, Tailwind CSS]
-      note: Modo estudio, modo examen y certificado.
+      items: [React, TypeScript, Vite, Tailwind CSS, Zustand]
+      note: Modo estudio, examen, certificado, estadísticas y administración.
+    - label: Datos y cuentas
+      items: [Supabase Auth, PostgreSQL]
+      note: Perfiles con rol, resultados de examen y fuentes del temario.
     - label: Servidor
-      items: [Express, Socket.IO]
-    - label: Contenido y datos
-      items: [Banco de 174 preguntas en JSON, Supabase]
-    - label: Despliegue
-      items: [Vercel]
+      items: [Express, OpenAI API, pdf-parse]
+      note: Asistente y clasificación de fuentes; la clave vive aquí.
+    - label: Documentos
+      items: [jsPDF]
 
 stack:
   - layer: Interfaz
-    tech: [React, Vite, Tailwind CSS]
-    why: Una experiencia interactiva rápida, pensada para estudiar desde cualquier dispositivo.
-  - layer: Servidor
-    tech: [Express, Socket.IO]
-    why: API propia y comunicación en tiempo real.
+    tech: [React, TypeScript, Tailwind CSS, Zustand]
+    why: Estado del alumno y del examen en un solo sitio, tipado de punta a punta.
   - layer: Datos
-    tech: [JSON, Supabase]
-    why: El contenido formativo queda separado de la aplicación.
-  - layer: Despliegue
-    tech: [Vercel]
-    why: Publicación continua desde el repositorio.
+    tech: [Supabase, PostgreSQL]
+    why: Autenticación, roles de usuario y administrador, e historial de exámenes.
+  - layer: IA
+    tech: [OpenAI API, Express]
+    why: Asistente de PRL y clasificación de PDF o JSON sin exponer la clave.
+  - layer: Certificado
+    tech: [jsPDF]
+    why: El certificado se genera en el navegador al aprobar.
 
 results:
-  - value: "174"
-    label: preguntas en el banco, convertidas desde el examen en Word
+  - value: "100"
+    label: preguntas en 31 categorías, convertidas desde el examen en Word
   - value: null
     label: personas formadas
     pendingHint: Alumnos o empresas que han usado PRL Master

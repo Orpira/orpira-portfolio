@@ -37,7 +37,7 @@ export interface Stat {
 
 export const stats: Stat[] = [
 	{ value: "15+", label: "años en IT, operaciones y desarrollo" },
-	{ value: "174", label: "preguntas en el banco de PRL Master" },
+	{ value: "100", label: "preguntas en el banco de PRL Master" },
 	{
 		value: null,
 		label: "apps en producción",
