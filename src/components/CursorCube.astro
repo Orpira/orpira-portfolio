@@ -19,10 +19,10 @@ const { zone = "#inicio", size = 32 } = Astro.props;
 
 <div class="cursor-cube" aria-hidden="true" data-cursor-cube data-zone={zone} style={`--c: ${size}px;`}>
 	<div class="cursor-cube__body">
-		<span class="cursor-cube__face cursor-cube__face--front"><span class="cursor-cube__pi">π</span></span>
-		<span class="cursor-cube__face cursor-cube__face--back"><span class="cursor-cube__pi">π</span></span>
-		<span class="cursor-cube__face cursor-cube__face--right"><span class="cursor-cube__pi">π</span></span>
-		<span class="cursor-cube__face cursor-cube__face--left"><span class="cursor-cube__pi">π</span></span>
+		<span class="cursor-cube__face cursor-cube__face--front"><span class="cursor-cube__pi" data-mark="π"></span></span>
+		<span class="cursor-cube__face cursor-cube__face--back"><span class="cursor-cube__pi" data-mark="π"></span></span>
+		<span class="cursor-cube__face cursor-cube__face--right"><span class="cursor-cube__pi" data-mark="π"></span></span>
+		<span class="cursor-cube__face cursor-cube__face--left"><span class="cursor-cube__pi" data-mark="π"></span></span>
 		<span class="cursor-cube__face cursor-cube__face--top"></span>
 		<span class="cursor-cube__face cursor-cube__face--bottom"></span>
 	</div>
@@ -85,6 +85,11 @@ const { zone = "#inicio", size = 32 } = Astro.props;
 		font-size: calc(var(--c) * 0.62);
 		line-height: 1;
 		color: rgb(255 155 83);
+	}
+
+	/* El π va en CSS para que no aparezca como texto («ππππ») en buscadores ni previsualizaciones. */
+	.cursor-cube__pi::before {
+		content: attr(data-mark);
 	}
 </style>
 
