@@ -1,39 +1,146 @@
 ---
+/**
+ * «Qué construyo»: banda oscura que rompe el ritmo de la portada.
+ * Dos columnas desalineadas; cada capacidad es un panel de color con una
+ * forma geométrica y el título grande, y debajo el texto, el stack y los
+ * proyectos donde se ve funcionando.
+ */
 import Section from "../ui/Section.astro";
-import Tag from "../ui/Tag.astro";
 import { capabilities } from "../../data/home";
+
+// Paneles: color de fondo, color de la forma y tipo de forma, en rotación.
+const panels = [
+	{ bg: "#F26B1D", fg: "#14161A", shape: "circle", text: "#14161A" },
+	{ bg: "#E9E2D5", fg: "#F26B1D", shape: "wedge", text: "#14161A" },
+	{ bg: "#D9DEE8", fg: "#14161A", shape: "diamond", text: "#14161A" },
+];
 ---
 
-<Section
-	id="capacidades"
-	index="02"
-	eyebrow="Qué construyo"
-	title="Lo que sé hacer, <em class='t-accent'>con pruebas.</em>"
-	intro="Cada capacidad enlaza al proyecto donde se puede ver funcionando."
->
-	<ul class="grid gap-px overflow-hidden rounded-ds-lg border border-line bg-line sm:grid-cols-2 lg:grid-cols-3">
-		{
-			capabilities.map((cap, i) => (
-				<li class="flex flex-col bg-paper p-7 md:p-8">
-					<p class="t-data text-accent-ink">{String(i + 1).padStart(2, "0")}</p>
-					<h3 class="t-h3 mt-5">{cap.title}</h3>
-					<p class="mt-3 text-ink-soft">{cap.summary}</p>
-					<div class="mt-5 flex flex-wrap gap-1.5">
-						{cap.tech.map((t) => <Tag>{t}</Tag>)}
-					</div>
-					<div class="mt-auto pt-8">
-					<p class="t-data border-t border-line pt-5 text-ink-muted">
-						Dónde verlo:{" "}
-						{cap.proof.map((p, j) => (
-							<>
-								{j > 0 && " · "}
-								<a href={p.href} class="link-underline text-ink-soft hover:text-ink">{p.label}</a>
-							</>
-						))}
-					</p>
-					</div>
-				</li>
-			))
+<div class="band-dark">
+	<Section
+		id="capacidades"
+		index="02"
+		eyebrow="Qué construyo"
+		title="Lo que sé hacer, <em class='t-accent'>con pruebas.</em>"
+		intro="Cada capacidad enlaza al proyecto donde se puede ver funcionando."
+		bordered={false}
+	>
+		<ul class="grid gap-x-10 gap-y-16 md:grid-cols-2 md:gap-y-24 md:pb-32">
+			{
+				capabilities.map((cap, i) => {
+					const p = panels[i % panels.length];
+					const num = String(i + 1).padStart(2, "0");
+					return (
+						<li class:list={["cap", i % 2 === 1 && "md:translate-y-32"]}>
+							<div
+								class="cap-panel relative aspect-[16/10] overflow-hidden rounded-ds-lg"
+								style={`--panel-bg:${p.bg};--panel-fg:${p.fg};--panel-text:${p.text}`}
+							>
+								<span aria-hidden="true" class={`cap-shape cap-shape--${p.shape}`} />
+								<span class="t-data absolute left-5 top-5 rounded-ds-sm bg-[#14161A] px-2 py-1 text-[#F6F3EE]">
+									{num}
+								</span>
+								<div class="absolute inset-x-6 bottom-5 md:inset-x-8 md:bottom-7">
+									<h3 class="cap-title font-heading leading-[0.95]">{cap.title}</h3>
+									<p class="cap-meta t-data mt-3 uppercase tracking-wider opacity-70">
+										{cap.tech.join(" · ")}
+									</p>
+								</div>
+							</div>
+
+							<p class="mt-6 max-w-[52ch] text-[1.0625rem] leading-relaxed text-ink-soft">{cap.summary}</p>
+
+							<p class="t-data mt-6 flex flex-wrap gap-x-4 gap-y-1 border-b border-line pb-6 uppercase tracking-wider">
+								<span class="text-ink-muted">Dónde verlo</span>
+								{cap.proof.map((proof) => (
+									<a href={proof.href} class="link-underline text-ink hover:text-accent-ink">
+										{proof.label} <span aria-hidden="true">↗</span>
+									</a>
+								))}
+							</p>
+						</li>
+					);
+				})
+			}
+		</ul>
+	</Section>
+</div>
+
+<style>
+	/* Banda oscura en los dos temas: redefine los tokens solo dentro de la sección. */
+	.band-dark {
+		--paper: 20 22 26;
+		--ink: 236 232 225;
+		--ink-soft: 201 196 187;
+		--ink-muted: 146 152 163;
+		--line: 52 56 64;
+		--accent: 255 155 83;
+		--accent-ink: 255 155 83;
+		background: rgb(var(--paper));
+		color: rgb(var(--ink-soft));
+	}
+	:global(.dark) .band-dark {
+		--paper: 26 29 35;
+	}
+	.band-dark :global(h2) {
+		color: rgb(var(--ink));
+	}
+
+	.cap-panel {
+		background: var(--panel-bg);
+	}
+	.cap-panel .cap-title,
+	.cap-panel .cap-meta {
+		color: var(--panel-text);
+		position: relative;
+	}
+	.cap-title {
+		font-size: clamp(2.4rem, 1.6rem + 2.8vw, 4.25rem);
+		letter-spacing: -0.02em;
+	}
+
+	/* Formas geométricas: decorativas, solo CSS, siempre en la mitad superior derecha. */
+	.cap-shape {
+		position: absolute;
+		background: var(--panel-fg);
+		transition: transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
+	}
+	.cap-shape--circle {
+		width: 52%;
+		aspect-ratio: 1;
+		border-radius: 9999px;
+		top: -38%;
+		right: -10%;
+	}
+	.cap-shape--wedge {
+		width: 48%;
+		height: 72%;
+		top: 0;
+		right: 0;
+		clip-path: polygon(38% 0, 100% 0, 100% 100%);
+	}
+	.cap-shape--diamond {
+		width: 30%;
+		aspect-ratio: 1;
+		top: -14%;
+		right: 6%;
+		transform: rotate(45deg);
+		border-radius: 0.75rem;
+	}
+
+	.cap:hover .cap-shape--circle {
+		transform: translate(-6%, 8%) scale(1.04);
+	}
+	.cap:hover .cap-shape--wedge {
+		transform: translateX(-6%);
+	}
+	.cap:hover .cap-shape--diamond {
+		transform: rotate(75deg) scale(1.06);
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.cap-shape {
+			transition: none;
 		}
-	</ul>
-</Section>
+	}
+</style>
