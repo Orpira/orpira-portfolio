@@ -1,6 +1,6 @@
 # Caso migrado desde src/pages/projects/private-balance.astro (fase 2D).
 title: Private Balance
-order: 1
+order: 3
 headline: Finanzas privadas diseñadas alrededor del trabajo real, con los datos guardados en el dispositivo.
 summary: >-
   Finanzas personales con privacidad por diseño: los datos se quedan en el dispositivo.

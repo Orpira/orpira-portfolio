@@ -14,18 +14,18 @@ export const publishable = <T extends { value: string | null }>(items: T[]) =>
 	isProduction ? items.filter((item) => item.value !== null) : items;
 
 export const seo = {
-	title: "OrPiRa · Software a medida para formación y empresas | Bilbao",
+	title: "OrPiRa · Apps web a medida para empresas | Bilbao",
 	description:
-		"Orlando Pineda Raad diseña y desarrolla aplicaciones web a medida, de la idea al despliegue: plataformas de formación, producto digital e IA aplicada. Bilbao, España.",
+		"Orlando Pineda Raad diseña y desarrolla apps web a medida, de la idea al despliegue: herramientas internas, producto digital e IA aplicada. Bilbao, España.",
 };
 
 export const hero = {
-	eyebrow: "Desarrollo de producto · Formación corporativa · Bilbao",
-	titleStart: "Convierto procesos y formaciones en",
-	titleAccent: "software que la gente usa.",
-	lead: "Diseño y desarrollo aplicaciones web a medida, de la idea al despliegue, para empresas que necesitan formar, medir o gestionar sin depender de herramientas genéricas. Más de 15 años entre IT, operaciones y desarrollo.",
+	eyebrow: "Apps web a medida · Bilbao",
+	titleStart: "Apps web a medida,",
+	titleAccent: "de la idea al despliegue.",
+	lead: "Herramientas internas, producto digital e IA aplicada para empresas, pensadas para quienes las van a usar cada día.",
 	primaryCta: { label: "Cuéntame tu proyecto", href: "#contacto" },
-	secondaryCta: { label: "Ver casos reales", href: "#casos" },
+	secondaryCta: { label: "Ver casos", href: "#casos" },
 };
 
 export interface Stat {
@@ -36,13 +36,8 @@ export interface Stat {
 }
 
 export const stats: Stat[] = [
-	{ value: "15+", label: "años en IT, operaciones y desarrollo" },
-	{ value: "174", label: "preguntas en el banco de PRL Master" },
-	{
-		value: null,
-		label: "apps en producción",
-		pendingHint: "Número de apps propias o de clientes en producción",
-	},
+	{ value: "15+", label: "años gestionando un departamento de TI" },
+	{ value: "3", label: "apps propias en producción" },
 	{
 		value: null,
 		label: "personas formadas con PRL Master",
@@ -63,18 +58,18 @@ export interface Service {
 
 export const services: Service[] = [
 	{
-		title: "Plataformas de formación a medida",
+		title: "Herramientas internas a medida",
 		summary:
-			"Convierto temarios y exámenes en apps interactivas que se pueden medir, en lugar de PDFs que nadie termina.",
+			"Sustituyo hojas de cálculo, papeles y documentos sueltos por una app que tu equipo usa a diario y que se adapta a cómo trabajáis.",
 		includes: [
-			"Tests y simulacros con corrección automática",
-			"Banco de preguntas importado desde tus documentos Word",
-			"Seguimiento del progreso e informes para RR. HH.",
-			"Certificados descargables",
+			"Procesos manuales convertidos en una app web",
+			"Usuarios, permisos y datos en un solo sitio",
+			"Informes y seguimiento sin copiar y pegar",
+			"Formación a tu equipo para que la adopte",
 		],
 		example: "PRL Master",
 		format: null,
-		pendingHint: "Formato y plazo típico (p. ej. proyecto cerrado de N semanas)",
+		pendingHint: "Formato y plazo típico de una herramienta interna",
 	},
 	{
 		title: "De la idea a producto en producción",
@@ -93,7 +88,7 @@ export const services: Service[] = [
 	{
 		title: "IA aplicada a procesos internos",
 		summary:
-			"Integro la API de Claude donde ahorra horas: clasificar mensajes, redactar informes o generar contenido formativo.",
+			"Integro la API de Claude donde ahorra horas: clasificar mensajes, redactar informes o resumir documentos.",
 		includes: [
 			"Diagnóstico de tareas repetitivas que se pueden automatizar",
 			"Integración con WhatsApp, documentos o tu base de datos",
@@ -139,7 +134,8 @@ export const supportDays: Stat = {
 export const about = {
 	title: "IT, producto y formación <em class='t-accent'>en la misma persona.</em>",
 	paragraphs: [
-		"Soy Orlando Pineda Raad. Llevo más de 15 años resolviendo problemas de IT y operaciones, y los últimos años los he dedicado a construir el software que me habría gustado tener.",
+		"Soy Orlando Pineda Raad. He pasado más de 15 años gestionando el departamento de TI de una empresa de logística: soporte técnico avanzado y formación a usuarios internos y externos. Los últimos años los he dedicado a construir el software que me habría gustado tener.",
+		"PRL Master nació así: en el curso de PRL de 30 horas de Meatze, convertí el examen en Word en la app de tests que usamos los compañeros del curso.",
 		"Por eso hablo el idioma de quien usa la herramienta y el de quien la programa. Me gusta trabajar paso a paso y no doy un proyecto por terminado hasta verlo desplegado y funcionando.",
 		"Trabajo desde Bilbao, también en remoto.",
 	],
@@ -191,7 +187,7 @@ export const contact = {
 		"Escríbeme dos líneas sobre el problema. Te respondo con una primera valoración, sin compromiso.",
 	responseTime: null as string | null,
 	responseTimePendingHint: "Plazo de respuesta que te comprometes a cumplir (p. ej. 24 h laborables)",
-	needs: ["Plataforma de formación", "Producto digital / MVP", "IA aplicada", "Otro"],
+	needs: ["Herramienta interna", "Producto digital / MVP", "IA aplicada", "Otro"],
 	whatsapp: "https://wa.me/34643684541",
 	linkedin: "https://www.linkedin.com/in/orlando-pineda-raad-273402257",
 	github: "https://github.com/Orpira",
