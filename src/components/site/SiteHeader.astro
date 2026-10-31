@@ -10,8 +10,8 @@ const { isHome = false } = Astro.props;
 const link = (hash: string) => (isHome ? hash : `/${hash}`);
 
 const nav = [
-	{ label: "Casos", hash: "#casos" },
-	{ label: "Servicios", hash: "#servicios" },
+	{ label: "Proyectos", hash: "#casos" },
+	{ label: "Qué construyo", hash: "#capacidades" },
 	{ label: "Cómo trabajo", hash: "#proceso" },
 	{ label: "Sobre mí", hash: "#sobre-mi" },
 ];
@@ -72,7 +72,7 @@ const nav = [
 				</svg>
 			</button>
 
-			<Button href={link("#contacto")} class="hidden sm:inline-flex">Hablemos</Button>
+			<Button href={link("#contacto")} class="hidden sm:inline-flex">Contacto</Button>
 
 			<button
 				type="button"
@@ -104,7 +104,7 @@ const nav = [
 				}
 			</ul>
 			<Button href={link("#contacto")} size="lg" class="mt-6 w-full" data-menu-link>
-				Hablemos
+				Contacto
 			</Button>
 		</nav>
 	</div>

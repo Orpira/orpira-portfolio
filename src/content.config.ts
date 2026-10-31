@@ -45,6 +45,11 @@ const cases = defineCollection({
 				pending: z.array(z.string()).default([]),
 			}),
 
+			/** Comparación antes/después para quien no es técnico. */
+			beforeAfter: z
+				.array(z.object({ before: z.string(), after: z.string() }))
+				.default([]),
+
 			principles: z
 				.array(z.object({ title: z.string(), text: z.string() }))
 				.default([]),

@@ -51,12 +51,12 @@ const idx = () => String(++n).padStart(2, "0");
 ---
 
 <SiteLayout
-	title={`${c.title} · Caso de estudio | OrPiRa`}
+	title={`${c.title} · Proyecto | OrPiRa`}
 	description={c.seoDescription}
 	type="article"
 	footerCta={false}
 	image={`/og/${entry.id}.jpg`}
-	imageAlt={`${c.title}, caso de estudio de OrPiRa`}
+	imageAlt={`${c.title}, proyecto de OrPiRa`}
 	jsonLd={caseJsonLd({
 		slug: entry.id,
 		title: c.title,
@@ -74,7 +74,7 @@ const idx = () => String(++n).padStart(2, "0");
 					<ol class="flex flex-wrap items-center gap-2">
 						<li><a href="/" class="link-underline hover:text-ink">Inicio</a></li>
 						<li aria-hidden="true">/</li>
-						<li><a href="/#casos" class="link-underline hover:text-ink">Casos</a></li>
+						<li><a href="/#casos" class="link-underline hover:text-ink">Proyectos</a></li>
 						<li aria-hidden="true">/</li>
 						<li aria-current="page" class="text-ink-soft">{c.title}</li>
 					</ol>
@@ -151,6 +151,28 @@ const idx = () => String(++n).padStart(2, "0");
 		</Section>
 
 		{
+			c.beforeAfter.length > 0 && (
+				<Section id="antes-despues" index={idx()} eyebrow="Antes y después" title="Qué cambia <em class='t-accent'>para quien lo usa.</em>">
+					<ul class="border-b border-line">
+						{c.beforeAfter.map((row) => (
+							<li class="grid gap-4 border-t border-line py-7 md:grid-cols-12 md:gap-6">
+								<div class="md:col-span-5">
+									<p class="t-data text-ink-muted">Antes</p>
+									<p class="mt-2 text-ink-soft">{row.before}</p>
+								</div>
+								<p aria-hidden="true" class="hidden text-2xl text-accent-ink md:col-span-1 md:block">→</p>
+								<div class="md:col-span-6">
+									<p class="t-data text-accent-ink">Con {c.title}</p>
+									<p class="mt-2 text-[1.125rem] text-ink">{row.after}</p>
+								</div>
+							</li>
+						))}
+					</ul>
+				</Section>
+			)
+		}
+
+		{
 			c.principles.length > 0 && (
 				<Section id="principios" index={idx()} eyebrow="Principios" title="Decisiones antes de elegir tecnología.">
 					<ol class="grid gap-px overflow-hidden rounded-ds-lg border border-line bg-line sm:grid-cols-2 lg:grid-cols-4">
@@ -199,8 +221,8 @@ const idx = () => String(++n).padStart(2, "0");
 		</Section>
 
 		{
-			showGallery && (
-				<Section id="capturas" index={idx()} eyebrow="Capturas" title="El producto, por dentro.">
+			(showGallery || c.links[0]) && (
+				<Section id="capturas" index={idx()} eyebrow="Capturas" title="El producto, <em class='t-accent'>en acción.</em>">
 					{c.gallery.length > 0 ? (
 						<ul class="grid gap-8 md:grid-cols-2">
 							{c.gallery.map((shot) => (
@@ -225,6 +247,11 @@ const idx = () => String(++n).padStart(2, "0");
 					) : (
 						<div class="grid place-items-center rounded-ds-lg border border-dashed border-line p-12 text-center">
 							<Pending hint={c.galleryPending ?? undefined} />
+						</div>
+					)}
+					{c.links[0] && (
+						<div class="mt-12">
+							<Button href={c.links[0].href} external arrow size="lg">{c.links[0].label}</Button>
 						</div>
 					)}
 				</Section>
@@ -292,19 +319,22 @@ const idx = () => String(++n).padStart(2, "0");
 			</div>
 			<div class="mt-16 flex flex-col items-start justify-between gap-6 rounded-ds-lg bg-ink p-8 text-paper md:flex-row md:items-center md:p-12">
 				<p class="font-heading text-[clamp(1.9rem,1.4rem+1.8vw,2.9rem)] leading-tight text-paper">
-					¿Necesitas algo parecido?
+					¿Quieres ver más?
 				</p>
-				<Button href="/#contacto" size="lg" arrow>Cuéntame tu proyecto</Button>
+				<div class="flex flex-wrap gap-3">
+					<Button href="/#casos" size="lg" arrow>Ver todos los proyectos</Button>
+					<Button href="/#contacto" size="lg" variant="secondary" class="!border-paper/40 !text-paper">Escríbeme</Button>
+				</div>
 			</div>
 		</Section>
 	</article>
 
-	<nav aria-label="Otros casos" class="border-t border-line">
+	<nav aria-label="Otros proyectos" class="border-t border-line">
 		<div class="container-site grid gap-px py-0 sm:grid-cols-2">
 			{
 				prev ? (
 					<a href={`/casos/${prev.id}`} class="group block py-10 pr-6">
-						<p class="t-data text-ink-muted">← Caso anterior</p>
+						<p class="t-data text-ink-muted">← Proyecto anterior</p>
 						<p class="mt-2 font-heading text-3xl text-ink group-hover:text-accent-ink">{prev.data.title}</p>
 					</a>
 				) : (
@@ -314,7 +344,7 @@ const idx = () => String(++n).padStart(2, "0");
 			{
 				next && (
 					<a href={`/casos/${next.id}`} class="group block py-10 text-right sm:border-l sm:border-line sm:pl-6">
-						<p class="t-data text-ink-muted">Siguiente caso →</p>
+						<p class="t-data text-ink-muted">Siguiente proyecto →</p>
 						<p class="mt-2 font-heading text-3xl text-ink group-hover:text-accent-ink">{next.data.title}</p>
 					</a>
 				)

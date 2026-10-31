@@ -14,18 +14,18 @@ export const publishable = <T extends { value: string | null }>(items: T[]) =>
 	isProduction ? items.filter((item) => item.value !== null) : items;
 
 export const seo = {
-	title: "OrPiRa · Apps web a medida para empresas | Bilbao",
+	title: "OrPiRa · Orlando Pineda Raad, apps web de la idea al despliegue | Bilbao",
 	description:
-		"Orlando Pineda Raad diseña y desarrolla apps web a medida, de la idea al despliegue: herramientas internas, producto digital e IA aplicada. Bilbao, España.",
+		"Portfolio de Orlando Pineda Raad: apps web, PWA y Android, tiempo real, 3D e IA aplicada. Proyectos propios en producción, de la idea al despliegue. Bilbao.",
 };
 
 export const hero = {
 	eyebrow: "Apps web a medida · Bilbao",
 	titleStart: "Apps web a medida,",
 	titleAccent: "de la idea al despliegue.",
-	lead: "Herramientas internas, producto digital e IA aplicada para empresas, pensadas para quienes las van a usar cada día.",
-	primaryCta: { label: "Cuéntame tu proyecto", href: "#contacto" },
-	secondaryCta: { label: "Ver casos", href: "#casos" },
+	lead: "Herramientas internas, producto digital e IA aplicada, pensadas para quienes las van a usar cada día. Estos son algunos de los proyectos que he construido.",
+	primaryCta: { label: "Ver proyectos", href: "#casos" },
+	secondaryCta: { label: "Sobre mí", href: "#sobre-mi" },
 };
 
 export interface Stat {
@@ -38,66 +38,61 @@ export interface Stat {
 export const stats: Stat[] = [
 	{ value: "15+", label: "años gestionando un departamento de TI" },
 	{ value: "3", label: "apps propias en producción" },
-	{
-		value: null,
-		label: "personas formadas con PRL Master",
-		pendingHint: "Usuarios o empresas que han usado PRL Master",
-	},
 ];
 
 // Los casos destacados viven en src/content/cases (colección "cases").
 
-export interface Service {
+export interface Capability {
 	title: string;
 	summary: string;
-	includes: string[];
-	example: string;
-	format: string | null;
-	pendingHint?: string;
+	tech: string[];
+	/** Proyectos que lo demuestran: título y enlace al caso. */
+	proof: { label: string; href: string }[];
 }
 
-export const services: Service[] = [
+const P = {
+	prl: { label: "PRL Master", href: "/casos/prl-master" },
+	webwiz: { label: "WebWiz Quiz", href: "/casos/webwiz" },
+	balance: { label: "Private Balance", href: "/casos/private-balance" },
+	domino: { label: "Dominó 3D", href: "/casos/domino-3d" },
+};
+
+export const capabilities: Capability[] = [
 	{
-		title: "Herramientas internas a medida",
-		summary:
-			"Sustituyo hojas de cálculo, papeles y documentos sueltos por una app que tu equipo usa a diario y que se adapta a cómo trabajáis.",
-		includes: [
-			"Procesos manuales convertidos en una app web",
-			"Usuarios, permisos y datos en un solo sitio",
-			"Informes y seguimiento sin copiar y pegar",
-			"Formación a tu equipo para que la adopte",
-		],
-		example: "PRL Master",
-		format: null,
-		pendingHint: "Formato y plazo típico de una herramienta interna",
+		title: "Apps web y PWA",
+		summary: "Aplicaciones que se instalan desde el navegador, funcionan sin conexión y guardan los datos donde tienen que estar.",
+		tech: ["React", "TypeScript", "IndexedDB", "PWA"],
+		proof: [P.balance, P.webwiz],
 	},
 	{
-		title: "De la idea a producto en producción",
-		summary:
-			"Un MVP web o PWA con autenticación, base de datos y despliegue, listo para usuarios reales y no solo para una demo.",
-		includes: [
-			"Descubrimiento y alcance cerrado por escrito",
-			"Web, PWA o app Android desde el mismo código",
-			"Supabase o PostgreSQL, desplegado en Vercel",
-			"Documentación y traspaso",
-		],
-		example: "WebWiz Quiz · Dominó 3D",
-		format: null,
-		pendingHint: "Formato y plazo típico de un MVP",
+		title: "Android desde el mismo código",
+		summary: "La misma base de la web convertida en app Android, sin mantener dos proyectos distintos.",
+		tech: ["Capacitor"],
+		proof: [P.balance, P.webwiz, P.domino],
 	},
 	{
-		title: "IA aplicada a procesos internos",
-		summary:
-			"Integro la API de Claude donde ahorra horas: clasificar mensajes, redactar informes o resumir documentos.",
-		includes: [
-			"Diagnóstico de tareas repetitivas que se pueden automatizar",
-			"Integración con WhatsApp, documentos o tu base de datos",
-			"Control de costes y de privacidad de los datos",
-			"Revisión humana donde el resultado importa",
-		],
-		example: "WebWiz Quiz",
-		format: null,
-		pendingHint: "Formato (auditoría, piloto, integración) y plazo",
+		title: "Tiempo real y multijugador",
+		summary: "Salas con código, turnos y rankings en directo, con un servidor que decide y reconexión automática.",
+		tech: ["Node.js", "Express", "Socket.IO"],
+		proof: [P.prl, P.domino],
+	},
+	{
+		title: "IA aplicada",
+		summary: "La API de Claude integrada donde aporta: corregir respuestas abiertas o revisar código, con el coste y los fallos acotados.",
+		tech: ["Claude API"],
+		proof: [P.webwiz],
+	},
+	{
+		title: "3D en el navegador",
+		summary: "Escenas 3D interactivas que van fluidas también en el móvil.",
+		tech: ["Three.js"],
+		proof: [P.domino],
+	},
+	{
+		title: "Datos y despliegue",
+		summary: "Autenticación, base de datos y puesta en producción, de la primera versión a una app que usa gente real.",
+		tech: ["Supabase", "PostgreSQL", "Vercel"],
+		proof: [P.webwiz, P.prl],
 	},
 ];
 
@@ -108,34 +103,28 @@ export interface Step {
 
 export const steps: Step[] = [
 	{
-		title: "Diagnóstico",
-		detail: "Una llamada para entender qué problema hay, quién lo sufre y cómo sabremos que está resuelto.",
+		title: "Entender el problema",
+		detail: "Antes de escribir código: quién lo va a usar, qué le cuesta hoy y cómo sabré que funciona.",
 	},
 	{
-		title: "Propuesta",
-		detail: "Alcance, plazo y precio cerrados por escrito. Sin sorpresas a mitad de proyecto.",
+		title: "Dividir en fases",
+		detail: "Una primera versión pequeña que ya sirve, y el resto por partes que se pueden probar.",
 	},
 	{
-		title: "Construcción con entregas semanales",
-		detail: "Ves la aplicación funcionando desde la primera semana, no al final.",
+		title: "Construir y desplegar pronto",
+		detail: "Cada fase llega a producción. Prefiero ver la app funcionando a tenerla perfecta en local.",
 	},
 	{
-		title: "Despliegue y traspaso",
-		detail: "En producción, documentada y con un periodo de soporte incluido.",
+		title: "Mejorar con el uso real",
+		detail: "Lo que hace la gente con la app decide la siguiente fase, no una lista de ideas.",
 	},
 ];
-
-export const supportDays: Stat = {
-	value: null,
-	label: "días de soporte incluidos tras el despliegue",
-	pendingHint: "Días de soporte que incluyes",
-};
 
 export const about = {
 	title: "IT, producto y formación <em class='t-accent'>en la misma persona.</em>",
 	paragraphs: [
 		"Soy Orlando Pineda Raad. He pasado más de 15 años gestionando el departamento de TI de una empresa de logística: soporte técnico avanzado y formación a usuarios internos y externos. Los últimos años los he dedicado a construir el software que me habría gustado tener.",
-		"PRL Master nació así: en el curso de PRL de 30 horas de Meatze, convertí el examen en Word en la app de tests que usamos los compañeros del curso.",
+		"PRL Master nació así: en el curso de PRL de 30 horas, convertí el examen en Word en la app de tests que usamos los compañeros del curso.",
 		"Por eso hablo el idioma de quien usa la herramienta y el de quien la programa. Me gusta trabajar paso a paso y no doy un proyecto por terminado hasta verlo desplegado y funcionando.",
 		"Trabajo desde Bilbao, también en remoto.",
 	],
@@ -182,12 +171,9 @@ export const labProjects: LabProject[] = [
 ];
 
 export const contact = {
-	title: "¿Tienes un proceso que debería ser <em class='t-accent'>una app?</em>",
+	title: "¿Te interesa algo de <em class='t-accent'>lo que has visto?</em>",
 	intro:
-		"Escríbeme dos líneas sobre el problema. Te respondo con una primera valoración, sin compromiso.",
-	responseTime: null as string | null,
-	responseTimePendingHint: "Plazo de respuesta que te comprometes a cumplir (p. ej. 24 h laborables)",
-	needs: ["Herramienta interna", "Producto digital / MVP", "IA aplicada", "Otro"],
+		"Escríbeme si quieres comentar un proyecto, una idea o cualquier cosa de las que hay aquí.",
 	whatsapp: "https://wa.me/34643684541",
 	linkedin: "https://www.linkedin.com/in/orlando-pineda-raad-273402257",
 	github: "https://github.com/Orpira",
