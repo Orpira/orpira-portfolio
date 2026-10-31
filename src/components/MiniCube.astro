@@ -1,0 +1,111 @@
+---
+/**
+ * Cubo OrPiRa en miniatura, girando sin parar. Decorativo (aria-hidden).
+ * Mismo acabado que el cubo del hero; las letras van en CSS (content: attr())
+ * para que no aparezcan como texto en buscadores ni previsualizaciones.
+ * Con prefers-reduced-motion se queda quieto en la pose del hero.
+ */
+interface Props {
+	/** Lado del cubo en px. */
+	size?: number;
+	/** Retraso de la animación en s, para desincronizar varios cubos. */
+	delay?: number;
+	/** Duración de una vuelta completa en s. */
+	duration?: number;
+	class?: string;
+}
+
+const { size = 22, delay = 0, duration = 9, class: className = "" } = Astro.props;
+---
+
+<span
+	class:list={["mini-cube", className]}
+	aria-hidden="true"
+	style={`--c:${size}px;--delay:-${delay}s;--dur:${duration}s`}
+>
+	<span class="mini-cube__body">
+		<span class="mini-cube__face mini-cube__face--front"><span class="mini-cube__mark mini-cube__mark--pi" data-mark="π"></span></span>
+		<span class="mini-cube__face mini-cube__face--back"><span class="mini-cube__mark mini-cube__mark--pi" data-mark="π"></span></span>
+		<span class="mini-cube__face mini-cube__face--right"><span class="mini-cube__mark" data-mark="Ra"></span></span>
+		<span class="mini-cube__face mini-cube__face--left"><span class="mini-cube__mark" data-mark="Or"></span></span>
+		<span class="mini-cube__face mini-cube__face--top"><span class="mini-cube__mark" data-mark="Or"></span></span>
+		<span class="mini-cube__face mini-cube__face--bottom"><span class="mini-cube__mark" data-mark="Ra"></span></span>
+	</span>
+</span>
+
+<style>
+	.mini-cube {
+		--half: calc(var(--c) / 2);
+		display: inline-block;
+		width: var(--c);
+		height: var(--c);
+		perspective: calc(var(--c) * 8);
+		vertical-align: middle;
+		flex: none;
+	}
+
+	.mini-cube__body {
+		position: relative;
+		display: block;
+		width: 100%;
+		height: 100%;
+		transform-style: preserve-3d;
+		transform: rotateX(-20deg) rotateY(-32deg);
+		animation: mini-cube-spin var(--dur) linear infinite;
+		animation-delay: var(--delay);
+	}
+
+	.mini-cube__face {
+		position: absolute;
+		inset: 0;
+		display: grid;
+		place-items: center;
+		border-radius: 22%;
+		background: linear-gradient(145deg, #2a2d33 0%, #15171b 55%, #0c0d10 100%);
+		box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.2);
+		color: #f3efe8;
+		backface-visibility: hidden;
+	}
+
+	.mini-cube__face--front { transform: translateZ(var(--half)); }
+	.mini-cube__face--back { transform: rotateY(180deg) translateZ(var(--half)); }
+	.mini-cube__face--right { transform: rotateY(90deg) translateZ(var(--half)); }
+	.mini-cube__face--left { transform: rotateY(-90deg) translateZ(var(--half)); }
+	.mini-cube__face--top { transform: rotateX(90deg) translateZ(var(--half)); }
+	.mini-cube__face--bottom { transform: rotateX(-90deg) translateZ(var(--half)); }
+
+	.mini-cube__mark {
+		font-family: var(--font-heading);
+		font-style: italic;
+		font-size: calc(var(--c) * 0.46);
+		line-height: 1;
+		letter-spacing: -0.03em;
+	}
+	.mini-cube__mark::before {
+		content: attr(data-mark);
+	}
+	.mini-cube__mark--pi {
+		font-style: normal;
+		font-size: calc(var(--c) * 0.6);
+		color: rgb(255 155 83);
+	}
+
+	/* Giro continuo en dos ejes, partiendo de la pose del cubo del hero. */
+	@keyframes mini-cube-spin {
+		0% {
+			transform: rotateX(-20deg) rotateY(-32deg);
+		}
+		50% {
+			transform: rotateX(-200deg) rotateY(148deg);
+		}
+		100% {
+			transform: rotateX(-380deg) rotateY(328deg);
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.mini-cube__body {
+			animation: none;
+		}
+	}
+</style>
