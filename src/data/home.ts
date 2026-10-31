@@ -23,7 +23,7 @@ export const hero = {
 	eyebrow: "Apps web a medida · Bilbao",
 	titleStart: "Apps web a medida,",
 	titleAccent: "de la idea al despliegue.",
-	lead: "Plataformas de formación, herramientas internas y producto digital para empresas. Más de 15 años entre soporte IT y desarrollo.",
+	lead: "Plataformas de formación, herramientas internas y producto digital para empresas. Ingeniero informático con más de 15 años gestionando un departamento de TI.",
 	primaryCta: { label: "Cuéntame tu proyecto", href: "#contacto" },
 	secondaryCta: { label: "Ver casos", href: "#casos" },
 };
@@ -36,7 +36,7 @@ export interface Stat {
 }
 
 export const stats: Stat[] = [
-	{ value: "15+", label: "años en soporte IT y desarrollo" },
+	{ value: "15+", label: "años gestionando un departamento de TI" },
 	{ value: "3", label: "apps propias en producción" },
 	{
 		value: null,
@@ -120,7 +120,7 @@ export const supportDays: Stat = {
 export const about = {
 	title: "IT, producto y formación <em class='t-accent'>en la misma persona.</em>",
 	paragraphs: [
-		"Soy Orlando Pineda Raad. Llevo más de 15 años en soporte IT, y los últimos años los he dedicado a construir el software que me habría gustado tener.",
+		"Soy Orlando Pineda Raad, ingeniero informático. He pasado más de 15 años gestionando el departamento de TI de una empresa de logística: soporte técnico avanzado y formación a usuarios internos y externos. Los últimos años los he dedicado a construir el software que me habría gustado tener.",
 		"PRL Master nació así: en el curso de PRL de 30 horas de Meatze, convertí el examen en Word en la app de tests que usamos los compañeros del curso.",
 		"Por eso hablo el idioma de quien usa la herramienta y el de quien la programa. Me gusta trabajar paso a paso y no doy un proyecto por terminado hasta verlo desplegado y funcionando.",
 		"Trabajo desde Bilbao, también en remoto.",
