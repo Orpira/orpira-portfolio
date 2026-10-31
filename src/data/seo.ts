@@ -23,7 +23,7 @@ export const person = {
 	image: `${SITE_URL}/og/portada.jpg`,
 	jobTitle: "Desarrollador de producto Full Stack",
 	description:
-		"Plataformas de formación a medida para empresas: temarios y exámenes convertidos en apps que se pueden medir.",
+		"Apps web a medida para empresas, de la idea al despliegue: plataformas de formación, herramientas internas y producto digital.",
 	address: {
 		"@type": "PostalAddress",
 		addressLocality: "Bilbao",

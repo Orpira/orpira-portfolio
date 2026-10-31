@@ -14,18 +14,18 @@ export const publishable = <T extends { value: string | null }>(items: T[]) =>
 	isProduction ? items.filter((item) => item.value !== null) : items;
 
 export const seo = {
-	title: "OrPiRa · Plataformas de formación a medida para empresas | Bilbao",
+	title: "OrPiRa · Apps web a medida para empresas | Bilbao",
 	description:
-		"Orlando Pineda Raad convierte temarios y exámenes en apps de formación a medida: tests con corrección automática, sesiones en grupo y seguimiento. Bilbao, España.",
+		"Orlando Pineda Raad diseña y desarrolla apps web a medida, de la idea al despliegue: plataformas de formación, herramientas internas y producto digital. Bilbao, España.",
 };
 
 export const hero = {
-	eyebrow: "Plataformas de formación a medida · Bilbao",
-	titleStart: "Tu temario en Word, convertido en",
-	titleAccent: "una formación que se puede medir.",
-	lead: "Tests con corrección automática, sesiones en grupo en el aula, seguimiento para RR. HH. y certificados. Hecho a medida para tu empresa, sin plataformas genéricas que nadie usa. Más de 15 años entre IT, operaciones y formación.",
-	primaryCta: { label: "Cuéntame tu formación", href: "#contacto" },
-	secondaryCta: { label: "Ver PRL Master en acción", href: "/casos/prl-master" },
+	eyebrow: "Apps web a medida · Bilbao",
+	titleStart: "Apps web a medida,",
+	titleAccent: "de la idea al despliegue.",
+	lead: "Plataformas de formación, herramientas internas y producto digital para empresas. Más de 15 años entre IT, operaciones y desarrollo.",
+	primaryCta: { label: "Cuéntame tu proyecto", href: "#contacto" },
+	secondaryCta: { label: "Ver casos", href: "#casos" },
 };
 
 export interface Stat {
@@ -168,9 +168,9 @@ export const labProjects: LabProject[] = [
 ];
 
 export const contact = {
-	title: "¿Tienes un temario que debería ser <em class='t-accent'>una app?</em>",
+	title: "¿Tienes un proceso que debería ser <em class='t-accent'>una app?</em>",
 	intro:
-		"Cuéntame en dos líneas qué formación impartes y a cuánta gente. Te respondo con una primera valoración, sin compromiso.",
+		"Escríbeme dos líneas sobre el problema. Te respondo con una primera valoración, sin compromiso.",
 	responseTime: null as string | null,
 	responseTimePendingHint: "Plazo de respuesta que te comprometes a cumplir (p. ej. 24 h laborables)",
 	needs: ["Plataforma de formación", "Herramienta interna", "Otro"],
