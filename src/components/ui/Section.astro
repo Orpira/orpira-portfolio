@@ -30,8 +30,10 @@ const hasTitle = Boolean(title) || Astro.slots.has("title");
 <section
 	id={id}
 	aria-labelledby={hasTitle ? titleId : undefined}
-	class:list={["py-20 md:py-28", bordered && "border-t border-line", className]}
+	class:list={["py-20 md:py-28", className]}
 >
+	{/* La línea superior va dentro de los márgenes del contenido, no de borde a borde. */}
+	{bordered && <div class="container-site" aria-hidden="true"><hr class="m-0 -mt-20 mb-20 border-0 border-t border-line md:-mt-28 md:mb-28" /></div>}
 	<div class="container-site">
 		{
 			(eyebrow || hasTitle || intro) && (
