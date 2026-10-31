@@ -1,56 +1,37 @@
 ---
 /**
- * «Qué construyo»: banda oscura que rompe el ritmo de la portada.
- * Dos columnas desalineadas; cada capacidad es un panel de color con una
- * forma geométrica y el título grande, y debajo el texto, el stack y los
- * proyectos donde se ve funcionando.
+ * «Qué construyo»: índice editorial a todo el ancho.
+ * Una fila por capacidad: número, título grande en serif, descripción,
+ * stack y proyectos donde se ve. Al pasar el ratón, la fila se resalta
+ * con una franja de acento que entra desde la izquierda.
  */
 import Section from "../ui/Section.astro";
 import { capabilities } from "../../data/home";
-
-// Paneles: color de fondo, color de la forma y tipo de forma, en rotación.
-const panels = [
-	{ bg: "#F26B1D", fg: "#14161A", shape: "circle", text: "#14161A" },
-	{ bg: "#E9E2D5", fg: "#F26B1D", shape: "wedge", text: "#14161A" },
-	{ bg: "#D9DEE8", fg: "#14161A", shape: "diamond", text: "#14161A" },
-];
 ---
 
-<div class="band-dark">
-	<Section
-		id="capacidades"
-		index="02"
-		eyebrow="Qué construyo"
-		title="Lo que sé hacer, <em class='t-accent'>con pruebas.</em>"
-		intro="Cada capacidad enlaza al proyecto donde se puede ver funcionando."
-		bordered={false}
-	>
-		<ul class="grid gap-x-10 gap-y-16 md:grid-cols-2 md:gap-y-24 md:pb-32">
-			{
-				capabilities.map((cap, i) => {
-					const p = panels[i % panels.length];
-					const num = String(i + 1).padStart(2, "0");
-					return (
-						<li class:list={["cap", i % 2 === 1 && "md:translate-y-32"]}>
-							<div
-								class="cap-panel relative aspect-[16/10] overflow-hidden rounded-ds-lg"
-								style={`--panel-bg:${p.bg};--panel-fg:${p.fg};--panel-text:${p.text}`}
-							>
-								<span aria-hidden="true" class={`cap-shape cap-shape--${p.shape}`} />
-								<span class="t-data absolute left-5 top-5 rounded-ds-sm bg-[#14161A] px-2 py-1 text-[#F6F3EE]">
-									{num}
-								</span>
-								<div class="absolute inset-x-6 bottom-5 md:inset-x-8 md:bottom-7">
-									<h3 class="cap-title font-heading leading-[0.95]">{cap.title}</h3>
-									<p class="cap-meta t-data mt-3 uppercase tracking-wider opacity-70">
-										{cap.tech.join(" · ")}
-									</p>
-								</div>
-							</div>
+<Section
+	id="capacidades"
+	index="02"
+	eyebrow="Qué construyo"
+	title="Lo que sé hacer, <em class='t-accent'>con pruebas.</em>"
+	intro="Cada capacidad enlaza al proyecto donde se puede ver funcionando."
+>
+	<ol class="border-b border-ink">
+		{
+			capabilities.map((cap, i) => (
+				<li class="cap-row group relative border-t border-ink">
+					<span aria-hidden="true" class="cap-sweep" />
+					<div class="relative grid gap-4 py-8 md:grid-cols-12 md:items-baseline md:gap-6 md:py-10">
+						<p class="t-data text-accent-ink md:col-span-1">{String(i + 1).padStart(2, "0")}</p>
 
-							<p class="mt-6 max-w-[52ch] text-[1.0625rem] leading-relaxed text-ink-soft">{cap.summary}</p>
+						<h3 class="cap-title font-heading text-ink md:col-span-5">
+							{cap.title}
+						</h3>
 
-							<p class="t-data mt-6 flex flex-wrap gap-x-4 gap-y-1 border-b border-line pb-6 uppercase tracking-wider">
+						<div class="md:col-span-6">
+							<p class="max-w-[48ch] text-ink-soft">{cap.summary}</p>
+							<p class="t-data mt-4 uppercase tracking-wider text-ink-muted">{cap.tech.join(" · ")}</p>
+							<p class="t-data mt-3 flex flex-wrap gap-x-4 gap-y-1 uppercase tracking-wider">
 								<span class="text-ink-muted">Dónde verlo</span>
 								{cap.proof.map((proof) => (
 									<a href={proof.href} class="link-underline text-ink hover:text-accent-ink">
@@ -58,88 +39,47 @@ const panels = [
 									</a>
 								))}
 							</p>
-						</li>
-					);
-				})
-			}
-		</ul>
-	</Section>
-</div>
+						</div>
+					</div>
+				</li>
+			))
+		}
+	</ol>
+</Section>
 
 <style>
-	/* Banda oscura en los dos temas: redefine los tokens solo dentro de la sección. */
-	.band-dark {
-		--paper: 20 22 26;
-		--ink: 236 232 225;
-		--ink-soft: 201 196 187;
-		--ink-muted: 146 152 163;
-		--line: 52 56 64;
-		--accent: 255 155 83;
-		--accent-ink: 255 155 83;
-		background: rgb(var(--paper));
-		color: rgb(var(--ink-soft));
-	}
-	:global(.dark) .band-dark {
-		--paper: 26 29 35;
-	}
-	.band-dark :global(h2) {
-		color: rgb(var(--ink));
-	}
-
-	.cap-panel {
-		background: var(--panel-bg);
-	}
-	.cap-panel .cap-title,
-	.cap-panel .cap-meta {
-		color: var(--panel-text);
-		position: relative;
-	}
 	.cap-title {
-		font-size: clamp(2.4rem, 1.6rem + 2.8vw, 4.25rem);
-		letter-spacing: -0.02em;
+		font-size: clamp(2.1rem, 1.4rem + 2.6vw, 3.75rem);
+		line-height: 0.98;
+		letter-spacing: -0.015em;
+		transition: transform 0.45s cubic-bezier(0.2, 0.7, 0.2, 1), color 0.3s;
 	}
 
-	/* Formas geométricas: decorativas, solo CSS, siempre en la mitad superior derecha. */
-	.cap-shape {
+	/* Franja de acento que entra desde la izquierda al pasar por la fila. */
+	.cap-sweep {
 		position: absolute;
-		background: var(--panel-fg);
-		transition: transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
-	}
-	.cap-shape--circle {
-		width: 52%;
-		aspect-ratio: 1;
-		border-radius: 9999px;
-		top: -38%;
-		right: -10%;
-	}
-	.cap-shape--wedge {
-		width: 48%;
-		height: 72%;
-		top: 0;
-		right: 0;
-		clip-path: polygon(38% 0, 100% 0, 100% 100%);
-	}
-	.cap-shape--diamond {
-		width: 30%;
-		aspect-ratio: 1;
-		top: -14%;
-		right: 6%;
-		transform: rotate(45deg);
-		border-radius: 0.75rem;
+		inset: 0;
+		background: rgb(var(--accent) / 0.1);
+		transform: scaleX(0);
+		transform-origin: left;
+		transition: transform 0.5s cubic-bezier(0.2, 0.7, 0.2, 1);
 	}
 
-	.cap:hover .cap-shape--circle {
-		transform: translate(-6%, 8%) scale(1.04);
-	}
-	.cap:hover .cap-shape--wedge {
-		transform: translateX(-6%);
-	}
-	.cap:hover .cap-shape--diamond {
-		transform: rotate(75deg) scale(1.06);
+	@media (hover: hover) {
+		.cap-row:hover .cap-sweep,
+		.cap-row:focus-within .cap-sweep {
+			transform: scaleX(1);
+		}
+		.cap-row:hover .cap-title,
+		.cap-row:focus-within .cap-title {
+			transform: translateX(0.75rem);
+			color: rgb(var(--accent-ink));
+		}
 	}
 
 	@media (prefers-reduced-motion: reduce) {
-		.cap-shape {
+		.cap-title,
+		.cap-sweep {
 			transition: none;
 		}
 	}
