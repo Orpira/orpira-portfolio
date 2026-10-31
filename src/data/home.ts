@@ -86,7 +86,7 @@ export const services: Service[] = [
 			"Supabase o PostgreSQL, desplegado en Vercel",
 			"Documentación y traspaso",
 		],
-		example: "Private Balance · WebWiz Quiz",
+		example: "WebWiz Quiz · Dominó 3D",
 		format: null,
 		pendingHint: "Formato y plazo típico de un MVP",
 	},
@@ -168,13 +168,12 @@ export const labProjects: LabProject[] = [
 		statusLabel: "En desarrollo",
 	},
 	{
-		title: "Domino3D",
-		summary: "Dominó en 3D en el navegador, con el objetivo de llegar al nivel de los juegos comerciales del género.",
-		tags: ["3D", "Juego"],
-		href: null,
-		pendingHint: "URL pública de Domino3D (o dejar sin enlace)",
-		status: "building",
-		statusLabel: "En desarrollo",
+		title: "Dominó 3D",
+		summary: "Dominó latino en una mesa 3D, con salas online, liga y app Android.",
+		tags: ["Three.js", "Juego"],
+		href: "https://domino-3d.orpira.es/",
+		status: "live",
+		statusLabel: "En producción",
 	},
 	{
 		title: "WebWiz Quiz",
@@ -182,7 +181,7 @@ export const labProjects: LabProject[] = [
 		tags: ["React", "Supabase"],
 		href: "https://webwiz.orpira.es/",
 		status: "live",
-		statusLabel: "En línea",
+		statusLabel: "En producción",
 	},
 ];
 
