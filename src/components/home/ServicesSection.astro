@@ -1,9 +1,11 @@
 ---
 /**
- * «Qué construyo»: índice editorial a todo el ancho.
- * Una fila por capacidad: número, título grande en serif, descripción,
- * stack y proyectos donde se ve. Al pasar el ratón, la fila se resalta
- * con una franja de acento que entra desde la izquierda.
+ * «Qué construyo» en persiana.
+ * - Escritorio: franjas verticales en una fila de altura fija. La activa se
+ *   abre a lo ancho; el resto muestra número y título en vertical. Se activa
+ *   al pasar el ratón, con clic o con el teclado.
+ * - Móvil: la misma persiana en vertical (acordeón), una abierta cada vez.
+ * - Los paneles cerrados son `inert` para que sus enlaces no reciban foco.
  */
 import Section from "../ui/Section.astro";
 import { capabilities } from "../../data/home";
@@ -14,23 +16,40 @@ import { capabilities } from "../../data/home";
 	index="02"
 	eyebrow="Qué construyo"
 	title="Lo que sé hacer, <em class='t-accent'>con pruebas.</em>"
-	intro="Cada capacidad enlaza al proyecto donde se puede ver funcionando."
+	intro="Pasa por cada franja para abrirla. Cada capacidad enlaza al proyecto donde se ve funcionando."
 >
-	<ol class="border-b border-ink">
+	<div class="persiana" data-persiana>
 		{
-			capabilities.map((cap, i) => (
-				<li class="cap-row group relative border-t border-ink">
-					<span aria-hidden="true" class="cap-sweep" />
-					<div class="relative grid gap-4 py-8 md:grid-cols-12 md:items-baseline md:gap-6 md:py-10">
-						<p class="t-data text-accent-ink md:col-span-1">{String(i + 1).padStart(2, "0")}</p>
-
-						<h3 class="cap-title font-heading text-ink md:col-span-5">
-							{cap.title}
+			capabilities.map((cap, i) => {
+				const num = String(i + 1).padStart(2, "0");
+				const headId = `cap-head-${i}`;
+				const bodyId = `cap-body-${i}`;
+				const active = i === 0;
+				return (
+					<article class="strip" data-strip data-active={active ? "true" : "false"}>
+						<h3 class="strip-h3">
+							<button
+								type="button"
+								id={headId}
+								class="strip-head"
+								aria-expanded={active ? "true" : "false"}
+								aria-controls={bodyId}
+								data-strip-head
+							>
+								<span class="t-data strip-num">{num}</span>
+								<span class="strip-label font-heading">{cap.title}</span>
+							</button>
 						</h3>
-
-						<div class="md:col-span-6">
-							<p class="max-w-[48ch] text-ink-soft">{cap.summary}</p>
-							<p class="t-data mt-4 uppercase tracking-wider text-ink-muted">{cap.tech.join(" · ")}</p>
+						<div
+							id={bodyId}
+							class="strip-body"
+							role="region"
+							aria-labelledby={headId}
+							inert={!active}
+						>
+							<p class="strip-title font-heading text-ink">{cap.title}</p>
+							<p class="mt-4 max-w-[44ch] text-ink-soft">{cap.summary}</p>
+							<p class="t-data mt-6 uppercase tracking-wider text-ink-muted">{cap.tech.join(" · ")}</p>
 							<p class="t-data mt-3 flex flex-wrap gap-x-4 gap-y-1 uppercase tracking-wider">
 								<span class="text-ink-muted">Dónde verlo</span>
 								{cap.proof.map((proof) => (
@@ -40,47 +59,198 @@ import { capabilities } from "../../data/home";
 								))}
 							</p>
 						</div>
-					</div>
-				</li>
-			))
+					</article>
+				);
+			})
 		}
-	</ol>
+	</div>
 </Section>
 
+<script>
+	const roots = document.querySelectorAll<HTMLElement>("[data-persiana]");
+	const canHover = window.matchMedia("(hover: hover) and (min-width: 768px)");
+
+	roots.forEach((root) => {
+		const strips = Array.from(root.querySelectorAll<HTMLElement>("[data-strip]"));
+
+		const activate = (target: HTMLElement) => {
+			strips.forEach((strip) => {
+				const on = strip === target;
+				strip.dataset.active = on ? "true" : "false";
+				strip.querySelector("[data-strip-head]")?.setAttribute("aria-expanded", String(on));
+				const body = strip.querySelector<HTMLElement>(".strip-body");
+				if (body) body.inert = !on;
+			});
+		};
+
+		strips.forEach((strip) => {
+			const head = strip.querySelector<HTMLButtonElement>("[data-strip-head]");
+			head?.addEventListener("click", () => activate(strip));
+			head?.addEventListener("focus", () => activate(strip));
+			strip.addEventListener("mouseenter", () => {
+				if (canHover.matches) activate(strip);
+			});
+		});
+
+		// Flechas para moverse entre franjas.
+		root.addEventListener("keydown", (e) => {
+			if (!["ArrowRight", "ArrowLeft", "ArrowDown", "ArrowUp"].includes(e.key)) return;
+			const current = strips.findIndex((s) => s.dataset.active === "true");
+			const step = e.key === "ArrowRight" || e.key === "ArrowDown" ? 1 : -1;
+			const next = strips[(current + step + strips.length) % strips.length];
+			next.querySelector<HTMLButtonElement>("[data-strip-head]")?.focus();
+			e.preventDefault();
+		});
+	});
+</script>
+
 <style>
-	.cap-title {
-		font-size: clamp(2.1rem, 1.4rem + 2.6vw, 3.75rem);
-		line-height: 0.98;
-		letter-spacing: -0.015em;
-		transition: transform 0.45s cubic-bezier(0.2, 0.7, 0.2, 1), color 0.3s;
+	.persiana {
+		display: flex;
+		flex-direction: column;
+		border-top: 1px solid rgb(var(--ink));
+		border-bottom: 1px solid rgb(var(--ink));
 	}
 
-	/* Franja de acento que entra desde la izquierda al pasar por la fila. */
-	.cap-sweep {
-		position: absolute;
-		inset: 0;
-		background: rgb(var(--accent) / 0.1);
-		transform: scaleX(0);
-		transform-origin: left;
-		transition: transform 0.5s cubic-bezier(0.2, 0.7, 0.2, 1);
+	.strip {
+		position: relative;
+		border-top: 1px solid rgb(var(--line));
+		transition: background-color 0.4s;
+	}
+	.strip:first-child {
+		border-top: 0;
+	}
+	.strip[data-active="true"] {
+		background: rgb(var(--accent) / 0.08);
 	}
 
-	@media (hover: hover) {
-		.cap-row:hover .cap-sweep,
-		.cap-row:focus-within .cap-sweep {
-			transform: scaleX(1);
+	.strip-h3 {
+		margin: 0;
+	}
+	.strip-head {
+		display: flex;
+		width: 100%;
+		align-items: baseline;
+		gap: 1rem;
+		padding: 1.25rem 0.25rem;
+		text-align: left;
+		cursor: pointer;
+	}
+	.strip-head:focus-visible {
+		outline: 2px solid rgb(var(--accent-ink));
+		outline-offset: -2px;
+	}
+	.strip-num {
+		color: rgb(var(--accent-ink));
+	}
+	.strip-label {
+		font-size: clamp(1.6rem, 1.3rem + 1.2vw, 2.1rem);
+		line-height: 1.05;
+		color: rgb(var(--ink));
+	}
+
+	/* Móvil: acordeón vertical con altura animada. */
+	.strip-body {
+		max-height: 0;
+		overflow: hidden;
+		padding: 0 0.25rem;
+		opacity: 0;
+		transition:
+			max-height 0.5s cubic-bezier(0.2, 0.7, 0.2, 1),
+			opacity 0.3s,
+			padding 0.5s;
+	}
+	.strip[data-active="true"] .strip-body {
+		max-height: 32rem;
+		opacity: 1;
+		padding-bottom: 1.75rem;
+	}
+	.strip-title {
+		display: none;
+	}
+
+	/* Escritorio: persiana horizontal de altura fija. */
+	@media (min-width: 768px) {
+		.persiana {
+			flex-direction: row;
+			height: 30rem;
 		}
-		.cap-row:hover .cap-title,
-		.cap-row:focus-within .cap-title {
-			transform: translateX(0.75rem);
-			color: rgb(var(--accent-ink));
+		.strip {
+			flex: 1 1 0;
+			min-width: 0;
+			overflow: hidden;
+			border-top: 0;
+			border-left: 1px solid rgb(var(--line));
+			transition:
+				flex-grow 0.6s cubic-bezier(0.2, 0.7, 0.2, 1),
+				background-color 0.4s;
+		}
+		.strip:first-child {
+			border-left: 0;
+		}
+		.strip[data-active="true"] {
+			flex-grow: 5.5;
+		}
+
+		.strip-head {
+			position: absolute;
+			inset: 0;
+			flex-direction: column;
+			justify-content: space-between;
+			align-items: flex-start;
+			padding: 1.5rem 1.25rem;
+		}
+		.strip-label {
+			writing-mode: vertical-rl;
+			transform: rotate(180deg);
+			font-size: clamp(1.5rem, 1.1rem + 0.9vw, 2rem);
+			white-space: nowrap;
+			transition: opacity 0.25s;
+		}
+		.strip[data-active="true"] .strip-head {
+			pointer-events: none;
+		}
+		.strip[data-active="true"] .strip-label {
+			opacity: 0;
+		}
+
+		.strip-body {
+			position: absolute;
+			inset: 0;
+			display: flex;
+			flex-direction: column;
+			justify-content: flex-end;
+			width: min(40rem, 70vw);
+			max-height: none;
+			padding: 1.5rem 2rem 2rem 1.25rem;
+			opacity: 0;
+			transform: translateY(0.75rem);
+			transition:
+				opacity 0.3s,
+				transform 0.4s;
+		}
+		.strip[data-active="true"] .strip-body {
+			max-height: none;
+			padding-bottom: 2rem;
+			opacity: 1;
+			transform: none;
+			transition:
+				opacity 0.4s 0.2s,
+				transform 0.5s 0.2s;
+		}
+		.strip-title {
+			display: block;
+			font-size: clamp(2.4rem, 1.6rem + 2.4vw, 3.75rem);
+			line-height: 0.98;
+			letter-spacing: -0.015em;
 		}
 	}
 
 	@media (prefers-reduced-motion: reduce) {
-		.cap-title,
-		.cap-sweep {
-			transition: none;
+		.strip,
+		.strip-body,
+		.strip-label {
+			transition: none !important;
 		}
 	}
 </style>
