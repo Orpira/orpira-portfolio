@@ -47,9 +47,27 @@ document.querySelectorAll<HTMLElement>("[data-persiana]").forEach((root) => {
 		requestAnimationFrame(step);
 	};
 
-	const activate = (target: HTMLElement) => {
-		if (target.dataset.active === "true") return;
-		if (anchor) keepInPlace(target);
+	// Pantallas táctiles: nada de corrección continua (en iOS la barra de Safari
+	// aparece y desaparece al hacer scroll y la corrección la perseguía, la
+	// página brincaba). Al terminar de abrirse la franja, si su contenido no se
+	// ve entero, un único scroll suave deja su título bajo la cabecera fija.
+	const reveal = (strip: HTMLElement) => {
+		window.setTimeout(() => {
+			const head = strip.querySelector<HTMLElement>("[data-strip-head]");
+			const body = strip.querySelector<HTMLElement>(".strip-body");
+			if (!head || !body || strip.dataset.active !== "true") return;
+			const header = document.querySelector<HTMLElement>("body > header, header.site-header, header");
+			const offset = (header?.getBoundingClientRect().bottom ?? 0) + 12;
+			const top = head.getBoundingClientRect().top;
+			const bottom = body.getBoundingClientRect().bottom;
+			const viewH = window.visualViewport?.height ?? window.innerHeight;
+			if (top < offset || bottom > viewH - 12) {
+				window.scrollTo({ top: window.scrollY + top - offset, behavior: "smooth" });
+			}
+		}, LOCK_MS);
+	};
+
+	const setState = (target: HTMLElement) => {
 		strips.forEach((strip) => {
 			const on = strip === target;
 			strip.dataset.active = on ? "true" : "false";
@@ -57,6 +75,37 @@ document.querySelectorAll<HTMLElement>("[data-persiana]").forEach((root) => {
 			const body = strip.querySelector<HTMLElement>(".strip-body");
 			if (body) body.inert = !on;
 		});
+	};
+
+	const activate = (target: HTMLElement) => {
+		if (target.dataset.active === "true") return;
+
+		// Ratón: compensación continua mientras dura la animación.
+		if (canHover.matches) {
+			if (anchor) keepInPlace(target);
+			setState(target);
+			return;
+		}
+
+		// Táctil: la franja que estaba abierta se cierra al instante (sin
+		// animación) y se corrige el scroll una sola vez, de forma exacta, para
+		// que el título tocado no se mueva. Luego solo se anima la que se abre.
+		const head = target.querySelector<HTMLElement>("[data-strip-head]");
+		const before = head?.getBoundingClientRect().top ?? 0;
+		const previous = strips.find((s) => s.dataset.active === "true");
+		if (previous) previous.dataset.instant = "";
+		setState(target);
+		const after = head?.getBoundingClientRect().top ?? 0; // fuerza el layout
+		if (Math.abs(after - before) >= 0.5) {
+			const html = document.documentElement;
+			html.style.scrollBehavior = "auto";
+			window.scrollTo(0, window.scrollY + (after - before));
+			html.style.scrollBehavior = "";
+		}
+		requestAnimationFrame(() => {
+			if (previous) delete previous.dataset.instant;
+		});
+		reveal(target);
 	};
 
 	strips.forEach((strip) => {

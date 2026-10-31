@@ -70,6 +70,8 @@ import { capabilities } from "../../data/home";
 
 <style>
 	.persiana-h {
+		/* El scroll lo corrige persiana.ts; que el navegador no lo haga por su cuenta. */
+		overflow-anchor: none;
 		border-top: 1px solid rgb(var(--ink));
 		border-bottom: 1px solid rgb(var(--ink));
 	}
@@ -177,6 +179,11 @@ import { capabilities } from "../../data/home";
 		.strip-inner {
 			padding-left: 0.5rem;
 		}
+	}
+
+	/* Cierre instantáneo de la franja anterior en pantallas táctiles (persiana.ts). */
+	.strip[data-instant] .strip-body {
+		transition: none !important;
 	}
 
 	@media (prefers-reduced-motion: reduce) {

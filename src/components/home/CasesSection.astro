@@ -87,6 +87,8 @@ const cases = (await getCollection("cases")).sort((a, b) => a.data.order - b.dat
 
 <style>
 	.persiana-v {
+		/* El scroll lo corrige persiana.ts; que el navegador no lo haga por su cuenta. */
+		overflow-anchor: none;
 		display: flex;
 		flex-direction: column;
 		border-top: 1px solid rgb(var(--ink));
@@ -237,6 +239,11 @@ const cases = (await getCollection("cases")).sort((a, b) => a.data.order - b.dat
 			line-height: 0.98;
 			letter-spacing: -0.015em;
 		}
+	}
+
+	/* Cierre instantáneo de la franja anterior en pantallas táctiles (persiana.ts). */
+	.strip[data-instant] .strip-body {
+		transition: none !important;
 	}
 
 	@media (prefers-reduced-motion: reduce) {
