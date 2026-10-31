@@ -1,10 +1,10 @@
 # Redactado solo con hechos conocidos. Lo que falta está en `pending` o en valores null.
 # Describe la app en producción (prl.orpira.es), repo Orpira/test_interactivo-prl.
 title: PRL Master
-order: 3
+order: 1
 headline: >-
-  Un examen de prevención de riesgos laborales en Word convertido en una app de tests
-  para el aula: individual, por turnos o en red, con ranking en tiempo real.
+  El examen en Word del curso de PRL de 30 horas de Meatze, convertido en una app de
+  tests para el aula: individual, por turnos o en red, con ranking en tiempo real.
 summary: >-
   Tests de prevención de riesgos laborales para formadores: 174 preguntas, modo individual,
   multijugador y salas en red con ranking en directo.
@@ -30,13 +30,16 @@ problem:
   title: El temario y el examen vivían en un documento Word.
   paragraphs:
     - >-
-      Un documento se lee, pero no se puede practicar con él, no corrige y no sirve para
-      evaluar a un grupo a la vez. Quien imparte formación en prevención de riesgos
-      laborales necesita una herramienta ágil para comprobar en el aula lo que se ha
-      aprendido.
+      En el curso de prevención de riesgos laborales de 30 horas de Meatze, el temario y
+      el examen se repartían en un documento Word. Un documento se lee, pero no se puede
+      practicar con él, no corrige y no sirve para evaluar a un grupo a la vez.
+    - >-
+      Convertí ese examen en PRL Master y lo usamos los compañeros del curso para
+      practicar. Es el mismo problema que tiene cualquier empresa o academia que forma en
+      PRL: comprobar de forma ágil lo que el grupo ha aprendido.
   pending:
-    - Quién usaba ese material (empresa, academia, alumnos) y cuántas personas se forman al año
-    - Cómo se hacía antes el examen y la corrección, y cuánto tiempo costaba
+    - Cuántos compañeros la usaron y en cuántas sesiones
+    - Una frase de un compañero o del formador sobre cómo les ayudó
 
 decisions:
   - title: Las preguntas son datos, no páginas

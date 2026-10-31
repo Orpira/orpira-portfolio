@@ -14,18 +14,18 @@ export const publishable = <T extends { value: string | null }>(items: T[]) =>
 	isProduction ? items.filter((item) => item.value !== null) : items;
 
 export const seo = {
-	title: "OrPiRa · Software a medida para formación y empresas | Bilbao",
+	title: "OrPiRa · Plataformas de formación a medida para empresas | Bilbao",
 	description:
-		"Orlando Pineda Raad diseña y desarrolla aplicaciones web a medida, de la idea al despliegue: plataformas de formación, producto digital e IA aplicada. Bilbao, España.",
+		"Orlando Pineda Raad convierte temarios y exámenes en apps de formación a medida: tests con corrección automática, sesiones en grupo y seguimiento. Bilbao, España.",
 };
 
 export const hero = {
-	eyebrow: "Desarrollo de producto · Formación corporativa · Bilbao",
-	titleStart: "Convierto procesos y formaciones en",
-	titleAccent: "software que la gente usa.",
-	lead: "Diseño y desarrollo aplicaciones web a medida, de la idea al despliegue, para empresas que necesitan formar, medir o gestionar sin depender de herramientas genéricas. Más de 15 años entre IT, operaciones y desarrollo.",
-	primaryCta: { label: "Cuéntame tu proyecto", href: "#contacto" },
-	secondaryCta: { label: "Ver casos reales", href: "#casos" },
+	eyebrow: "Plataformas de formación a medida · Bilbao",
+	titleStart: "Tu temario en Word, convertido en",
+	titleAccent: "una formación que se puede medir.",
+	lead: "Tests con corrección automática, sesiones en grupo en el aula, seguimiento para RR. HH. y certificados. Hecho a medida para tu empresa, sin plataformas genéricas que nadie usa. Más de 15 años entre IT, operaciones y formación.",
+	primaryCta: { label: "Cuéntame tu formación", href: "#contacto" },
+	secondaryCta: { label: "Ver PRL Master en acción", href: "/casos/prl-master" },
 };
 
 export interface Stat {
@@ -37,12 +37,7 @@ export interface Stat {
 
 export const stats: Stat[] = [
 	{ value: "15+", label: "años en IT, operaciones y desarrollo" },
-	{ value: "174", label: "preguntas en el banco de PRL Master" },
-	{
-		value: null,
-		label: "apps en producción",
-		pendingHint: "Número de apps propias o de clientes en producción",
-	},
+	{ value: "3", label: "apps propias en producción" },
 	{
 		value: null,
 		label: "personas formadas con PRL Master",
@@ -65,11 +60,11 @@ export const services: Service[] = [
 	{
 		title: "Plataformas de formación a medida",
 		summary:
-			"Convierto temarios y exámenes en apps interactivas que se pueden medir, en lugar de PDFs que nadie termina.",
+			"Convierto temarios y exámenes en apps que se practican, corrigen solas y se pueden medir, en lugar de PDFs que nadie termina.",
 		includes: [
 			"Tests y simulacros con corrección automática",
 			"Banco de preguntas importado desde tus documentos Word",
-			"Seguimiento del progreso e informes para RR. HH.",
+			"Seguimiento del progreso e informes para RR. HH.",
 			"Certificados descargables",
 		],
 		example: "PRL Master",
@@ -77,32 +72,18 @@ export const services: Service[] = [
 		pendingHint: "Formato y plazo típico (p. ej. proyecto cerrado de N semanas)",
 	},
 	{
-		title: "De la idea a producto en producción",
+		title: "Herramientas internas a medida",
 		summary:
-			"Un MVP web o PWA con autenticación, base de datos y despliegue, listo para usuarios reales y no solo para una demo.",
+			"Cuando el problema no es formar sino un proceso que se hace a mano: una app web a medida, con IA donde de verdad ahorra horas.",
 		includes: [
-			"Descubrimiento y alcance cerrado por escrito",
+			"Alcance, plazo y precio cerrados por escrito",
 			"Web, PWA o app Android desde el mismo código",
-			"Supabase o PostgreSQL, desplegado en Vercel",
+			"IA para clasificar, redactar o resumir, con revisión humana",
 			"Documentación y traspaso",
-		],
-		example: "WebWiz Quiz · Dominó 3D",
-		format: null,
-		pendingHint: "Formato y plazo típico de un MVP",
-	},
-	{
-		title: "IA aplicada a procesos internos",
-		summary:
-			"Integro la API de Claude donde ahorra horas: clasificar mensajes, redactar informes o generar contenido formativo.",
-		includes: [
-			"Diagnóstico de tareas repetitivas que se pueden automatizar",
-			"Integración con WhatsApp, documentos o tu base de datos",
-			"Control de costes y de privacidad de los datos",
-			"Revisión humana donde el resultado importa",
 		],
 		example: "WebWiz Quiz",
 		format: null,
-		pendingHint: "Formato (auditoría, piloto, integración) y plazo",
+		pendingHint: "Formato y plazo típico de una herramienta interna",
 	},
 ];
 
@@ -140,6 +121,7 @@ export const about = {
 	title: "IT, producto y formación <em class='t-accent'>en la misma persona.</em>",
 	paragraphs: [
 		"Soy Orlando Pineda Raad. Llevo más de 15 años resolviendo problemas de IT y operaciones, y los últimos años los he dedicado a construir el software que me habría gustado tener.",
+		"PRL Master nació así: en el curso de PRL de 30 horas de Meatze, convertí el examen en Word en la app de tests que usamos los compañeros del curso.",
 		"Por eso hablo el idioma de quien usa la herramienta y el de quien la programa. Me gusta trabajar paso a paso y no doy un proyecto por terminado hasta verlo desplegado y funcionando.",
 		"Trabajo desde Bilbao, también en remoto.",
 	],
@@ -186,12 +168,12 @@ export const labProjects: LabProject[] = [
 ];
 
 export const contact = {
-	title: "¿Tienes un proceso que debería ser <em class='t-accent'>una app?</em>",
+	title: "¿Tienes un temario que debería ser <em class='t-accent'>una app?</em>",
 	intro:
-		"Escríbeme dos líneas sobre el problema. Te respondo con una primera valoración, sin compromiso.",
+		"Cuéntame en dos líneas qué formación impartes y a cuánta gente. Te respondo con una primera valoración, sin compromiso.",
 	responseTime: null as string | null,
 	responseTimePendingHint: "Plazo de respuesta que te comprometes a cumplir (p. ej. 24 h laborables)",
-	needs: ["Plataforma de formación", "Producto digital / MVP", "IA aplicada", "Otro"],
+	needs: ["Plataforma de formación", "Herramienta interna", "Otro"],
 	whatsapp: "https://wa.me/34643684541",
 	linkedin: "https://www.linkedin.com/in/orlando-pineda-raad-273402257",
 	github: "https://github.com/Orpira",
