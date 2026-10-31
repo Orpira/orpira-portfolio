@@ -16,14 +16,14 @@ export const publishable = <T extends { value: string | null }>(items: T[]) =>
 export const seo = {
 	title: "OrPiRa · Apps web a medida para empresas | Bilbao",
 	description:
-		"Orlando Pineda Raad diseña y desarrolla apps web a medida, de la idea al despliegue: plataformas de formación, herramientas internas y producto digital. Bilbao, España.",
+		"Orlando Pineda Raad diseña y desarrolla apps web a medida, de la idea al despliegue: herramientas internas, producto digital e IA aplicada. Bilbao, España.",
 };
 
 export const hero = {
 	eyebrow: "Apps web a medida · Bilbao",
 	titleStart: "Apps web a medida,",
 	titleAccent: "de la idea al despliegue.",
-	lead: "Plataformas de formación, herramientas internas y producto digital para empresas, hechas por un ingeniero informático que ha dado soporte y formación a quienes las usan.",
+	lead: "Herramientas internas, producto digital e IA aplicada para empresas, hechas por un ingeniero informático que ha dado soporte y formación a quienes las usan.",
 	primaryCta: { label: "Cuéntame tu proyecto", href: "#contacto" },
 	secondaryCta: { label: "Ver casos", href: "#casos" },
 };
@@ -58,32 +58,46 @@ export interface Service {
 
 export const services: Service[] = [
 	{
-		title: "Plataformas de formación a medida",
+		title: "Herramientas internas a medida",
 		summary:
-			"Convierto temarios y exámenes en apps que se practican, corrigen solas y se pueden medir, en lugar de PDFs que nadie termina.",
+			"Sustituyo hojas de cálculo, papeles y documentos sueltos por una app que tu equipo usa a diario y que se adapta a cómo trabajáis.",
 		includes: [
-			"Tests y simulacros con corrección automática",
-			"Banco de preguntas importado desde tus documentos Word",
-			"Seguimiento del progreso e informes para RR. HH.",
-			"Certificados descargables",
+			"Procesos manuales convertidos en una app web",
+			"Usuarios, permisos y datos en un solo sitio",
+			"Informes y seguimiento sin copiar y pegar",
+			"Formación a tu equipo para que la adopte",
 		],
 		example: "PRL Master",
 		format: null,
-		pendingHint: "Formato y plazo típico (p. ej. proyecto cerrado de N semanas)",
+		pendingHint: "Formato y plazo típico de una herramienta interna",
 	},
 	{
-		title: "Herramientas internas a medida",
+		title: "De la idea a producto en producción",
 		summary:
-			"Cuando el problema no es formar sino un proceso que se hace a mano: una app web a medida, con IA donde de verdad ahorra horas.",
+			"Un MVP web o PWA con autenticación, base de datos y despliegue, listo para usuarios reales y no solo para una demo.",
 		includes: [
-			"Alcance, plazo y precio cerrados por escrito",
+			"Descubrimiento y alcance cerrado por escrito",
 			"Web, PWA o app Android desde el mismo código",
-			"IA para clasificar, redactar o resumir, con revisión humana",
+			"Supabase o PostgreSQL, desplegado en Vercel",
 			"Documentación y traspaso",
+		],
+		example: "WebWiz Quiz · Dominó 3D",
+		format: null,
+		pendingHint: "Formato y plazo típico de un MVP",
+	},
+	{
+		title: "IA aplicada a procesos internos",
+		summary:
+			"Integro la API de Claude donde ahorra horas: clasificar mensajes, redactar informes o resumir documentos.",
+		includes: [
+			"Diagnóstico de tareas repetitivas que se pueden automatizar",
+			"Integración con WhatsApp, documentos o tu base de datos",
+			"Control de costes y de privacidad de los datos",
+			"Revisión humana donde el resultado importa",
 		],
 		example: "WebWiz Quiz",
 		format: null,
-		pendingHint: "Formato y plazo típico de una herramienta interna",
+		pendingHint: "Formato (auditoría, piloto, integración) y plazo",
 	},
 ];
 
@@ -173,7 +187,7 @@ export const contact = {
 		"Escríbeme dos líneas sobre el problema. Te respondo con una primera valoración, sin compromiso.",
 	responseTime: null as string | null,
 	responseTimePendingHint: "Plazo de respuesta que te comprometes a cumplir (p. ej. 24 h laborables)",
-	needs: ["Plataforma de formación", "Herramienta interna", "Otro"],
+	needs: ["Herramienta interna", "Producto digital / MVP", "IA aplicada", "Otro"],
 	whatsapp: "https://wa.me/34643684541",
 	linkedin: "https://www.linkedin.com/in/orlando-pineda-raad-273402257",
 	github: "https://github.com/Orpira",

@@ -23,7 +23,7 @@ export const person = {
 	image: `${SITE_URL}/og/portada.jpg`,
 	jobTitle: "Desarrollador de producto Full Stack",
 	description:
-		"Apps web a medida para empresas, de la idea al despliegue: plataformas de formación, herramientas internas y producto digital.",
+		"Apps web a medida para empresas, de la idea al despliegue: herramientas internas, producto digital e IA aplicada.",
 	address: {
 		"@type": "PostalAddress",
 		addressLocality: "Bilbao",
@@ -31,9 +31,8 @@ export const person = {
 		addressCountry: "ES",
 	},
 	knowsAbout: [
-		"Plataformas de formación a medida",
-		"Prevención de riesgos laborales (PRL)",
 		"Desarrollo web Full Stack",
+		"Herramientas internas a medida",
 		"Integración de IA en procesos",
 		"React",
 		"Astro",
@@ -64,7 +63,7 @@ export const homeJsonLd = {
 			url: SITE_URL,
 			image: `${SITE_URL}/og/portada.jpg`,
 			description:
-				"Plataformas de formación a medida para empresas y herramientas internas con IA aplicada.",
+				"Apps web a medida para empresas: herramientas internas, producto digital e IA aplicada a procesos.",
 			founder: { "@id": personId },
 			address: person.address,
 			areaServed: { "@type": "Country", name: "España" },
@@ -74,8 +73,9 @@ export const homeJsonLd = {
 				"@type": "OfferCatalog",
 				name: "Servicios",
 				itemListElement: [
-					"Plataformas de formación a medida",
 					"Herramientas internas a medida",
+					"De la idea a producto en producción",
+					"IA aplicada a procesos internos",
 				].map((name) => ({
 					"@type": "Offer",
 					itemOffered: { "@type": "Service", name },
