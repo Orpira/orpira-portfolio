@@ -3,12 +3,12 @@
 title: PRL Master
 order: 1
 headline: >-
-  El examen en Word del curso de PRL de 30 horas de Meatze, convertido en una app de
-  tests para el aula: individual, por turnos o en red, con ranking en tiempo real.
+  El material del curso de PRL de 30 horas de Meatze, convertido en una app de tests para
+  estudiar: a solas, por turnos o en grupo, con corrección al momento y ranking en directo.
 summary: >-
-  Tests de prevención de riesgos laborales para formadores: 174 preguntas, modo individual,
-  multijugador y salas en red con ranking en directo.
-ogLine: Del examen en Word a una app de tests para el aula.
+  El material de un curso de PRL convertido en una app para estudiar: 174 preguntas por
+  temas, corrección inmediata y salas en grupo con ranking en directo.
+ogLine: De los documentos del curso a una app para estudiar.
 seoDescription: >-
   Caso de estudio de PRL Master: tests de prevención de riesgos laborales con modo
   individual, multijugador local y salas en red con ranking en tiempo real.
@@ -27,19 +27,25 @@ cover: ../../assets/images/prl-master/portada.webp
 coverAlt: Portada de PRL Master en verde con el lema Aprende Prevención de Riesgos Laborales
 
 problem:
-  title: El temario y el examen vivían en un documento Word.
+  title: Estudiar con documentos no te dice qué estás fallando.
   paragraphs:
     - >-
-      En el curso de prevención de riesgos laborales de 30 horas de Meatze, el temario y
-      el examen se repartían en un documento Word. Un documento se lee, pero no se puede
-      practicar con él, no corrige y no sirve para evaluar a un grupo a la vez.
+      En el curso de prevención de riesgos laborales de 30 horas de Meatze, el material
+      llegaba en documentos PDF y Word. Un documento se lee, pero no se puede practicar
+      con él, no corrige y no sirve para repasar en grupo.
     - >-
-      Convertí ese examen en PRL Master y lo usamos los compañeros del curso para
-      practicar. Es el mismo problema que tiene cualquier empresa o academia que forma en
-      PRL: comprobar de forma ágil lo que el grupo ha aprendido.
+      Convertí ese material en PRL Master para que los compañeros del curso pudiéramos
+      estudiar con preguntas, ver al momento qué fallábamos y repasar juntos.
   pending:
-    - Cuántos compañeros la usaron y en cuántas sesiones
     - Una frase de un compañero o del formador sobre cómo les ayudó
+
+beforeAfter:
+  - before: Leer el temario sin saber qué parte dominas y cuál no.
+    after: 174 preguntas por temas para practicar justo lo que flojea.
+  - before: Descubrir los fallos el día del examen.
+    after: Cada respuesta se corrige al momento y muestra la correcta.
+  - before: Repasar en grupo sin forma de comparar resultados.
+    after: Una sala con código, cada uno desde su móvil y un ranking en directo.
 
 decisions:
   - title: Las preguntas son datos, no páginas
@@ -114,13 +120,14 @@ stack:
 
 results:
   - value: "174"
-    label: preguntas en el banco, convertidas desde el examen en Word
+    label: preguntas para practicar, sacadas del material del curso
+  - value: "26"
+    label: temas agrupados en 7 bloques, con buscador
+  - value: "3"
+    label: formas de estudiar, a solas, por turnos o en grupo
   - value: null
-    label: personas formadas
-    pendingHint: Alumnos o empresas que han usado PRL Master
-  - value: null
-    label: tiempo ahorrado en corrección
-    pendingHint: Tiempo que costaba corregir antes frente a ahora
+    label: compañeros del curso que la usaron
+    pendingHint: Número aproximado de compañeros del curso de Meatze que la usaron
 
 next: >-
   Reutilizar la misma base para nuevas formaciones a partir de otros temarios, con
