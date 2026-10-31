@@ -51,12 +51,12 @@ const idx = () => String(++n).padStart(2, "0");
 ---
 
 <SiteLayout
-	title={`${c.title} · Caso de estudio | OrPiRa`}
+	title={`${c.title} · Proyecto | OrPiRa`}
 	description={c.seoDescription}
 	type="article"
 	footerCta={false}
 	image={`/og/${entry.id}.jpg`}
-	imageAlt={`${c.title}, caso de estudio de OrPiRa`}
+	imageAlt={`${c.title}, proyecto de OrPiRa`}
 	jsonLd={caseJsonLd({
 		slug: entry.id,
 		title: c.title,
@@ -74,7 +74,7 @@ const idx = () => String(++n).padStart(2, "0");
 					<ol class="flex flex-wrap items-center gap-2">
 						<li><a href="/" class="link-underline hover:text-ink">Inicio</a></li>
 						<li aria-hidden="true">/</li>
-						<li><a href="/#casos" class="link-underline hover:text-ink">Casos</a></li>
+						<li><a href="/#casos" class="link-underline hover:text-ink">Proyectos</a></li>
 						<li aria-hidden="true">/</li>
 						<li aria-current="page" class="text-ink-soft">{c.title}</li>
 					</ol>
@@ -173,79 +173,6 @@ const idx = () => String(++n).padStart(2, "0");
 		}
 
 		{
-			(results.length > 0 || c.learned.length > 0) && (
-				<Section id="resultado" index={idx()} eyebrow="Resultado" title="Lo que se puede medir hoy.">
-					{results.length > 0 && (
-						<dl class="grid gap-px overflow-hidden rounded-ds-lg border border-line bg-line sm:grid-cols-2 lg:grid-cols-3">
-							{results.map((r) => (
-								<div class="flex flex-col bg-paper p-6 md:p-8">
-									<dt class="t-data order-2 mt-3 text-ink-muted">{r.label}</dt>
-									<dd class="order-1 font-heading text-[clamp(2.5rem,1.9rem+2.4vw,3.75rem)] leading-none text-ink">
-										{r.value ?? <Pending hint={r.pendingHint} class="align-middle text-[0.75rem]" />}
-									</dd>
-								</div>
-							))}
-						</dl>
-					)}
-					{c.learned.length > 0 && (
-						<div class="mt-14 grid gap-6 md:grid-cols-12">
-							<h3 class="t-data text-ink-muted md:col-span-3">Lo aprendido</h3>
-							<ul class="space-y-4 md:col-span-9">
-								{c.learned.map((l) => (
-									<li class="font-heading text-[clamp(1.4rem,1.2rem+0.8vw,1.9rem)] leading-snug text-ink">
-										{l}
-									</li>
-								))}
-							</ul>
-						</div>
-					)}
-				</Section>
-			)
-		}
-
-		{
-			(showGallery || c.links[0]) && (
-				<Section id="capturas" index={idx()} eyebrow="Pruébalo" title="El producto, <em class='t-accent'>en acción.</em>">
-					{c.gallery.length > 0 ? (
-						<ul class="grid gap-8 md:grid-cols-2">
-							{c.gallery.map((shot) => (
-								<li class:list={[shot.shape === "portrait" && "md:row-span-2"]}>
-									<figure>
-										<Image
-											src={asImage(shot.src)}
-											alt={shot.alt}
-											widths={shot.shape === "portrait" ? [360, 560] : [480, 720, 1040]}
-											sizes="(min-width: 768px) 50vw, 100vw"
-											loading="lazy"
-											class:list={[
-												"w-full rounded-ds-lg border border-line bg-surface",
-												shot.shape === "portrait" && "mx-auto max-w-[22rem]",
-											]}
-										/>
-										<figcaption class="t-data mt-3 text-ink-muted">{shot.caption}</figcaption>
-									</figure>
-								</li>
-							))}
-						</ul>
-					) : (
-						<div class="grid place-items-center rounded-ds-lg border border-dashed border-line p-12 text-center">
-							<Pending hint={c.galleryPending ?? undefined} />
-						</div>
-					)}
-					{c.links[0] && (
-						<div class="mt-12">
-							<Button href={c.links[0].href} external arrow size="lg">{c.links[0].label}</Button>
-						</div>
-					)}
-				</Section>
-			)
-		}
-
-		<div class="container-site pt-8">
-			<p class="t-data border-t border-line pt-8 text-ink-muted">Detalles técnicos · para perfiles técnicos</p>
-		</div>
-
-		{
 			c.principles.length > 0 && (
 				<Section id="principios" index={idx()} eyebrow="Principios" title="Decisiones antes de elegir tecnología.">
 					<ol class="grid gap-px overflow-hidden rounded-ds-lg border border-line bg-line sm:grid-cols-2 lg:grid-cols-4">
@@ -293,6 +220,44 @@ const idx = () => String(++n).padStart(2, "0");
 			</ol>
 		</Section>
 
+		{
+			(showGallery || c.links[0]) && (
+				<Section id="capturas" index={idx()} eyebrow="Capturas" title="El producto, <em class='t-accent'>en acción.</em>">
+					{c.gallery.length > 0 ? (
+						<ul class="grid gap-8 md:grid-cols-2">
+							{c.gallery.map((shot) => (
+								<li class:list={[shot.shape === "portrait" && "md:row-span-2"]}>
+									<figure>
+										<Image
+											src={asImage(shot.src)}
+											alt={shot.alt}
+											widths={shot.shape === "portrait" ? [360, 560] : [480, 720, 1040]}
+											sizes="(min-width: 768px) 50vw, 100vw"
+											loading="lazy"
+											class:list={[
+												"w-full rounded-ds-lg border border-line bg-surface",
+												shot.shape === "portrait" && "mx-auto max-w-[22rem]",
+											]}
+										/>
+										<figcaption class="t-data mt-3 text-ink-muted">{shot.caption}</figcaption>
+									</figure>
+								</li>
+							))}
+						</ul>
+					) : (
+						<div class="grid place-items-center rounded-ds-lg border border-dashed border-line p-12 text-center">
+							<Pending hint={c.galleryPending ?? undefined} />
+						</div>
+					)}
+					{c.links[0] && (
+						<div class="mt-12">
+							<Button href={c.links[0].href} external arrow size="lg">{c.links[0].label}</Button>
+						</div>
+					)}
+				</Section>
+			)
+		}
+
 		<Section id="arquitectura" index={idx()} eyebrow="Arquitectura" title="Cómo encajan las piezas." intro={c.architecture.summary}>
 			<CaseArchitecture title={`Arquitectura de ${c.title}`} layers={c.architecture.layers} />
 		</Section>
@@ -317,25 +282,59 @@ const idx = () => String(++n).padStart(2, "0");
 			</ul>
 		</Section>
 
+		{
+			(results.length > 0 || c.learned.length > 0) && (
+				<Section id="resultado" index={idx()} eyebrow="Resultado" title="Lo que se puede medir hoy.">
+					{results.length > 0 && (
+						<dl class="grid gap-px overflow-hidden rounded-ds-lg border border-line bg-line sm:grid-cols-2 lg:grid-cols-3">
+							{results.map((r) => (
+								<div class="flex flex-col bg-paper p-6 md:p-8">
+									<dt class="t-data order-2 mt-3 text-ink-muted">{r.label}</dt>
+									<dd class="order-1 font-heading text-[clamp(2.5rem,1.9rem+2.4vw,3.75rem)] leading-none text-ink">
+										{r.value ?? <Pending hint={r.pendingHint} class="align-middle text-[0.75rem]" />}
+									</dd>
+								</div>
+							))}
+						</dl>
+					)}
+					{c.learned.length > 0 && (
+						<div class="mt-14 grid gap-6 md:grid-cols-12">
+							<h3 class="t-data text-ink-muted md:col-span-3">Lo aprendido</h3>
+							<ul class="space-y-4 md:col-span-9">
+								{c.learned.map((l) => (
+									<li class="font-heading text-[clamp(1.4rem,1.2rem+0.8vw,1.9rem)] leading-snug text-ink">
+										{l}
+									</li>
+								))}
+							</ul>
+						</div>
+					)}
+				</Section>
+			)
+		}
+
 		<Section id="siguiente" index={idx()} eyebrow="Siguiente paso" title="Hacia dónde va.">
 			<div class="grid gap-10 md:grid-cols-12">
 				<p class="t-lead md:col-span-7 md:col-start-4">{c.next}</p>
 			</div>
 			<div class="mt-16 flex flex-col items-start justify-between gap-6 rounded-ds-lg bg-ink p-8 text-paper md:flex-row md:items-center md:p-12">
 				<p class="font-heading text-[clamp(1.9rem,1.4rem+1.8vw,2.9rem)] leading-tight text-paper">
-					¿Necesitas algo parecido?
+					¿Quieres ver más?
 				</p>
-				<Button href="/#contacto" size="lg" arrow>Cuéntame tu proyecto</Button>
+				<div class="flex flex-wrap gap-3">
+					<Button href="/#casos" size="lg" arrow>Ver todos los proyectos</Button>
+					<Button href="/#contacto" size="lg" variant="secondary" class="!border-paper/40 !text-paper">Escríbeme</Button>
+				</div>
 			</div>
 		</Section>
 	</article>
 
-	<nav aria-label="Otros casos" class="border-t border-line">
+	<nav aria-label="Otros proyectos" class="border-t border-line">
 		<div class="container-site grid gap-px py-0 sm:grid-cols-2">
 			{
 				prev ? (
 					<a href={`/casos/${prev.id}`} class="group block py-10 pr-6">
-						<p class="t-data text-ink-muted">← Caso anterior</p>
+						<p class="t-data text-ink-muted">← Proyecto anterior</p>
 						<p class="mt-2 font-heading text-3xl text-ink group-hover:text-accent-ink">{prev.data.title}</p>
 					</a>
 				) : (
@@ -345,7 +344,7 @@ const idx = () => String(++n).padStart(2, "0");
 			{
 				next && (
 					<a href={`/casos/${next.id}`} class="group block py-10 text-right sm:border-l sm:border-line sm:pl-6">
-						<p class="t-data text-ink-muted">Siguiente caso →</p>
+						<p class="t-data text-ink-muted">Siguiente proyecto →</p>
 						<p class="mt-2 font-heading text-3xl text-ink group-hover:text-accent-ink">{next.data.title}</p>
 					</a>
 				)

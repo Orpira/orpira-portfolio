@@ -6,7 +6,6 @@
 export const SITE_URL = "https://orpira.es";
 
 const personId = `${SITE_URL}/#persona`;
-const serviceId = `${SITE_URL}/#servicio`;
 const websiteId = `${SITE_URL}/#web`;
 
 const sameAs = [
@@ -23,7 +22,7 @@ export const person = {
 	image: `${SITE_URL}/og/portada.jpg`,
 	jobTitle: "Desarrollador de producto Full Stack",
 	description:
-		"Apps web a medida para empresas, de la idea al despliegue: herramientas internas, producto digital e IA aplicada.",
+		"Apps web, PWA y Android, tiempo real, 3D e IA aplicada, de la idea al despliegue.",
 	address: {
 		"@type": "PostalAddress",
 		addressLocality: "Bilbao",
@@ -56,32 +55,6 @@ export const homeJsonLd = {
 			publisher: { "@id": personId },
 		},
 		person,
-		{
-			"@type": "ProfessionalService",
-			"@id": serviceId,
-			name: "OrPiRa",
-			url: SITE_URL,
-			image: `${SITE_URL}/og/portada.jpg`,
-			description:
-				"Apps web a medida para empresas: herramientas internas, producto digital e IA aplicada a procesos.",
-			founder: { "@id": personId },
-			address: person.address,
-			areaServed: { "@type": "Country", name: "España" },
-			knowsLanguage: "es",
-			sameAs,
-			hasOfferCatalog: {
-				"@type": "OfferCatalog",
-				name: "Servicios",
-				itemListElement: [
-					"Herramientas internas a medida",
-					"De la idea a producto en producción",
-					"IA aplicada a procesos internos",
-				].map((name) => ({
-					"@type": "Offer",
-					itemOffered: { "@type": "Service", name },
-				})),
-			},
-		},
 	],
 };
 
@@ -124,7 +97,7 @@ export const caseJsonLd = (c: CaseLd) => {
 				"@type": "BreadcrumbList",
 				itemListElement: [
 					{ "@type": "ListItem", position: 1, name: "Inicio", item: SITE_URL },
-					{ "@type": "ListItem", position: 2, name: "Casos", item: `${SITE_URL}/#casos` },
+					{ "@type": "ListItem", position: 2, name: "Proyectos", item: `${SITE_URL}/#casos` },
 					{ "@type": "ListItem", position: 3, name: c.title, item: url },
 				],
 			},

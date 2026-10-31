@@ -1,49 +1,39 @@
 ---
 import Section from "../ui/Section.astro";
-import Pending from "../ui/Pending.astro";
-import { services, isProduction } from "../../data/home";
+import Tag from "../ui/Tag.astro";
+import { capabilities } from "../../data/home";
 ---
 
 <Section
-	id="servicios"
+	id="capacidades"
 	index="02"
-	eyebrow="Servicios"
-	title="Tres formas de <em class='t-accent'>trabajar juntos.</em>"
-	intro="Proyectos con alcance cerrado y un resultado que se puede usar desde el primer día."
+	eyebrow="Qué construyo"
+	title="Lo que sé hacer, <em class='t-accent'>con pruebas.</em>"
+	intro="Cada capacidad enlaza al proyecto donde se puede ver funcionando."
 >
-	<ol class="grid gap-px overflow-hidden rounded-ds-lg border border-line bg-line md:grid-cols-3">
+	<ul class="grid gap-px overflow-hidden rounded-ds-lg border border-line bg-line sm:grid-cols-2 lg:grid-cols-3">
 		{
-			services.map((service, i) => (
+			capabilities.map((cap, i) => (
 				<li class="flex flex-col bg-paper p-7 md:p-8">
 					<p class="t-data text-accent-ink">{String(i + 1).padStart(2, "0")}</p>
-					<h3 class="t-h3 mt-5">{service.title}</h3>
-					<p class="mt-3 text-ink-soft">{service.summary}</p>
-					<ul class="mt-6 space-y-2.5 text-[0.9375rem]">
-						{service.includes.map((item) => (
-							<li class="flex gap-3">
-								<span aria-hidden="true" class="mt-[0.7em] h-px w-3 shrink-0 bg-ink-muted" />
-								<span>{item}</span>
-							</li>
-						))}
-					</ul>
+					<h3 class="t-h3 mt-5">{cap.title}</h3>
+					<p class="mt-3 text-ink-soft">{cap.summary}</p>
+					<div class="mt-5 flex flex-wrap gap-1.5">
+						{cap.tech.map((t) => <Tag>{t}</Tag>)}
+					</div>
 					<div class="mt-auto pt-8">
-					<dl class="t-data space-y-1 border-t border-line pt-5 text-ink-muted">
-						<div class="flex gap-2">
-							<dt>Ejemplo:</dt>
-							<dd class="text-ink-soft">{service.example}</dd>
-						</div>
-						{(service.format || !isProduction) && (
-							<div class="flex flex-wrap gap-2">
-								<dt>Formato:</dt>
-								<dd class="text-ink-soft">
-									{service.format ?? <Pending hint={service.pendingHint} />}
-								</dd>
-							</div>
-						)}
-					</dl>
+					<p class="t-data border-t border-line pt-5 text-ink-muted">
+						Dónde verlo:{" "}
+						{cap.proof.map((p, j) => (
+							<>
+								{j > 0 && " · "}
+								<a href={p.href} class="link-underline text-ink-soft hover:text-ink">{p.label}</a>
+							</>
+						))}
+					</p>
 					</div>
 				</li>
 			))
 		}
-	</ol>
+	</ul>
 </Section>

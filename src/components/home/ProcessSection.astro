@@ -1,14 +1,13 @@
 ---
 import Section from "../ui/Section.astro";
-import Pending from "../ui/Pending.astro";
-import { steps, supportDays, isProduction } from "../../data/home";
+import { steps } from "../../data/home";
 ---
 
 <Section
 	id="proceso"
 	index="03"
 	eyebrow="Cómo trabajo"
-	title="De la primera llamada <em class='t-accent'>al despliegue.</em>"
+	title="Paso a paso, <em class='t-accent'>hasta verlo desplegado.</em>"
 >
 	<ol class="grid gap-10 md:grid-cols-4 md:gap-8">
 		{
@@ -21,16 +20,4 @@ import { steps, supportDays, isProduction } from "../../data/home";
 			))
 		}
 	</ol>
-	{
-		(supportDays.value || !isProduction) && (
-			<p class="t-data mt-12 text-ink-muted">
-				Soporte tras el despliegue:{" "}
-				{supportDays.value ? (
-					<span class="text-ink-soft">{supportDays.value} {supportDays.label}</span>
-				) : (
-					<Pending hint={supportDays.pendingHint} />
-				)}
-			</p>
-		)
-	}
 </Section>
