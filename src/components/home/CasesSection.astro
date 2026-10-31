@@ -23,7 +23,7 @@ const cases = (await getCollection("cases")).sort((a, b) => a.data.order - b.dat
 	title="Producto propio, <em class='t-accent'>en producción.</em>"
 	intro="Cuatro proyectos que muestran cómo construyo. Pasa por cada franja para abrirla."
 >
-	<div class="persiana-v" data-persiana data-hover>
+	<div class="persiana-v" data-persiana data-hover data-anchor>
 		{
 			cases.map((entry, i) => {
 				const c = entry.data;

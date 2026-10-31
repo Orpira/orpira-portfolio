@@ -21,21 +21,34 @@ document.querySelectorAll<HTMLElement>("[data-persiana]").forEach((root) => {
 	// data-anchor: mientras las filas cambian de altura, se compensa el scroll
 	// para que la cabecera elegida no se mueva de debajo del puntero.
 	const anchor = root.dataset.anchor !== undefined;
+	// La web usa scroll-behavior: smooth. Safari en iOS no reconoce
+	// behavior: "instant" y animaba cada corrección, así que la página daba
+	// tirones. Durante la compensación se desactiva el scroll suave en <html>
+	// y se corrige con scrollTo sin opciones de comportamiento.
+	let anchorRuns = 0;
 	const keepInPlace = (strip: HTMLElement) => {
 		const head = strip.querySelector<HTMLElement>("[data-strip-head]");
 		if (!head) return;
+		const html = document.documentElement;
+		if (anchorRuns++ === 0) html.style.scrollBehavior = "auto";
 		let last = head.getBoundingClientRect().top;
 		const end = performance.now() + LOCK_MS + 100;
 		const step = () => {
 			const now = head.getBoundingClientRect().top;
-			if (now !== last) window.scrollBy({ top: now - last, behavior: "instant" });
+			const diff = now - last;
+			if (Math.abs(diff) >= 0.5) window.scrollTo(0, window.scrollY + diff);
 			last = head.getBoundingClientRect().top;
-			if (performance.now() < end) requestAnimationFrame(step);
+			if (performance.now() < end) {
+				requestAnimationFrame(step);
+			} else if (--anchorRuns === 0) {
+				html.style.scrollBehavior = "";
+			}
 		};
 		requestAnimationFrame(step);
 	};
 
 	const activate = (target: HTMLElement) => {
+		if (target.dataset.active === "true") return;
 		if (anchor) keepInPlace(target);
 		strips.forEach((strip) => {
 			const on = strip === target;
