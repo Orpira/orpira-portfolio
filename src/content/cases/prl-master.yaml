@@ -1,18 +1,20 @@
 # Redactado solo con hechos conocidos. Lo que falta está en `pending` o en valores null.
 # Describe la app en producción (prl.orpira.es), repo Orpira/test_interactivo-prl.
+# El modo en red no se anuncia como disponible hasta que el servidor de salas esté desplegado.
 title: PRL Master
 order: 1
 headline: >-
   El material del curso de PRL de 30 horas, convertido en una app de tests para
-  estudiar: a solas, por turnos o en grupo, con corrección al momento y ranking en directo.
+  estudiar: a solas o por turnos, con corrección al momento y un selector de temas
+  inspirado en las señales de seguridad.
 summary: >-
-  El material de un curso de PRL convertido en una app para estudiar: 174 preguntas por
-  temas, corrección inmediata y salas en grupo con ranking en directo.
+  El material de un curso de PRL convertido en una app para estudiar: 170 preguntas por
+  temas, opciones barajadas, corrección inmediata y ranking por turnos.
 ogLine: De los documentos del curso a una app para estudiar.
 seoDescription: >-
-  Caso de estudio de PRL Master: tests de prevención de riesgos laborales con modo
-  individual, multijugador local y salas en red con ranking en tiempo real.
-role: Producto · Full Stack · Tiempo real
+  Caso de estudio de PRL Master: tests de prevención de riesgos laborales con 170
+  preguntas, selector de temas con señales de seguridad, modo individual y por turnos.
+role: Producto · Full Stack · UX
 platform: Web
 status: live
 statusLabel: En producción
@@ -24,7 +26,7 @@ links:
     href: https://github.com/Orpira/test_interactivo-prl
 
 cover: ../../assets/images/prl-master/portada.webp
-coverAlt: Portada de PRL Master en verde con el lema Aprende Prevención de Riesgos Laborales
+coverAlt: Portada de PRL Master con una cinta de señalización amarilla y negra y el lema Aprende prevención haciendo
 
 problem:
   title: Estudiar con documentos no te dice qué estás fallando.
@@ -41,71 +43,83 @@ problem:
 
 beforeAfter:
   - before: Leer el temario sin saber qué parte dominas y cuál no.
-    after: 174 preguntas por temas para practicar justo lo que flojea.
+    after: 170 preguntas por temas para practicar justo lo que flojea.
   - before: Descubrir los fallos el día del examen.
     after: Cada respuesta se corrige al momento y muestra la correcta.
   - before: Repasar en grupo sin forma de comparar resultados.
-    after: Una sala con código, cada uno desde su móvil y un ranking en directo.
+    after: Varios jugadores por turnos con el mismo test y un ranking al final.
 
 decisions:
   - title: Las preguntas son datos, no páginas
     context: El examen original estaba en Word, mezclando formato y contenido.
     decision: >-
-      Convertir el documento en un banco JSON de 174 preguntas, cada una con su categoría,
-      y agrupar las 26 categorías en 7 bloques temáticos con buscador y recuento.
+      Convertir el documento en un banco JSON de 170 preguntas, cada una con su
+      categoría, y agrupar las 26 categorías en 7 bloques temáticos. Un test automático
+      valida el banco: ids únicos, sin enunciados repetidos y respuestas válidas.
     why: >-
-      Ampliar el temario es editar datos, y el formador elige qué evaluar sin tocar la
-      aplicación.
-  - title: Tres formas de examinar, la misma app
-    context: No es lo mismo repasar en casa que evaluar a una clase.
+      Ampliar el temario es editar datos, y un error en el banco se detecta antes de
+      publicarlo.
+  - title: La B ya no es la respuesta
+    context: >-
+      En el banco original la opción correcta era la B en 83 de 174 preguntas; quien
+      respondiera siempre B acertaba casi la mitad sin estudiar.
     decision: >-
-      Modo individual, multijugador por turnos en un solo dispositivo y modo en red, donde
-      cada alumno entra desde su móvil con un código de sala (PRL-XXXX).
-    why: Sirve igual con un proyector y un portátil que con una clase entera conectada.
-  - title: El ranking se actualiza mientras la clase termina
-    context: En el aula, esperar a que acaben todos para ver resultados enfría la sesión.
+      Barajar en cada test tanto las preguntas como sus opciones, recalculando cuál es la
+      correcta, con tests que comprueban que cae en cada posición por igual.
+    why: Un test solo sirve para estudiar si no se puede aprobar por patrón.
+  - title: Elegir temas como quien lee señales
+    context: Siete bloques y veintiséis temas en una lista eran demasiado scroll y poco claro.
     decision: >-
-      Un servidor Express con Socket.IO reparte las mismas preguntas barajadas a toda la
-      sala y publica el ranking con medallas a medida que llegan los resultados. Si el
-      anfitrión se desconecta, otro participante pasa a serlo.
-    why: El formador ve en directo quién ha terminado y cómo va el grupo.
-  - title: Corrección inmediata y ritmo configurable
-    context: Un test sirve para aprender si explica el fallo en el momento.
+      Cada bloque es una señal de seguridad real (obligación, advertencia, salvamento) y
+      cada tema una pegatina con su número de preguntas. Buscador sin tildes, botón
+      «Sorpréndeme» y un contador con cinta de señalización.
+    why: El tema de la app guía la interfaz, y se puede usar entera con teclado.
+  - title: Un ranking justo por turnos
+    context: >-
+      En el modo por turnos cada jugador recibía preguntas distintas, así que el ranking
+      comparaba exámenes diferentes.
     decision: >-
-      Mostrar la respuesta correcta tras cada pregunta, barajar con Fisher-Yates en cada
-      intento y dejar elegir cuántas preguntas (5 a 174) y un temporizador opcional por
-      pregunta o por test.
-    why: El mismo banco sirve para un repaso rápido o para un examen con tiempo.
+      El primer jugador configura el test y el resto responde exactamente las mismas
+      preguntas, en el mismo orden, con el estado y los temporizadores reiniciados en
+      cada turno.
+    why: El ranking final compara a todos con el mismo examen.
+  - title: Un servidor de salas que no se deja engañar
+    context: >-
+      El modo en red original se fiaba de la nota que enviaba cada jugador y mandaba las
+      respuestas correctas a todos los navegadores.
+    decision: >-
+      El servidor guarda las respuestas, exige responder en orden y una sola vez,
+      controla el tiempo y calcula él mismo el ranking. Está cubierto con tests de
+      integración y pendiente de desplegar.
+    why: Cuando las salas se publiquen, nadie podrá enviarse un 100 %.
 
 gallery:
   - src: ../../assets/images/prl-master/categorias.webp
-    alt: Selector de categorías agrupadas por bloques temáticos con buscador y número de preguntas
-    caption: Las 26 categorías, en 7 bloques, con buscador y recuento de preguntas.
+    alt: Selector de temas con señales de seguridad y el bloque Tipos de Riesgos abierto con dos pegatinas elegidas
+    caption: Cada bloque es una señal y cada tema una pegatina. El contador suma las preguntas elegidas.
   - src: ../../assets/images/prl-master/pregunta.webp
-    alt: Pregunta de riesgos químicos con la respuesta correcta en verde y la elegida en rojo
-    caption: Corrección inmediata. La respuesta correcta se marca en verde.
-  - src: ../../assets/images/prl-master/sala-en-red.webp
-    alt: Sala en red con el código PRL-5XL5 y cuatro participantes conectados
-    caption: Modo en red. La formadora comparte el código y la clase entra desde sus dispositivos.
-  - src: ../../assets/images/prl-master/ranking-en-red.webp
-    alt: Ranking final de la sala con medallas de oro, plata y bronce y la puntuación de cada participante
-    caption: Ranking en tiempo real cuando la sala termina. Nombres de demostración.
+    alt: Pregunta de riesgos ergonómicos con la respuesta correcta en verde y la elegida en rojo
+    caption: Corrección inmediata. Las opciones se barajan en cada test.
+  - src: ../../assets/images/prl-master/ranking.webp
+    alt: Ranking final de tres jugadores por turnos con medallas de oro, plata y bronce
+    caption: Ranking por turnos con el mismo test para todos. Nombres de demostración.
 galleryPending: null
 
 architecture:
   summary: >-
-    Una SPA en React que funciona sola para los modos individual y por turnos, y un
-    servidor Express con Socket.IO para las salas en red.
+    Una SPA en React que funciona sola para los modos individual y por turnos, con la
+    lógica del test en funciones puras probadas. El servidor de salas en red (Express y
+    Socket.IO) está hecho y probado, pendiente de desplegar.
   layers:
     - label: Interfaz
       items: [React, Vite, Tailwind CSS]
-      note: Modos individual, por turnos y en red.
+      note: Modos individual y por turnos; selector de temas con señales.
     - label: Contenido
-      items: [Banco de 174 preguntas en JSON]
+      items: [Banco de 170 preguntas en JSON]
       note: 26 categorías en 7 bloques temáticos.
     - label: Tiempo real
       items: [Express, Socket.IO]
-      note: Salas con código, ranking en directo y reconexión automática.
+      note: Salas con código; el servidor corrige y controla el tiempo. Pendiente de desplegar.
 
 stack:
   - layer: Interfaz
@@ -113,22 +127,25 @@ stack:
     why: Rápida en cualquier dispositivo del aula, incluido el móvil del alumno.
   - layer: Tiempo real
     tech: [Express, Socket.IO]
-    why: WebSocket con alternativa por polling y reconexión transparente.
+    why: Para las salas en red; el servidor valida cada respuesta y calcula el ranking.
   - layer: Contenido
     tech: [JSON]
     why: El temario queda separado de la aplicación y se amplía sin tocar código.
+  - layer: Calidad
+    tech: [Vitest]
+    why: Tests del banco, del barajado, del selector y del servidor de salas.
 
 results:
-  - value: "174"
+  - value: "170"
     label: preguntas para practicar, sacadas del material del curso
   - value: "26"
     label: temas agrupados en 7 bloques, con buscador
-  - value: "3"
-    label: formas de estudiar, a solas, por turnos o en grupo
+  - value: "97"
+    label: tests automáticos del banco, el test, el selector y el servidor
   - value: null
     label: compañeros del curso que la usaron
     pendingHint: Número aproximado de compañeros del curso que la usaron
 
 next: >-
-  Reutilizar la misma base para nuevas formaciones a partir de otros temarios, con
-  informes de progreso para quien organiza la formación.
+  Desplegar el servidor de salas para abrir el modo en red, y reutilizar la misma base
+  para nuevas formaciones a partir de otros temarios.
