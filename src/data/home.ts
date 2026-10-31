@@ -23,7 +23,7 @@ export const hero = {
 	eyebrow: "Apps web a medida · Bilbao",
 	titleStart: "Apps web a medida,",
 	titleAccent: "de la idea al despliegue.",
-	lead: "Plataformas de formación, herramientas internas y producto digital para empresas. Ingeniero informático con más de 15 años gestionando un departamento de TI.",
+	lead: "Plataformas de formación, herramientas internas y producto digital para empresas, hechas por un ingeniero informático que ha dado soporte y formación a quienes las usan.",
 	primaryCta: { label: "Cuéntame tu proyecto", href: "#contacto" },
 	secondaryCta: { label: "Ver casos", href: "#casos" },
 };
