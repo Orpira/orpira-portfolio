@@ -124,7 +124,7 @@ export const about = {
 	title: "IT, producto y formación <em class='t-accent'>en la misma persona.</em>",
 	paragraphs: [
 		"Soy Orlando Pineda Raad. He pasado más de 15 años gestionando el departamento de TI de una empresa de logística: soporte técnico avanzado y formación a usuarios internos y externos. Los últimos años los he dedicado a construir el software que me habría gustado tener.",
-		"PRL Master nació así: en el curso de PRL de 30 horas de Meatze, convertí el examen en Word en la app de tests que usamos los compañeros del curso.",
+		"PRL Master nació así: en el curso de PRL de 30 horas, convertí el examen en Word en la app de tests que usamos los compañeros del curso.",
 		"Por eso hablo el idioma de quien usa la herramienta y el de quien la programa. Me gusta trabajar paso a paso y no doy un proyecto por terminado hasta verlo desplegado y funcionando.",
 		"Trabajo desde Bilbao, también en remoto.",
 	],

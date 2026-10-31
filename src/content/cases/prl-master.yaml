@@ -3,7 +3,7 @@
 title: PRL Master
 order: 1
 headline: >-
-  El material del curso de PRL de 30 horas de Meatze, convertido en una app de tests para
+  El material del curso de PRL de 30 horas, convertido en una app de tests para
   estudiar: a solas, por turnos o en grupo, con corrección al momento y ranking en directo.
 summary: >-
   El material de un curso de PRL convertido en una app para estudiar: 174 preguntas por
@@ -30,7 +30,7 @@ problem:
   title: Estudiar con documentos no te dice qué estás fallando.
   paragraphs:
     - >-
-      En el curso de prevención de riesgos laborales de 30 horas de Meatze, el material
+      En el curso de prevención de riesgos laborales de 30 horas, el material
       llegaba en documentos PDF y Word. Un documento se lee, pero no se puede practicar
       con él, no corrige y no sirve para repasar en grupo.
     - >-
@@ -127,7 +127,7 @@ results:
     label: formas de estudiar, a solas, por turnos o en grupo
   - value: null
     label: compañeros del curso que la usaron
-    pendingHint: Número aproximado de compañeros del curso de Meatze que la usaron
+    pendingHint: Número aproximado de compañeros del curso que la usaron
 
 next: >-
   Reutilizar la misma base para nuevas formaciones a partir de otros temarios, con
