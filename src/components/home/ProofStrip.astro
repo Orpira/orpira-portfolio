@@ -1,41 +1,27 @@
 ---
 /**
- * Franja de cifras bajo el hero: una sola línea fina dentro de los márgenes
- * del contenido (alineada con las persianas), y debajo una fila compacta:
- * cifra, áreas y cifra, separadas por cubos OrPiRa girando.
+ * Franja de cifras bajo el hero: una línea fina dentro de los márgenes del
+ * contenido (alineada con las persianas) y debajo las cifras separadas por
+ * cubos OrPiRa girando.
+ * - Desde 1280 px: una sola fila; el cubo solo aparece entre cifras.
+ * - Más estrecho: una cifra por línea, con el cubo delante como viñeta.
  */
 import MiniCube from "../MiniCube.astro";
 import { stats, publishable } from "../../data/home";
 
 const items = publishable(stats).filter((s) => s.value !== null);
-const [first, ...rest] = items;
-const areas = ["Apps web", "Tiempo real", "IA aplicada"];
 ---
 
 {
-	first && (
+	items.length > 0 && (
 		<section aria-label="Algunas cifras">
 			<div class="container-site">
 				<div class="proof">
-					<dl class="proof-item">
-						<dt class="sr-only">{first.label}</dt>
-						<dd>
-							<span class="proof-num">{first.value}</span>
-							<span class="proof-label" aria-hidden="true">{first.label}</span>
-						</dd>
-					</dl>
-
-					{areas.map((a, i) => (
+					{items.map((stat, i) => (
 						<>
-							<MiniCube size={20} delay={i * 1.6} class:list={["proof-cube", i === 0 && "proof-cube--edge"]} />
-							<p class="proof-area">{a}</p>
-						</>
-					))}
-
-					{rest.map((stat, i) => (
-						<>
-							<MiniCube size={20} delay={(areas.length + i) * 1.6} class="proof-cube proof-cube--edge" />
+							{i > 0 && <MiniCube size={20} delay={i * 2.2} class="proof-sep" />}
 							<dl class="proof-item">
+								<MiniCube size={18} delay={i * 2.2} class="proof-bullet" />
 								<dt class="sr-only">{stat.label}</dt>
 								<dd>
 									<span class="proof-num">{stat.value}</span>
@@ -52,14 +38,15 @@ const areas = ["Apps web", "Tiempo real", "IA aplicada"];
 
 <style>
 	.proof {
-		display: flex;
-		flex-wrap: wrap;
-		align-items: center;
-		gap: 0.9rem 0.65rem;
+		display: grid;
+		gap: 1rem;
 		border-top: 1px solid rgb(var(--line));
 		padding: 1.25rem 0 0.5rem;
 	}
 	.proof-item {
+		display: flex;
+		align-items: center;
+		gap: 1rem;
 		margin: 0;
 	}
 	.proof-item dd {
@@ -74,40 +61,37 @@ const areas = ["Apps web", "Tiempo real", "IA aplicada"];
 		line-height: 1;
 		color: rgb(var(--accent-ink));
 	}
-	.proof-label,
-	.proof-area {
-		margin: 0;
+	.proof-label {
 		font-family: var(--font-data);
 		font-size: 0.75rem;
 		letter-spacing: 0.06em;
 		text-transform: uppercase;
 		color: rgb(var(--ink-soft));
 	}
-
-	@media (min-width: 640px) {
-		.proof {
-			column-gap: 1.25rem;
-		}
+	.proof :global(.proof-sep) {
+		display: none;
 	}
-
-	/* Pantallas estrechas: cada cifra en su línea; los cubos solo separan las áreas. */
+	/* Una cifra por línea: números en columna para que las etiquetas se alineen. */
 	@media (max-width: 1279px) {
-		.proof-item {
-			flex-basis: 100%;
-		}
-		.proof :global(.proof-cube--edge) {
-			display: none;
+		.proof-num {
+			min-width: 2.75rem;
 		}
 	}
 
+	/* Una sola fila: cifras y cubos repartidos; el cubo queda centrado entre cifras. */
 	@media (min-width: 1280px) {
 		.proof {
-			flex-wrap: nowrap;
+			display: flex;
 			justify-content: space-between;
-			column-gap: 1rem;
+			align-items: center;
 		}
-		.proof-label,
-		.proof-area {
+		.proof :global(.proof-sep) {
+			display: inline-block;
+		}
+		.proof :global(.proof-bullet) {
+			display: none;
+		}
+		.proof-label {
 			white-space: nowrap;
 		}
 	}

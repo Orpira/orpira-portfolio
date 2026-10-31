@@ -37,6 +37,7 @@ export interface Stat {
 
 export const stats: Stat[] = [
 	{ value: "15+", label: "años gestionando un departamento de TI" },
+	{ value: "3", label: "apps propias en producción" },
 	{ value: "1", label: "base de código: web, PWA y Android" },
 ];
 
