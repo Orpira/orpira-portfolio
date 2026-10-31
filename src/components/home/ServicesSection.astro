@@ -1,11 +1,11 @@
 ---
 /**
- * «Qué construyo» en persiana.
- * - Escritorio: franjas verticales en una fila de altura fija. La activa se
- *   abre a lo ancho; el resto muestra número y título en vertical. Se activa
- *   al pasar el ratón, con clic o con el teclado.
- * - Móvil: la misma persiana en vertical (acordeón), una abierta cada vez.
- * - Los paneles cerrados son `inert` para que sus enlaces no reciban foco.
+ * «Qué construyo» en persiana horizontal.
+ * Filas a todo el ancho; la abierta se despliega hacia abajo con la
+ * descripción, el stack y los proyectos donde se ve. Una abierta cada vez.
+ * Se abre al pasar el ratón por la cabecera, con clic o con teclado. El hover
+ * tiene una espera y un bloqueo breves (ver src/scripts/persiana.ts) para que
+ * el cambio de altura de las filas no encadene aperturas.
  */
 import Section from "../ui/Section.astro";
 import { capabilities } from "../../data/home";
@@ -16,9 +16,9 @@ import { capabilities } from "../../data/home";
 	index="02"
 	eyebrow="Qué construyo"
 	title="Lo que sé hacer, <em class='t-accent'>con pruebas.</em>"
-	intro="Pasa por cada franja para abrirla. Cada capacidad enlaza al proyecto donde se ve funcionando."
+	intro="Pasa por cada capacidad para ver dónde la he aplicado."
 >
-	<div class="persiana" data-persiana>
+	<div class="persiana-h" data-persiana data-hover="head" data-anchor>
 		{
 			capabilities.map((cap, i) => {
 				const num = String(i + 1).padStart(2, "0");
@@ -27,7 +27,7 @@ import { capabilities } from "../../data/home";
 				const active = i === 0;
 				return (
 					<article class="strip" data-strip data-active={active ? "true" : "false"}>
-						<h3 class="strip-h3">
+						<h3 class="m-0">
 							<button
 								type="button"
 								id={headId}
@@ -38,26 +38,24 @@ import { capabilities } from "../../data/home";
 							>
 								<span class="t-data strip-num">{num}</span>
 								<span class="strip-label font-heading">{cap.title}</span>
+								<span aria-hidden="true" class="strip-icon" />
 							</button>
 						</h3>
-						<div
-							id={bodyId}
-							class="strip-body"
-							role="region"
-							aria-labelledby={headId}
-							inert={!active}
-						>
-							<p class="strip-title font-heading text-ink">{cap.title}</p>
-							<p class="mt-4 max-w-[44ch] text-ink-soft">{cap.summary}</p>
-							<p class="t-data mt-6 uppercase tracking-wider text-ink-muted">{cap.tech.join(" · ")}</p>
-							<p class="t-data mt-3 flex flex-wrap gap-x-4 gap-y-1 uppercase tracking-wider">
-								<span class="text-ink-muted">Dónde verlo</span>
-								{cap.proof.map((proof) => (
-									<a href={proof.href} class="link-underline text-ink hover:text-accent-ink">
-										{proof.label} <span aria-hidden="true">↗</span>
-									</a>
-								))}
-							</p>
+						<div id={bodyId} class="strip-body" role="region" aria-labelledby={headId} inert={!active}>
+							<div class="strip-inner">
+								<p class="max-w-[48ch] text-[1.0625rem] leading-relaxed text-ink-soft">{cap.summary}</p>
+								<div>
+									<p class="t-data uppercase tracking-wider text-ink-muted">{cap.tech.join(" · ")}</p>
+									<p class="t-data mt-3 flex flex-wrap gap-x-4 gap-y-1 uppercase tracking-wider">
+										<span class="text-ink-muted">Dónde verlo</span>
+										{cap.proof.map((proof) => (
+											<a href={proof.href} class="link-underline text-ink hover:text-accent-ink">
+												{proof.label} <span aria-hidden="true">↗</span>
+											</a>
+										))}
+									</p>
+								</div>
+							</div>
 						</div>
 					</article>
 				);
@@ -67,53 +65,15 @@ import { capabilities } from "../../data/home";
 </Section>
 
 <script>
-	const roots = document.querySelectorAll<HTMLElement>("[data-persiana]");
-	const canHover = window.matchMedia("(hover: hover) and (min-width: 768px)");
-
-	roots.forEach((root) => {
-		const strips = Array.from(root.querySelectorAll<HTMLElement>("[data-strip]"));
-
-		const activate = (target: HTMLElement) => {
-			strips.forEach((strip) => {
-				const on = strip === target;
-				strip.dataset.active = on ? "true" : "false";
-				strip.querySelector("[data-strip-head]")?.setAttribute("aria-expanded", String(on));
-				const body = strip.querySelector<HTMLElement>(".strip-body");
-				if (body) body.inert = !on;
-			});
-		};
-
-		strips.forEach((strip) => {
-			const head = strip.querySelector<HTMLButtonElement>("[data-strip-head]");
-			head?.addEventListener("click", () => activate(strip));
-			head?.addEventListener("focus", () => activate(strip));
-			strip.addEventListener("mouseenter", () => {
-				if (canHover.matches) activate(strip);
-			});
-		});
-
-		// Flechas para moverse entre franjas.
-		root.addEventListener("keydown", (e) => {
-			if (!["ArrowRight", "ArrowLeft", "ArrowDown", "ArrowUp"].includes(e.key)) return;
-			const current = strips.findIndex((s) => s.dataset.active === "true");
-			const step = e.key === "ArrowRight" || e.key === "ArrowDown" ? 1 : -1;
-			const next = strips[(current + step + strips.length) % strips.length];
-			next.querySelector<HTMLButtonElement>("[data-strip-head]")?.focus();
-			e.preventDefault();
-		});
-	});
+	import "../../scripts/persiana";
 </script>
 
 <style>
-	.persiana {
-		display: flex;
-		flex-direction: column;
+	.persiana-h {
 		border-top: 1px solid rgb(var(--ink));
 		border-bottom: 1px solid rgb(var(--ink));
 	}
-
 	.strip {
-		position: relative;
 		border-top: 1px solid rgb(var(--line));
 		transition: background-color 0.4s;
 	}
@@ -124,15 +84,13 @@ import { capabilities } from "../../data/home";
 		background: rgb(var(--accent) / 0.08);
 	}
 
-	.strip-h3 {
-		margin: 0;
-	}
 	.strip-head {
-		display: flex;
-		width: 100%;
+		display: grid;
+		grid-template-columns: 2.5rem 1fr 1.5rem;
 		align-items: baseline;
-		gap: 1rem;
-		padding: 1.25rem 0.25rem;
+		width: 100%;
+		gap: 0.75rem;
+		padding: 1.25rem 0.5rem;
 		text-align: left;
 		cursor: pointer;
 	}
@@ -144,112 +102,89 @@ import { capabilities } from "../../data/home";
 		color: rgb(var(--accent-ink));
 	}
 	.strip-label {
-		font-size: clamp(1.6rem, 1.3rem + 1.2vw, 2.1rem);
-		line-height: 1.05;
+		font-size: clamp(1.6rem, 1.1rem + 2vw, 3rem);
+		line-height: 1;
+		letter-spacing: -0.015em;
 		color: rgb(var(--ink));
+		transition:
+			transform 0.45s cubic-bezier(0.2, 0.7, 0.2, 1),
+			color 0.3s;
+	}
+	.strip-head:hover .strip-label,
+	.strip[data-active="true"] .strip-label {
+		color: rgb(var(--accent-ink));
+	}
+	.strip-head:hover .strip-label {
+		transform: translateX(0.5rem);
 	}
 
-	/* Móvil: acordeón vertical con altura animada. */
+	/* Indicador + / − */
+	.strip-icon {
+		position: relative;
+		align-self: center;
+		width: 1.1rem;
+		height: 1.1rem;
+	}
+	.strip-icon::before,
+	.strip-icon::after {
+		content: "";
+		position: absolute;
+		left: 0;
+		top: 50%;
+		width: 100%;
+		height: 1.5px;
+		background: rgb(var(--ink));
+		transition: transform 0.4s cubic-bezier(0.2, 0.7, 0.2, 1);
+	}
+	.strip-icon::after {
+		transform: rotate(90deg);
+	}
+	.strip[data-active="true"] .strip-icon::after {
+		transform: rotate(0deg);
+	}
+
 	.strip-body {
 		max-height: 0;
 		overflow: hidden;
-		padding: 0 0.25rem;
 		opacity: 0;
 		transition:
 			max-height 0.5s cubic-bezier(0.2, 0.7, 0.2, 1),
-			opacity 0.3s,
-			padding 0.5s;
+			opacity 0.3s;
 	}
 	.strip[data-active="true"] .strip-body {
-		max-height: 32rem;
+		max-height: 24rem;
 		opacity: 1;
-		padding-bottom: 1.75rem;
 	}
-	.strip-title {
-		display: none;
+	.strip-inner {
+		display: grid;
+		gap: 1.25rem;
+		padding: 0 0.5rem 1.75rem calc(2.5rem + 1.25rem);
 	}
 
-	/* Escritorio: persiana horizontal de altura fija. */
 	@media (min-width: 768px) {
-		.persiana {
-			flex-direction: row;
-			height: 30rem;
-		}
-		.strip {
-			flex: 1 1 0;
-			min-width: 0;
-			overflow: hidden;
-			border-top: 0;
-			border-left: 1px solid rgb(var(--line));
-			transition:
-				flex-grow 0.6s cubic-bezier(0.2, 0.7, 0.2, 1),
-				background-color 0.4s;
-		}
-		.strip:first-child {
-			border-left: 0;
-		}
-		.strip[data-active="true"] {
-			flex-grow: 5.5;
-		}
-
 		.strip-head {
-			position: absolute;
-			inset: 0;
-			flex-direction: column;
-			justify-content: space-between;
-			align-items: flex-start;
-			padding: 1.5rem 1.25rem;
+			grid-template-columns: 4rem 1fr 1.5rem;
+			padding: 1.5rem 0.75rem;
 		}
-		.strip-label {
-			writing-mode: vertical-rl;
-			transform: rotate(180deg);
-			font-size: clamp(1.5rem, 1.1rem + 0.9vw, 2rem);
-			white-space: nowrap;
-			transition: opacity 0.25s;
+		.strip-inner {
+			grid-template-columns: 1.1fr 1fr;
+			gap: 2.5rem;
+			align-items: start;
+			padding: 0 0.75rem 2rem calc(4rem + 1.5rem);
 		}
-		.strip[data-active="true"] .strip-head {
-			pointer-events: none;
-		}
-		.strip[data-active="true"] .strip-label {
-			opacity: 0;
-		}
-
-		.strip-body {
-			position: absolute;
-			inset: 0;
-			display: flex;
-			flex-direction: column;
-			justify-content: flex-end;
-			width: min(40rem, 70vw);
-			max-height: none;
-			padding: 1.5rem 2rem 2rem 1.25rem;
-			opacity: 0;
-			transform: translateY(0.75rem);
-			transition:
-				opacity 0.3s,
-				transform 0.4s;
-		}
-		.strip[data-active="true"] .strip-body {
-			max-height: none;
-			padding-bottom: 2rem;
-			opacity: 1;
-			transform: none;
-			transition:
-				opacity 0.4s 0.2s,
-				transform 0.5s 0.2s;
-		}
-		.strip-title {
-			display: block;
-			font-size: clamp(2.4rem, 1.6rem + 2.4vw, 3.75rem);
-			line-height: 0.98;
-			letter-spacing: -0.015em;
+	}
+	@media (max-width: 767px) {
+		.strip-inner {
+			padding-left: 0.5rem;
 		}
 	}
 
 	@media (prefers-reduced-motion: reduce) {
 		.strip,
 		.strip-body,
-		.strip-label {
+		.strip-label,
+		.strip-icon::before,
+		.strip-icon::after {
 			transition: none !important;
 		}
 	}
