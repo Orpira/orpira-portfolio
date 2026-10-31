@@ -3,8 +3,9 @@
  * «Qué construyo» en persiana horizontal.
  * Filas a todo el ancho; la abierta se despliega hacia abajo con la
  * descripción, el stack y los proyectos donde se ve. Una abierta cada vez.
- * Se abre con clic o teclado (no con hover: al cambiar la altura de las
- * filas, el puntero acabaría sobre otra y la persiana «saltaría»).
+ * Se abre al pasar el ratón por la cabecera, con clic o con teclado. El hover
+ * tiene una espera y un bloqueo breves (ver src/scripts/persiana.ts) para que
+ * el cambio de altura de las filas no encadene aperturas.
  */
 import Section from "../ui/Section.astro";
 import { capabilities } from "../../data/home";
@@ -15,9 +16,9 @@ import { capabilities } from "../../data/home";
 	index="02"
 	eyebrow="Qué construyo"
 	title="Lo que sé hacer, <em class='t-accent'>con pruebas.</em>"
-	intro="Abre cada capacidad para ver dónde la he aplicado."
+	intro="Pasa por cada capacidad para ver dónde la he aplicado."
 >
-	<div class="persiana-h" data-persiana>
+	<div class="persiana-h" data-persiana data-hover="head" data-anchor>
 		{
 			capabilities.map((cap, i) => {
 				const num = String(i + 1).padStart(2, "0");
