@@ -92,7 +92,7 @@ export const services: Service[] = [
 		includes: [
 			"Diagnóstico de tareas repetitivas que se pueden automatizar",
 			"Integración con WhatsApp, documentos o tu base de datos",
-			"Control de costes y de privacidad de los datos",
+			"Privacidad de los datos bajo control",
 			"Revisión humana donde el resultado importa",
 		],
 		example: "WebWiz Quiz",
@@ -113,7 +113,7 @@ export const steps: Step[] = [
 	},
 	{
 		title: "Propuesta",
-		detail: "Alcance, plazo y precio cerrados por escrito. Sin sorpresas a mitad de proyecto.",
+		detail: "Alcance y plazo cerrados por escrito. Sin sorpresas a mitad de proyecto.",
 	},
 	{
 		title: "Construcción con entregas semanales",
