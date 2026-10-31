@@ -2,8 +2,9 @@
 /**
  * Franja de cifras bajo el hero: una sola línea fina dentro de los márgenes
  * del contenido (alineada con las persianas), y debajo una fila compacta:
- * cifra a la izquierda, áreas en el centro y cifra a la derecha.
+ * cifra, áreas y cifra, separadas por cubos OrPiRa girando.
  */
+import MiniCube from "../MiniCube.astro";
 import { stats, publishable } from "../../data/home";
 
 const items = publishable(stats).filter((s) => s.value !== null);
@@ -15,34 +16,35 @@ const areas = ["Apps web", "Tiempo real", "IA aplicada"];
 	first && (
 		<section aria-label="Algunas cifras">
 			<div class="container-site">
-				<dl class="proof">
-					<div class="proof-item">
+				<div class="proof">
+					<dl class="proof-item">
 						<dt class="sr-only">{first.label}</dt>
 						<dd>
 							<span class="proof-num">{first.value}</span>
 							<span class="proof-label" aria-hidden="true">{first.label}</span>
 						</dd>
-					</div>
+					</dl>
 
-					<p class="proof-areas t-data" aria-label="Áreas">
-						{areas.map((a, i) => (
-							<>
-								{i > 0 && <span aria-hidden="true" class="text-accent-ink"> · </span>}
-								{a}
-							</>
-						))}
-					</p>
-
-					{rest.map((stat) => (
-						<div class="proof-item proof-item--end">
-							<dt class="sr-only">{stat.label}</dt>
-							<dd>
-								<span class="proof-num">{stat.value}</span>
-								<span class="proof-label" aria-hidden="true">{stat.label}</span>
-							</dd>
-						</div>
+					{areas.map((a, i) => (
+						<>
+							<MiniCube size={20} delay={i * 1.6} class:list={["proof-cube", i === 0 && "proof-cube--edge"]} />
+							<p class="proof-area">{a}</p>
+						</>
 					))}
-				</dl>
+
+					{rest.map((stat, i) => (
+						<>
+							<MiniCube size={20} delay={(areas.length + i) * 1.6} class="proof-cube proof-cube--edge" />
+							<dl class="proof-item">
+								<dt class="sr-only">{stat.label}</dt>
+								<dd>
+									<span class="proof-num">{stat.value}</span>
+									<span class="proof-label" aria-hidden="true">{stat.label}</span>
+								</dd>
+							</dl>
+						</>
+					))}
+				</div>
 			</div>
 		</section>
 	)
@@ -50,14 +52,19 @@ const areas = ["Apps web", "Tiempo real", "IA aplicada"];
 
 <style>
 	.proof {
-		display: grid;
-		gap: 1rem;
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.9rem 0.65rem;
 		border-top: 1px solid rgb(var(--line));
 		padding: 1.25rem 0 0.5rem;
 	}
+	.proof-item {
+		margin: 0;
+	}
 	.proof-item dd {
 		display: flex;
-		align-items: baseline;
+		align-items: center;
 		gap: 0.75rem;
 		margin: 0;
 	}
@@ -68,28 +75,40 @@ const areas = ["Apps web", "Tiempo real", "IA aplicada"];
 		color: rgb(var(--accent-ink));
 	}
 	.proof-label,
-	.proof-areas {
+	.proof-area {
+		margin: 0;
 		font-family: var(--font-data);
 		font-size: 0.75rem;
-		letter-spacing: 0.08em;
+		letter-spacing: 0.06em;
 		text-transform: uppercase;
 		color: rgb(var(--ink-soft));
 	}
-	.proof-areas {
-		margin: 0;
+
+	@media (min-width: 640px) {
+		.proof {
+			column-gap: 1.25rem;
+		}
 	}
 
-	@media (min-width: 768px) {
+	/* Pantallas estrechas: cada cifra en su línea; los cubos solo separan las áreas. */
+	@media (max-width: 1279px) {
+		.proof-item {
+			flex-basis: 100%;
+		}
+		.proof :global(.proof-cube--edge) {
+			display: none;
+		}
+	}
+
+	@media (min-width: 1280px) {
 		.proof {
-			grid-template-columns: 1fr auto 1fr;
-			align-items: baseline;
-			gap: 2rem;
+			flex-wrap: nowrap;
+			justify-content: space-between;
+			column-gap: 1rem;
 		}
-		.proof-areas {
-			text-align: center;
-		}
-		.proof-item--end dd {
-			justify-content: flex-end;
+		.proof-label,
+		.proof-area {
+			white-space: nowrap;
 		}
 	}
 </style>
