@@ -73,9 +73,9 @@ export const capabilities: Capability[] = [
 	},
 	{
 		title: "Tiempo real y multijugador",
-		summary: "Salas con código, turnos y rankings en directo, con un servidor que decide y reconexión automática.",
-		tech: ["Node.js", "Express", "Socket.IO"],
-		proof: [P.domino],
+		summary: "Salas con código, turnos y rankings en directo, con un servidor que decide y que recupera al jugador si se desconecta.",
+		tech: ["Node.js", "API HTTP", "Docker"],
+		proof: [P.prl, P.domino],
 	},
 	{
 		title: "IA aplicada",
