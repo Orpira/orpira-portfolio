@@ -144,20 +144,11 @@ export interface LabProject {
 
 export const labProjects: LabProject[] = [
 	{
-		title: "Suite de juegos multijugador",
+		title: "Suite de juegos online",
 		summary:
-			"Stop/Basta y Categorías rápidas para jugar en línea con amigos: salas, votaciones y ranking top 5, sobre un núcleo común al que se irán sumando más juegos.",
-		tags: ["Next.js", "TypeScript", "Supabase"],
-		href: null,
-		pendingHint: "URL pública de la suite de juegos",
-		status: "building",
-		statusLabel: "En desarrollo",
-	},
-	{
-		title: "Dominó 3D",
-		summary: "Dominó latino en una mesa 3D, con salas online, liga y app Android.",
-		tags: ["Three.js", "Juego"],
-		href: "https://domino-3d.orpira.es/",
+			"Dominó 3D, Stop/Basta, Categorías rápidas, Triki y Puntos y Cajas: salas con código para jugar con amigos y rankings, sobre un núcleo común al que se van sumando juegos.",
+		tags: ["Next.js", "Supabase", "Three.js"],
+		href: "https://cleta-stop.orpira.es/",
 		status: "live",
 		statusLabel: "En producción",
 	},
