@@ -1,24 +1,23 @@
 # Redactado solo con hechos conocidos. Lo que falta está en `pending` o en valores null.
 # Describe la app en producción (prl.orpira.es), repo Orpira/test_interactivo-prl.
-# El modo en red no se anuncia como disponible hasta que el servidor de salas esté desplegado.
 title: PRL Master
 order: 1
 headline: >-
   El material del curso de PRL de 30 horas, convertido en una app de tests para
-  estudiar: a solas o por turnos, con corrección al momento y un selector de temas
-  inspirado en las señales de seguridad.
+  estudiar: a solas, por turnos o en una sala en red desde el móvil, con corrección al
+  momento y ranking en directo.
 summary: >-
   El material de un curso de PRL convertido en una app para estudiar: 170 preguntas por
-  temas, opciones barajadas, corrección inmediata y ranking por turnos.
+  temas, opciones barajadas, corrección inmediata y salas en red con ranking en directo.
 ogLine: De los documentos del curso a una app para estudiar.
 seoDescription: >-
-  Caso de estudio de PRL Master: tests de prevención de riesgos laborales con 170
-  preguntas, selector de temas con señales de seguridad, modo individual y por turnos.
-role: Producto · Full Stack · UX
+  Caso de estudio de PRL Master: 170 preguntas de PRL, selector de temas con señales,
+  modo individual y por turnos, y salas en red con ranking en directo.
+role: Producto · Full Stack · Tiempo real
 platform: Web
 status: live
 statusLabel: En producción
-tags: [React, Vite, Tailwind CSS, Express, Socket.IO]
+tags: [React, Vite, Tailwind CSS, Node.js, Docker]
 links:
   - label: Abrir PRL Master
     href: https://prl.orpira.es/
@@ -47,7 +46,7 @@ beforeAfter:
   - before: Descubrir los fallos el día del examen.
     after: Cada respuesta se corrige al momento y muestra la correcta.
   - before: Repasar en grupo sin forma de comparar resultados.
-    after: Varios jugadores por turnos con el mismo test y un ranking al final.
+    after: Una sala con código, cada uno desde su móvil y un ranking en directo.
 
 decisions:
   - title: Las preguntas son datos, no páginas
@@ -83,15 +82,25 @@ decisions:
       preguntas, en el mismo orden, con el estado y los temporizadores reiniciados en
       cada turno.
     why: El ranking final compara a todos con el mismo examen.
-  - title: Un servidor de salas que no se deja engañar
+  - title: El servidor corrige, no el navegador
     context: >-
       El modo en red original se fiaba de la nota que enviaba cada jugador y mandaba las
       respuestas correctas a todos los navegadores.
     decision: >-
       El servidor guarda las respuestas, exige responder en orden y una sola vez,
-      controla el tiempo y calcula él mismo el ranking. Está cubierto con tests de
-      integración y pendiente de desplegar.
-    why: Cuando las salas se publiquen, nadie podrá enviarse un 100 %.
+      controla el tiempo y calcula él mismo el ranking. Cada respuesta lleva un
+      identificador, así que un reenvío por un corte de red no cuenta dos veces.
+    why: Nadie puede enviarse un 100 % ni ver la respuesta antes de contestar.
+  - title: Salas que aguantan un aula real
+    context: >-
+      En clase los móviles se bloquean, se recargan y pierden la wifi, y todos salen a
+      Internet por la misma IP del centro.
+    decision: >-
+      Una API HTTP con consultas cada segundo y una sesión secreta por alumno, la misma
+      estructura que las salas del Dominó 3D: quien recarga o desbloquea el móvil vuelve
+      a su pregunta. Las salas se guardan en disco, los límites son por sesión y no por
+      IP, y el servidor corre en un contenedor Docker en el VPS.
+    why: Una clase de 30 alumnos puede hacer el test sin que nadie se quede fuera.
 
 gallery:
   - src: ../../assets/images/prl-master/categorias.webp
@@ -100,52 +109,60 @@ gallery:
   - src: ../../assets/images/prl-master/pregunta.webp
     alt: Pregunta de riesgos ergonómicos con la respuesta correcta en verde y la elegida en rojo
     caption: Corrección inmediata. Las opciones se barajan en cada test.
-  - src: ../../assets/images/prl-master/ranking.webp
-    alt: Ranking final de tres jugadores por turnos con medallas de oro, plata y bronce
-    caption: Ranking por turnos con el mismo test para todos. Nombres de demostración.
+  - src: ../../assets/images/prl-master/sala-en-red.webp
+    alt: Sala en red con su código y cinco participantes conectados, con la formadora como anfitriona
+    caption: Modo en red. La formadora comparte el código y la clase entra desde sus móviles.
+  - src: ../../assets/images/prl-master/ranking-en-red.webp
+    alt: Ranking en directo de la sala con cuatro de cinco participantes terminados y una alumna respondiendo
+    caption: Ranking en directo mientras la sala termina. Nombres de demostración.
 galleryPending: null
 
 architecture:
   summary: >-
-    Una SPA en React que funciona sola para los modos individual y por turnos, con la
-    lógica del test en funciones puras probadas. El servidor de salas en red (Express y
-    Socket.IO) está hecho y probado, pendiente de desplegar.
+    Una SPA en React que funciona sola para los modos individual y por turnos, y una
+    API de salas en Node.js que es la autoridad del modo en red: corrige, controla el
+    tiempo y guarda las salas en disco.
   layers:
     - label: Interfaz
       items: [React, Vite, Tailwind CSS]
-      note: Modos individual y por turnos; selector de temas con señales.
+      note: Modos individual, por turnos y en red; selector de temas con señales.
     - label: Contenido
       items: [Banco de 170 preguntas en JSON]
       note: 26 categorías en 7 bloques temáticos.
-    - label: Tiempo real
-      items: [Express, Socket.IO]
-      note: Salas con código; el servidor corrige y controla el tiempo. Pendiente de desplegar.
+    - label: Salas en red
+      items: [Node.js, API HTTP, JSON en disco, Docker]
+      note: Sesión secreta por alumno, consultas cada segundo y reloj en el servidor.
 
 stack:
   - layer: Interfaz
     tech: [React, Vite, Tailwind CSS]
     why: Rápida en cualquier dispositivo del aula, incluido el móvil del alumno.
-  - layer: Tiempo real
-    tech: [Express, Socket.IO]
-    why: Para las salas en red; el servidor valida cada respuesta y calcula el ranking.
+  - layer: Salas en red
+    tech: [Node.js, HTTP]
+    why: >-
+      Sin WebSockets: funciona detrás de cualquier proxy, y si el móvil se desconecta el
+      alumno vuelve con su sesión.
+  - layer: Despliegue
+    tech: [Docker, Nginx Proxy Manager, Vercel]
+    why: La API en un contenedor en el VPS, junto a la del Dominó 3D; la web en Vercel.
   - layer: Contenido
     tech: [JSON]
     why: El temario queda separado de la aplicación y se amplía sin tocar código.
   - layer: Calidad
     tech: [Vitest]
-    why: Tests del banco, del barajado, del selector y del servidor de salas.
+    why: Tests del banco, del barajado, del selector, de la API y una prueba de aula con 30 alumnos.
 
 results:
   - value: "170"
     label: preguntas para practicar, sacadas del material del curso
   - value: "26"
     label: temas agrupados en 7 bloques, con buscador
-  - value: "97"
-    label: tests automáticos del banco, el test, el selector y el servidor
+  - value: "285"
+    label: tests automáticos, incluida una prueba de aula con 30 alumnos
   - value: null
     label: compañeros del curso que la usaron
     pendingHint: Número aproximado de compañeros del curso que la usaron
 
 next: >-
-  Desplegar el servidor de salas para abrir el modo en red, y reutilizar la misma base
-  para nuevas formaciones a partir de otros temarios.
+  Reutilizar la misma base para nuevas formaciones a partir de otros temarios, con
+  informes de progreso para quien organiza la formación.
