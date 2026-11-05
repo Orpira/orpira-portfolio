@@ -55,7 +55,8 @@ const P = {
 	prl: { label: "PRL Master", href: "/casos/prl-master" },
 	webwiz: { label: "WebWiz Quiz", href: "/casos/webwiz" },
 	balance: { label: "Private Balance", href: "/casos/private-balance" },
-	domino: { label: "Dominó 3D", href: "/casos/domino-3d" },
+	domino: { label: "Dominó 3D", href: "https://domino-3d.orpira.es/" },
+	delicias: { label: "Las Delicias", href: "/casos/las-delicias" },
 };
 
 export const capabilities: Capability[] = [
@@ -63,7 +64,7 @@ export const capabilities: Capability[] = [
 		title: "Apps web y PWA",
 		summary: "Aplicaciones que se instalan desde el navegador, funcionan sin conexión y guardan los datos donde tienen que estar.",
 		tech: ["React", "TypeScript", "IndexedDB", "PWA"],
-		proof: [P.balance, P.webwiz],
+		proof: [P.delicias, P.balance, P.webwiz],
 	},
 	{
 		title: "Android desde el mismo código",
@@ -74,8 +75,8 @@ export const capabilities: Capability[] = [
 	{
 		title: "Tiempo real y multijugador",
 		summary: "Salas con código, turnos y rankings en directo, con un servidor que decide y que recupera al jugador si se desconecta.",
-		tech: ["Node.js", "API HTTP", "Docker"],
-		proof: [P.prl, P.domino],
+		tech: ["Node.js", "SSE", "Docker"],
+		proof: [P.delicias, P.prl, P.domino],
 	},
 	{
 		title: "IA aplicada",
@@ -93,7 +94,7 @@ export const capabilities: Capability[] = [
 		title: "Datos y despliegue",
 		summary: "Autenticación, base de datos y puesta en producción, de la primera versión a una app que usa gente real.",
 		tech: ["Supabase", "PostgreSQL", "Vercel"],
-		proof: [P.webwiz, P.prl],
+		proof: [P.delicias, P.webwiz, P.prl],
 	},
 ];
 
@@ -146,18 +147,9 @@ export const labProjects: LabProject[] = [
 	{
 		title: "Suite de juegos multijugador",
 		summary:
-			"Stop/Basta y Categorías rápidas para jugar en línea con amigos: salas, votaciones y ranking top 5, sobre un núcleo común al que se irán sumando más juegos.",
-		tags: ["Next.js", "TypeScript", "Supabase"],
-		href: null,
-		pendingHint: "URL pública de la suite de juegos",
-		status: "building",
-		statusLabel: "En desarrollo",
-	},
-	{
-		title: "Dominó 3D",
-		summary: "Dominó latino en una mesa 3D, con salas online, liga y app Android.",
-		tags: ["Three.js", "Juego"],
-		href: "https://domino-3d.orpira.es/",
+			"Dominó 3D, ¡Stop!, Categorías rápidas, Triki y Puntos y Cajas para jugar en línea con amigos: salas con código, turnos y ranking, sobre un núcleo común.",
+		tags: ["Next.js", "TypeScript", "Supabase", "Three.js"],
+		href: "https://cleta-stop.orpira.es/juegos",
 		status: "live",
 		statusLabel: "En producción",
 	},
