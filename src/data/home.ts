@@ -149,7 +149,15 @@ export const labProjects: LabProject[] = [
 		summary:
 			"Dominó 3D, ¡Stop!, Categorías rápidas, Triki y Puntos y Cajas para jugar en línea con amigos: salas con código, turnos y ranking, sobre un núcleo común.",
 		tags: ["Next.js", "TypeScript", "Supabase", "Three.js"],
-		href: "https://cleta-stop.orpira.es/juegos",
+		href: "https://suite-juegos.orpira.es/juegos",
+		status: "live",
+		statusLabel: "En producción",
+	},
+	{
+		title: "Inout",
+		summary: "Control horario para equipos: fichaje de entrada y salida, turnos, horas extra e informes por empleado.",
+		tags: ["Laravel", "PHP", "PostgreSQL"],
+		href: "https://github.com/Orpira/inout",
 		status: "live",
 		statusLabel: "En producción",
 	},
