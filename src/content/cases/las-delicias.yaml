@@ -1,0 +1,149 @@
+# Redactado solo con hechos conocidos. Lo que falta está en `pending` o en valores null.
+# Repo Orpira/lasdelicias: web en lasdelicias.orpira.es y API en api-delicias.orpira.es.
+title: Las Delicias
+order: 4
+headline: >-
+  Pedidos desde la mesa con un QR, encargos para recoger y una barra y una cocina que
+  ven cada pedido en directo, para una cafetería panadería de Málaga.
+summary: >-
+  App de pedidos y atención en el local: carta online, QR seguro por mesa, seguimiento en
+  directo, barra, cocina, cuentas, cierre diario y avisos a n8n.
+ogLine: Del QR de la mesa a la cocina, en directo.
+seoDescription: >-
+  Caso de estudio de Las Delicias: pedidos desde la mesa con QR, encargos para recoger,
+  barra y cocina en tiempo real, cierre diario y automatizaciones con n8n.
+role: Producto · Full Stack · Backend
+platform: Web (PWA)
+status: live
+statusLabel: En producción
+tags: [React, TypeScript, Fastify, PostgreSQL, n8n]
+links:
+  - label: Abrir Las Delicias
+    href: https://lasdelicias.orpira.es/
+  - label: Ver el código
+    href: https://github.com/Orpira/lasdelicias
+
+cover: ../../assets/images/las-delicias/portada.webp
+coverAlt: Portada de Las Delicias con el estado «Abierto hasta las 20:00», el lema y la foto de la vitrina de pastelería
+
+problem:
+  title: Un negocio sin web, con Instagram como único escaparate.
+  paragraphs:
+    - >-
+      Las Delicias es una cafetería panadería de la calle Ayala, en Málaga, que no tenía
+      web: solo Instagram. El objetivo era facilitar pedir, encargar y ser atendido en el
+      local, para que los clientes vuelvan.
+    - >-
+      Además, web, WhatsApp, Instagram y caja tenían que trabajar con los mismos datos, en
+      lugar de ser canales sueltos.
+  pending:
+    - Cuántos pedidos pasan por la app al día o al mes
+
+beforeAfter:
+  - before: Para ver la carta o los horarios, solo Instagram.
+    after: Una web con la carta, la vitrina del día, el horario en directo y cómo llegar.
+  - before: Para pedir en el local, esperar turno en la barra.
+    after: Escaneas el QR de tu mesa, pides desde el móvil y sigues el pedido en directo.
+  - before: Encargar es llamar o escribir y esperar respuesta.
+    after: Encargo para recoger a una hora, confirmado al momento, con aviso en la barra.
+
+decisions:
+  - title: Un QR que no se puede falsificar
+    context: Si el QR solo lleva el número de mesa, cualquiera puede pedir «a otra mesa» cambiando la URL.
+    decision: >-
+      Cada QR lleva un código secreto de 32 caracteres que se puede regenerar desde el
+      panel. Si un móvil con un pedido en curso escanea otra mesa, se le pregunta si se ha
+      cambiado y la barra ve el cambio declarado o sospechoso.
+    why: Los pedidos llegan a la mesa correcta y el personal sabe cuándo algo no cuadra.
+  - title: El servidor calcula los precios
+    context: Un precio que viene del navegador se puede manipular.
+    decision: >-
+      El cliente solo envía productos y cantidades; la API recalcula precios y totales en
+      PostgreSQL. Cada pedido lleva una clave de idempotencia para que un doble toque o un
+      reintento no lo duplique.
+    why: Lo que se cobra es lo que dice la carta, y no hay pedidos repetidos.
+  - title: Barra y cocina en directo, sin recargar
+    context: Un pedido que tarda en aparecer en la cocina es un cliente esperando.
+    decision: >-
+      PostgreSQL avisa de cada cambio (LISTEN/NOTIFY) y la API lo envía a barra, cocina y
+      al móvil del cliente por eventos del servidor (SSE), con aviso sonoro en la barra.
+    why: Todos ven el mismo estado del pedido en el mismo momento.
+  - title: El horario lo decide el servidor
+    context: Un móvil con otra zona horaria o una hora mal puesta no puede decidir si el local está abierto.
+    decision: >-
+      El horario se calcula en el servidor en hora de Madrid, con festivos y cambios de
+      hora. Fuera de horario, los encargos se reservan para la siguiente apertura y pasan
+      solos a la barra cuando llega la hora.
+    why: Se pueden aceptar encargos con el local cerrado sin que la cocina los vea antes de tiempo.
+  - title: Una sola fuente de datos para todo el ecosistema
+    context: El negocio quería web, WhatsApp, Instagram y caja conectados.
+    decision: >-
+      La carta y la ficha del negocio salen de la misma API para la web y para n8n. Los
+      eventos (pedido creado, cambio de estado, llamada de mesa, stock bajo) salen firmados
+      hacia n8n, que puede avisar por WhatsApp o sincronizar el stock con la caja.
+    why: Cambiar un precio o un horario en el panel lo cambia en todos los canales.
+
+gallery:
+  - src: ../../assets/images/las-delicias/carta.webp
+    alt: Carta de pastelería con fotos de los productos del local, precios y botones para añadir al pedido
+    caption: La carta, con fotos del propio obrador. Se pide desde la mesa o para recoger.
+  - src: ../../assets/images/las-delicias/seguimiento.webp
+    alt: Seguimiento del pedido número 1 de la mesa 3 en estado Preparando, con el detalle y el total
+    caption: El cliente sigue su pedido en directo, de recibido a entregado.
+  - src: ../../assets/images/las-delicias/barra.webp
+    alt: Panel de la barra con las mesas abiertas, pendientes de cobro y los pedidos en columnas Nuevos, Preparando y Listos
+    caption: La barra, con mesas abiertas, cobros pendientes y los pedidos por estado. Datos de demostración.
+  - src: ../../assets/images/las-delicias/cocina.webp
+    alt: Pantalla de cocina con un resumen de producción y comandas por orden de llegada con platos para tachar
+    caption: La cocina en una tablet, con el resumen de producción y comandas por puesto.
+galleryPending: null
+
+architecture:
+  summary: >-
+    Una PWA en React desplegada en Vercel y una API Fastify con PostgreSQL en el servidor
+    propio, que es la única fuente de datos para la web, el panel del personal y n8n.
+  layers:
+    - label: Clientes
+      items: [Carta, Pedido con QR, Seguimiento]
+      note: PWA en Vercel, en lasdelicias.orpira.es.
+    - label: Personal
+      items: [Barra, Cocina, Carta, QR, Cierre diario]
+      note: Panel con acceso por usuario y rol.
+    - label: Servidor
+      items: [Fastify, PostgreSQL, SSE]
+      note: En Docker detrás de Nginx Proxy Manager, con copia de seguridad diaria.
+    - label: Ecosistema
+      items: [n8n, WhatsApp, Instagram, Caja]
+      note: Eventos firmados hacia n8n y una clave para que n8n cree pedidos.
+
+stack:
+  - layer: Interfaz
+    tech: [React, TypeScript, Tailwind CSS]
+    why: Una sola app para el cliente, la barra y la cocina, instalable en el móvil.
+  - layer: API
+    tech: [Node.js, Fastify, Zod]
+    why: Validación estricta de cada petición y límites de uso por ruta.
+  - layer: Datos
+    tech: [PostgreSQL]
+    why: Precios, cuentas y cierres en transacciones, y LISTEN/NOTIFY para el directo.
+  - layer: Automatización
+    tech: [n8n]
+    why: Avisos por WhatsApp, pedidos por WhatsApp e integración con la caja sin tocar la app.
+  - layer: Despliegue
+    tech: [Docker, Vercel]
+    why: La API en el servidor propio y la web en Vercel.
+
+results:
+  - value: "45"
+    label: productos en la carta, en 5 categorías
+  - value: "3"
+    label: pantallas en directo, para el cliente, la barra y la cocina
+  - value: "14"
+    label: días de copias de seguridad diarias de la base de datos
+  - value: null
+    label: pedidos al mes
+    pendingHint: Pedidos que pasan por la app al mes
+
+next: >-
+  Conectar la caja del local para sincronizar el stock y abrir los pedidos por WhatsApp
+  atendidos con IA a través de n8n.
