@@ -155,9 +155,10 @@ export const labProjects: LabProject[] = [
 	},
 	{
 		title: "Inout",
-		summary: "Control horario para equipos: fichaje de entrada y salida, turnos, horas extra e informes por empleado.",
-		tags: ["Laravel", "PHP", "PostgreSQL"],
-		href: "https://github.com/Orpira/inout",
+		summary:
+			"Control horario para una operación logística: kiosko de fichaje que funciona sin conexión, turnos rotativos, aprobación de horas extra y liquidación minuto a minuto según la ley vigente en cada fecha.",
+		tags: ["React", "Fastify", "PostgreSQL", "PWA"],
+		href: "https://inout.orpira.es/",
 		status: "live",
 		statusLabel: "En producción",
 	},
