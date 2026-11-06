@@ -156,7 +156,7 @@ export const labProjects: LabProject[] = [
 	{
 		title: "Inout",
 		summary:
-			"Control horario para una operación logística: kiosko de fichaje que funciona sin conexión, turnos rotativos, aprobación de horas extra y liquidación minuto a minuto según la ley vigente en cada fecha.",
+			"Nació para calcular las horas extra del personal de bodega de una empresa de logística; la primera versión fue en Java y PostgreSQL. Esta la rehace: fichaje que funciona sin conexión, turnos rotativos, aprobación de extras y liquidación minuto a minuto según la ley vigente en cada fecha.",
 		tags: ["React", "Fastify", "PostgreSQL", "PWA"],
 		href: "https://inout.orpira.es/",
 		status: "live",
