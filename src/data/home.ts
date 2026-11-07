@@ -163,11 +163,11 @@ export const labProjects: LabProject[] = [
 		statusLabel: "En producción",
 	},
 	{
-		title: "Aldalan · Empleabilidad",
+		title: "Seguimiento de empleabilidad",
 		summary:
-			"Sustituye el Excel con el que Aldalan sigue las candidaturas de sus aspirantes: cada aspirante registra las suyas, los Excel antiguos se migran una vez (uno a uno o en bloque) y el equipo ve panel, próximas acciones y exportación.",
+			"Sustituye el Excel con el que una entidad de empleo sigue las candidaturas de sus aspirantes: cada aspirante registra las suyas, los Excel antiguos se migran una vez (uno a uno o en bloque) y el equipo ve panel, próximas acciones y exportación.",
 		tags: ["Next.js", "Supabase", "ExcelJS"],
-		href: "https://aldalan-empleabilidad.vercel.app/",
+		href: "https://aldalan.orpira.es/",
 		status: "live",
 		statusLabel: "Demo en línea",
 	},
