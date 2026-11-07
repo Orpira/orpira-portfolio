@@ -87,14 +87,13 @@ const host = (href: string) => new URL(href).hostname.replace(/^www\./, "");
 </script>
 
 <style>
-	/* La cinta respeta los márgenes del contenido; los bordes se funden. */
+	/* La cinta va entre los márgenes del contenido: las tarjetas entran y salen
+	   por debajo de ese borde, con un corte limpio. */
 	.cinta-viewport {
 		overflow: hidden;
 		/* Aire para que la sombra y la elevación al pasar el ratón no se recorten. */
 		padding-block: 1.5rem 3rem;
 		margin-block: -1.5rem -3rem;
-		-webkit-mask-image: linear-gradient(to right, transparent, #000 3%, #000 97%, transparent);
-		mask-image: linear-gradient(to right, transparent, #000 3%, #000 97%, transparent);
 		touch-action: pan-y;
 		cursor: grab;
 	}
