@@ -163,6 +163,16 @@ export const labProjects: LabProject[] = [
 		statusLabel: "En producción",
 	},
 	{
+		title: "Seguimiento de empleabilidad",
+		summary:
+			"Sustituye el Excel con el que una entidad de empleo sigue las candidaturas de sus aspirantes: cada aspirante registra las suyas, los Excel antiguos se migran una vez (uno a uno o en bloque) y el equipo ve panel, próximas acciones y exportación.",
+		tags: ["Next.js", "Supabase", "ExcelJS"],
+		href: null,
+		pendingHint: "URL pública de la demo (si se quiere enlazar)",
+		status: "building",
+		statusLabel: "En desarrollo",
+	},
+	{
 		title: "WebWiz Quiz",
 		summary: "Retos de desarrollo web con corrección inmediata para practicar y evaluar conocimientos.",
 		tags: ["React", "Supabase"],
