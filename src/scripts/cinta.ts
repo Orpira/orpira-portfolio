@@ -19,19 +19,14 @@ document.querySelectorAll<HTMLElement>("[data-cinta]").forEach((root) => {
 	const next = root.querySelector<HTMLButtonElement>("[data-cinta-next]")!;
 	const toggle = root.querySelector<HTMLButtonElement>("[data-cinta-toggle]")!;
 	const originals = Array.from(track.children) as HTMLElement[];
-	const container = root.closest("section")?.querySelector<HTMLElement>(".container-site");
 
 	const SPEED = 26; // px por segundo
 	const RESUME_MS = 2500;
 	const gap = () => parseFloat(getComputedStyle(track).columnGap) || 0;
 	const step = () => originals[0].offsetWidth + gap();
 
-	// Alinea la primera tarjeta con el margen del contenido.
-	const lead = () => {
-		if (!container) return 0;
-		const cs = getComputedStyle(container);
-		return container.getBoundingClientRect().left + parseFloat(cs.paddingLeft);
-	};
+	// La cinta ya va dentro del contenedor: sin desplazamiento inicial.
+	const lead = () => 0;
 
 	// Halo que sigue al puntero en cada tarjeta.
 	root.addEventListener("pointermove", (e) => {
@@ -44,13 +39,6 @@ document.querySelectorAll<HTMLElement>("[data-cinta]").forEach((root) => {
 
 	if (reduceMotion.matches) {
 		root.classList.add("is-static");
-		const pad = () => {
-			const l = `${lead()}px`;
-			track.style.paddingInline = `${l}`;
-			viewport.style.scrollPaddingInline = l;
-		};
-		pad();
-		window.addEventListener("resize", pad, { passive: true });
 		prev.addEventListener("click", () => viewport.scrollBy({ left: -step(), behavior: "smooth" }));
 		next.addEventListener("click", () => viewport.scrollBy({ left: step(), behavior: "smooth" }));
 		return;
@@ -69,7 +57,6 @@ document.querySelectorAll<HTMLElement>("[data-cinta]").forEach((root) => {
 
 	const layout = () => {
 		track.querySelectorAll("[data-clone]").forEach((n) => n.remove());
-		track.style.paddingLeft = `${lead()}px`;
 		setW = originals.reduce((w, el) => w + el.offsetWidth + gap(), 0);
 		const copies = Math.ceil(viewport.clientWidth / Math.max(setW, 1)) + 1;
 		for (let c = 0; c < copies; c++) {
