@@ -87,15 +87,14 @@ const host = (href: string) => new URL(href).hostname.replace(/^www\./, "");
 </script>
 
 <style>
-	/* La cinta sale de los márgenes y ocupa todo el ancho; los bordes se funden. */
+	/* La cinta respeta los márgenes del contenido; los bordes se funden. */
 	.cinta-viewport {
-		margin-inline: calc(50% - 50vw);
 		overflow: hidden;
 		/* Aire para que la sombra y la elevación al pasar el ratón no se recorten. */
 		padding-block: 1.5rem 3rem;
 		margin-block: -1.5rem -3rem;
-		-webkit-mask-image: linear-gradient(to right, transparent, #000 5%, #000 95%, transparent);
-		mask-image: linear-gradient(to right, transparent, #000 5%, #000 95%, transparent);
+		-webkit-mask-image: linear-gradient(to right, transparent, #000 3%, #000 97%, transparent);
+		mask-image: linear-gradient(to right, transparent, #000 3%, #000 97%, transparent);
 		touch-action: pan-y;
 		cursor: grab;
 	}
