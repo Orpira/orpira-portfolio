@@ -3,6 +3,8 @@ import Section from "../ui/Section.astro";
 import Tag from "../ui/Tag.astro";
 import Pending from "../ui/Pending.astro";
 import { labProjects, isProduction } from "../../data/home";
+
+const host = (href: string) => new URL(href).hostname.replace(/^www\./, "");
 ---
 
 <Section
@@ -12,49 +14,231 @@ import { labProjects, isProduction } from "../../data/home";
 	title="Proyectos propios <em class='t-accent'>para probar ideas.</em>"
 	intro="Juegos y herramientas que construyo para explorar tiempo real, 3D y nuevas formas de aprender."
 >
-	<ul class="grid gap-6 md:grid-cols-3">
-		{
-			labProjects.map((project) => {
-				const Wrapper = project.href ? "a" : "div";
-				const attrs = project.href
-					? { href: project.href, target: "_blank", rel: "noopener noreferrer" }
-					: {};
-				return (
-					<li>
-						<Wrapper
-							{...attrs}
-							class:list={[
-								"group flex h-full flex-col rounded-ds-lg border border-line p-6 transition-colors duration-200",
-								project.href && "hover:border-ink/40",
-							]}
-						>
-							<div class="flex items-center justify-between gap-3">
-								<Tag variant="status" status={project.status}>
-									{project.statusLabel}
-								</Tag>
-								{project.href && (
-									<span aria-hidden="true" class="text-ink transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
-										↗
-									</span>
-								)}
-							</div>
-							<h3 class="mt-6 font-heading text-3xl leading-tight text-ink">
-								{project.title}
-								{project.href && <span class="sr-only"> (se abre en otra pestaña)</span>}
-							</h3>
-							<p class="mt-2 text-[0.9375rem] text-ink-soft">{project.summary}</p>
-							<div class="mt-auto flex flex-wrap items-center gap-1.5 pt-6">
-								{project.tags.map((tag) => (
-									<Tag>{tag}</Tag>
-								))}
-								{!project.href && !isProduction && project.pendingHint && (
-									<Pending hint={project.pendingHint} />
-								)}
-							</div>
-						</Wrapper>
-					</li>
-				);
-			})
-		}
-	</ul>
+	<div class="cinta" data-cinta>
+		<div class="cinta-viewport" data-cinta-viewport>
+			<ul class="cinta-track" data-cinta-track role="list">
+				{
+					labProjects.map((project, i) => {
+						const Wrapper = project.href ? "a" : "div";
+						const attrs = project.href
+							? { href: project.href, target: "_blank", rel: "noopener noreferrer" }
+							: {};
+						return (
+							<li class="cinta-item">
+								<Wrapper {...attrs} class="lab-card group" data-card>
+									<div class="flex items-center justify-between gap-3">
+										<span class="t-data text-ink-muted">L—{String(i + 1).padStart(2, "0")}</span>
+										<Tag variant="status" status={project.status}>
+											{project.statusLabel}
+										</Tag>
+									</div>
+									<h3 class="mt-8 font-heading text-[1.875rem] leading-[1.05] text-ink">
+										{project.title}
+										{project.href && <span class="sr-only"> (se abre en otra pestaña)</span>}
+									</h3>
+									<p class="lab-summary mt-3 text-[0.9375rem] leading-relaxed text-ink-soft">
+										{project.summary}
+									</p>
+									<div class="mt-auto flex flex-wrap items-center gap-1.5 pt-6">
+										{project.tags.map((tag) => (
+											<Tag>{tag}</Tag>
+										))}
+										{!project.href && !isProduction && project.pendingHint && (
+											<Pending hint={project.pendingHint} />
+										)}
+									</div>
+									<div class="mt-5 flex items-center justify-between gap-3 border-t border-line pt-4">
+										<span class="t-data truncate text-ink-muted">
+											{project.href ? host(project.href) : "Sin enlace público"}
+										</span>
+										{project.href && (
+											<span aria-hidden="true" class="lab-arrow">
+												↗
+											</span>
+										)}
+									</div>
+								</Wrapper>
+							</li>
+						);
+					})
+				}
+			</ul>
+		</div>
+
+		<div class="relative mt-6 flex items-center justify-end gap-2" data-cinta-controls>
+			<button type="button" class="cinta-btn" data-cinta-prev aria-label="Proyecto anterior">←</button>
+			<button
+				type="button"
+				class="cinta-btn"
+				data-cinta-toggle
+				aria-pressed="false"
+				aria-label="Pausar el movimiento"
+			>
+				<span data-icon-pause aria-hidden="true">❙❙</span>
+				<span data-icon-play aria-hidden="true" hidden>▶</span>
+			</button>
+			<button type="button" class="cinta-btn" data-cinta-next aria-label="Proyecto siguiente">→</button>
+		</div>
+	</div>
 </Section>
+
+<script>
+	import "../../scripts/cinta";
+</script>
+
+<style>
+	/* La cinta sale de los márgenes y ocupa todo el ancho; los bordes se funden. */
+	.cinta-viewport {
+		margin-inline: calc(50% - 50vw);
+		overflow: hidden;
+		/* Aire para que la sombra y la elevación al pasar el ratón no se recorten. */
+		padding-block: 1.5rem 3rem;
+		margin-block: -1.5rem -3rem;
+		-webkit-mask-image: linear-gradient(to right, transparent, #000 5%, #000 95%, transparent);
+		mask-image: linear-gradient(to right, transparent, #000 5%, #000 95%, transparent);
+		touch-action: pan-y;
+		cursor: grab;
+	}
+	.cinta-viewport.is-dragging {
+		cursor: grabbing;
+	}
+	.cinta-viewport.is-dragging .lab-card {
+		pointer-events: none;
+	}
+	.cinta-track {
+		position: relative;
+		display: flex;
+		gap: 1.25rem;
+		width: max-content;
+		will-change: transform;
+	}
+	/* Sin movimiento: desplazamiento nativo con ajuste por tarjeta. */
+	.cinta.is-static .cinta-viewport {
+		overflow-x: auto;
+		scroll-snap-type: x mandatory;
+		scrollbar-width: none;
+		cursor: auto;
+		touch-action: auto;
+	}
+	.cinta.is-static .cinta-viewport::-webkit-scrollbar {
+		display: none;
+	}
+	.cinta.is-static .cinta-item {
+		scroll-snap-align: start;
+	}
+	.cinta.is-static [data-cinta-toggle] {
+		display: none;
+	}
+
+	.cinta-item {
+		width: clamp(17rem, 78vw, 22rem);
+		flex: none;
+	}
+
+	.lab-card {
+		position: relative;
+		isolation: isolate;
+		display: flex;
+		height: 100%;
+		min-height: 22rem;
+		flex-direction: column;
+		overflow: hidden;
+		border: 1px solid rgb(var(--line));
+		border-radius: var(--radius-lg);
+		background: rgb(var(--paper));
+		padding: 1.5rem;
+		transition:
+			transform 0.35s cubic-bezier(0.2, 0.7, 0.2, 1),
+			border-color 0.25s ease,
+			box-shadow 0.35s ease;
+	}
+	/* Halo que sigue al puntero. */
+	.lab-card::before {
+		content: "";
+		position: absolute;
+		inset: 0;
+		z-index: -1;
+		background: radial-gradient(
+			260px circle at var(--mx, 50%) var(--my, 0%),
+			rgb(var(--accent) / 0.12),
+			transparent 70%
+		);
+		opacity: 0;
+		transition: opacity 0.3s ease;
+	}
+	a.lab-card:hover,
+	a.lab-card:focus-visible {
+		transform: translateY(-6px);
+		border-color: rgb(var(--ink) / 0.35);
+		box-shadow: 0 18px 40px -24px rgb(var(--ink) / 0.35);
+	}
+	a.lab-card:hover::before,
+	a.lab-card:focus-visible::before {
+		opacity: 1;
+	}
+
+	.lab-summary {
+		display: -webkit-box;
+		-webkit-line-clamp: 6;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
+	}
+
+	.lab-arrow {
+		display: inline-grid;
+		place-items: center;
+		width: 2rem;
+		height: 2rem;
+		flex: none;
+		border: 1px solid rgb(var(--line));
+		border-radius: 999px;
+		color: rgb(var(--ink));
+		transition:
+			transform 0.3s ease,
+			background-color 0.3s ease,
+			color 0.3s ease,
+			border-color 0.3s ease;
+	}
+	a.lab-card:hover .lab-arrow,
+	a.lab-card:focus-visible .lab-arrow {
+		transform: rotate(45deg);
+		background: rgb(var(--ink));
+		border-color: rgb(var(--ink));
+		color: rgb(var(--paper));
+	}
+
+	.cinta-btn {
+		display: inline-grid;
+		place-items: center;
+		width: 2.75rem;
+		height: 2.75rem;
+		border: 1px solid rgb(var(--line));
+		border-radius: 999px;
+		color: rgb(var(--ink));
+		font-size: 0.95rem;
+		transition:
+			background-color 0.2s ease,
+			border-color 0.2s ease,
+			color 0.2s ease;
+	}
+	.cinta-btn:hover {
+		border-color: rgb(var(--ink));
+		background: rgb(var(--ink));
+		color: rgb(var(--paper));
+	}
+	.cinta-btn:focus-visible {
+		outline: 2px solid rgb(var(--accent));
+		outline-offset: 2px;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.lab-card,
+		.lab-arrow {
+			transition: none;
+		}
+		a.lab-card:hover,
+		a.lab-card:focus-visible {
+			transform: none;
+		}
+	}
+</style>
