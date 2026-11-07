@@ -167,10 +167,9 @@ export const labProjects: LabProject[] = [
 		summary:
 			"Sustituye el Excel con el que una entidad de empleo sigue las candidaturas de sus aspirantes: cada aspirante registra las suyas, los Excel antiguos se migran una vez (uno a uno o en bloque) y el equipo ve panel, próximas acciones y exportación.",
 		tags: ["Next.js", "Supabase", "ExcelJS"],
-		href: null,
-		pendingHint: "URL pública de la demo (si se quiere enlazar)",
-		status: "building",
-		statusLabel: "En desarrollo",
+		href: "https://laboratorio.orpira.es/",
+		status: "live",
+		statusLabel: "Demo en línea",
 	},
 	{
 		title: "WebWiz Quiz",
