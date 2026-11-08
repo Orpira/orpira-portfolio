@@ -4,6 +4,7 @@ import Tag from "../ui/Tag.astro";
 import Pending from "../ui/Pending.astro";
 import { labProjects, isProduction } from "../../data/home";
 
+const isInternal = (href: string) => href.startsWith("/");
 const host = (href: string) => new URL(href).hostname.replace(/^www\./, "");
 ---
 
@@ -11,8 +12,8 @@ const host = (href: string) => new URL(href).hostname.replace(/^www\./, "");
 	id="laboratorio"
 	index="05"
 	eyebrow="Laboratorio"
-	title="Proyectos propios <em class='t-accent'>para probar ideas.</em>"
-	intro="Juegos y herramientas que construyo para explorar tiempo real, 3D y nuevas formas de aprender."
+	title="Prototipos y pilotos <em class='t-accent'>en evolución.</em>"
+	intro="MVPs, pilotos y herramientas que siguen creciendo. Cuando uno se asienta con uso real, pasa a Proyectos."
 >
 	<div class="cinta" data-cinta>
 		<div class="cinta-viewport" data-cinta-viewport>
@@ -20,9 +21,12 @@ const host = (href: string) => new URL(href).hostname.replace(/^www\./, "");
 				{
 					labProjects.map((project, i) => {
 						const Wrapper = project.href ? "a" : "div";
-						const attrs = project.href
-							? { href: project.href, target: "_blank", rel: "noopener noreferrer" }
-							: {};
+						const internal = project.href ? isInternal(project.href) : false;
+						const attrs = !project.href
+							? {}
+							: internal
+								? { href: project.href }
+								: { href: project.href, target: "_blank", rel: "noopener noreferrer" };
 						return (
 							<li class="cinta-item">
 								<Wrapper {...attrs} class="lab-card group" data-card>
@@ -34,7 +38,7 @@ const host = (href: string) => new URL(href).hostname.replace(/^www\./, "");
 									</div>
 									<h3 class="mt-8 font-heading text-[1.875rem] leading-[1.05] text-ink">
 										{project.title}
-										{project.href && <span class="sr-only"> (se abre en otra pestaña)</span>}
+										{project.href && !internal && <span class="sr-only"> (se abre en otra pestaña)</span>}
 									</h3>
 									<p class="lab-summary mt-3 text-[0.9375rem] leading-relaxed text-ink-soft">
 										{project.summary}
@@ -49,11 +53,11 @@ const host = (href: string) => new URL(href).hostname.replace(/^www\./, "");
 									</div>
 									<div class="mt-5 flex items-center justify-between gap-3 border-t border-line pt-4">
 										<span class="t-data truncate text-ink-muted">
-											{project.href ? host(project.href) : "Sin enlace público"}
+											{!project.href ? "Sin enlace público" : internal ? "Ver caso de estudio" : host(project.href)}
 										</span>
 										{project.href && (
-											<span aria-hidden="true" class="lab-arrow">
-												↗
+											<span aria-hidden="true" class:list={["lab-arrow", internal && "is-internal"]}>
+												{internal ? "→" : "↗"}
 											</span>
 										)}
 									</div>
@@ -200,6 +204,10 @@ const host = (href: string) => new URL(href).hostname.replace(/^www\./, "");
 	a.lab-card:hover .lab-arrow,
 	a.lab-card:focus-visible .lab-arrow {
 		transform: rotate(45deg);
+	}
+	a.lab-card:hover .lab-arrow.is-internal,
+	a.lab-card:focus-visible .lab-arrow.is-internal {
+		transform: translateX(2px);
 		background: rgb(var(--ink));
 		border-color: rgb(var(--ink));
 		color: rgb(var(--paper));

@@ -1,0 +1,94 @@
+# Redactado solo con hechos conocidos. Lo que falta está en `pending` o en valores null.
+# Suite en suite-juegos.orpira.es (repo Orpira/Cleta-s-stop), con Dominó 3D integrado.
+title: Juegos
+order: 3
+section: produccion
+headline: >-
+  Una suite de juegos multijugador para jugar en línea con amigos: salas con código,
+  turnos y ranking por juego, sobre un núcleo común que hace que cada juego nuevo cueste
+  menos que el anterior.
+summary: >-
+  Dominó 3D, ¡Stop!, Categorías rápidas, Triki y Puntos y Cajas: salas con código, turnos
+  y ranking por juego, sobre un núcleo común.
+ogLine: Cinco juegos en línea sobre un mismo núcleo.
+seoDescription: >-
+  Caso de estudio de la suite de juegos de OrPiRa: Dominó 3D, ¡Stop!, Categorías rápidas,
+  Triki y Puntos y Cajas, multijugador en línea sobre un núcleo común.
+role: Producto · Full Stack · Tiempo real · 3D
+platform: Web
+status: live
+statusLabel: En producción
+tags: [Next.js, TypeScript, Supabase, Three.js]
+links:
+  - label: Abrir la suite
+    href: https://suite-juegos.orpira.es/juegos
+  - label: Ver el código
+    href: https://github.com/Orpira/Cleta-s-stop
+
+problem:
+  title: Juegos de mesa de toda la vida, para jugar sin estar en la misma mesa.
+  paragraphs:
+    - >-
+      Empezó con el «Stop» de papel: se elige una letra y cada jugador escribe una palabra
+      por categoría. La idea era jugarlo en línea, varios a la vez, con puntuación y ranking.
+    - >-
+      Después llegaron más juegos de la misma clase. El reto pasó a ser otro: que añadir un
+      juego no obligara a rehacer las salas, los turnos y el ranking cada vez.
+  pending:
+    - Cuánta gente juega y con qué frecuencia
+
+decisions:
+  - title: Un núcleo común y un módulo por juego
+    context: >-
+      El segundo juego repetía la mitad del código del primero: códigos de sala, sorteo de
+      letra, recuento de votos y puntuación.
+    decision: >-
+      Separar lo genérico en un núcleo compartido y dejar en cada juego solo sus reglas. Lo
+      que resultaba ser genérico al construir un juego nuevo se movía al núcleo.
+    why: Cada juego nuevo reutiliza salas, turnos y ranking, y solo aporta sus reglas.
+  - title: Las reglas de la partida las eligen los jugadores
+    context: Cada grupo juega a su manera (cómo se validan las palabras, cuántos jugadores).
+    decision: >-
+      Las opciones se configuran en la sala antes de empezar y el juego las aplica durante
+      la partida.
+    why: La misma sala sirve para grupos distintos sin tocar el código.
+  - title: Un ranking por juego
+    context: Mezclar puntuaciones de juegos distintos no dice nada.
+    decision: Ranking separado por juego, con la fecha de la última partida.
+    why: Cada juego tiene su propia competición y se ve si está vivo.
+
+galleryPending: Capturas de la portada de la suite y de una partida en curso
+
+architecture:
+  summary: >-
+    Una portada común desde la que se elige juego; cada juego usa el núcleo compartido de
+    salas, turnos y puntuación, con Supabase para datos y ranking.
+  layers:
+    - label: Cliente
+      items: [Next.js, TypeScript, Three.js]
+      note: El Dominó 3D se renderiza en el navegador
+    - label: Núcleo compartido
+      items: [Salas con código, Turnos, Votos, Puntuación]
+    - label: Datos
+      items: [Supabase, PostgreSQL]
+
+stack:
+  - layer: Interfaz
+    tech: [Next.js, TypeScript]
+    why: Una ruta por juego y una portada común para cambiar de uno a otro.
+  - layer: 3D
+    tech: [Three.js]
+    why: El tablero y las fichas del dominó en 3D, también en el móvil.
+  - layer: Datos
+    tech: [Supabase, PostgreSQL]
+    why: Salas, partidas y ranking por juego.
+
+results:
+  - value: "5"
+    label: juegos sobre el mismo núcleo
+  - value: null
+    label: partidas jugadas
+    pendingHint: Partidas o jugadores al mes
+
+next: >-
+  Seguir sumando juegos de la misma clase a la suite, con Scrabble como siguiente candidato.

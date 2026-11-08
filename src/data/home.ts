@@ -145,22 +145,13 @@ export interface LabProject {
 
 export const labProjects: LabProject[] = [
 	{
-		title: "Suite de juegos multijugador",
+		title: "Las Delicias",
 		summary:
-			"Dominó 3D, ¡Stop!, Categorías rápidas, Triki y Puntos y Cajas para jugar en línea con amigos: salas con código, turnos y ranking, sobre un núcleo común.",
-		tags: ["Next.js", "TypeScript", "Supabase", "Three.js"],
-		href: "https://suite-juegos.orpira.es/juegos",
-		status: "live",
-		statusLabel: "En producción",
-	},
-	{
-		title: "Inout",
-		summary:
-			"Control horario para una operación logística: kiosko de fichaje que funciona sin conexión, turnos rotativos, aprobación de horas extra y liquidación minuto a minuto según la ley vigente en cada fecha.",
-		tags: ["React", "Fastify", "PostgreSQL", "PWA"],
-		href: "https://inout.orpira.es/",
-		status: "live",
-		statusLabel: "En producción",
+			"Pedidos y atención para una cafetería panadería de Málaga que solo tenía Instagram: carta online, QR por mesa, encargos para recoger y barra y cocina viendo cada pedido en directo.",
+		tags: ["React", "Fastify", "PostgreSQL", "n8n"],
+		href: "/casos/las-delicias",
+		status: "building",
+		statusLabel: "Piloto",
 	},
 	{
 		title: "Seguimiento de empleabilidad",
@@ -168,16 +159,26 @@ export const labProjects: LabProject[] = [
 			"Sustituye el Excel con el que una entidad de empleo sigue las candidaturas de sus aspirantes: cada aspirante registra las suyas, los Excel antiguos se migran una vez (uno a uno o en bloque) y el equipo ve panel, próximas acciones y exportación.",
 		tags: ["Next.js", "Supabase", "ExcelJS"],
 		href: "https://laboratorio.orpira.es/",
-		status: "live",
-		statusLabel: "Demo en línea",
+		status: "building",
+		statusLabel: "MVP",
 	},
 	{
-		title: "WebWiz Quiz",
-		summary: "Retos de desarrollo web con corrección inmediata para practicar y evaluar conocimientos.",
-		tags: ["React", "Supabase"],
-		href: "https://webwiz.orpira.es/",
+		title: "Inout",
+		summary:
+			"Nueva versión de una herramienta que nació en Java para calcular las horas extra de una operación logística: fichaje que funciona sin conexión, turnos rotativos, aprobación de horas extra y liquidación minuto a minuto según la ley vigente en cada fecha.",
+		tags: ["React", "Fastify", "PostgreSQL", "PWA"],
+		href: "https://inout.orpira.es/",
 		status: "live",
-		statusLabel: "En producción",
+		statusLabel: "En línea",
+	},
+	{
+		title: "Private Balance",
+		summary:
+			"Finanzas personales con privacidad por diseño: los datos se quedan en el dispositivo. Web, PWA y app Android desde el mismo código, con bloqueo por PIN.",
+		tags: ["React", "IndexedDB", "PWA", "Capacitor"],
+		href: "/casos/private-balance",
+		status: "building",
+		statusLabel: "Beta",
 	},
 ];
 

@@ -20,6 +20,8 @@ const cases = defineCollection({
 			title: z.string(),
 			/** Orden en la portada y en la navegación entre casos. */
 			order: z.number(),
+			/** Dónde aparece en la portada: persiana de Proyectos o cinta del Laboratorio. */
+			section: z.enum(["produccion", "laboratorio"]).default("produccion"),
 			/** Una frase de resultado. Es la entradilla del caso y el texto de la fila en la portada. */
 			headline: z.string(),
 			/** Versión corta para la portada (fila del índice). */
