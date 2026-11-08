@@ -2,6 +2,7 @@
 # Repo Orpira/lasdelicias: web en lasdelicias.orpira.es y API en api-delicias.orpira.es.
 title: Las Delicias
 order: 4
+section: laboratorio
 headline: >-
   Pedidos desde la mesa con un QR, encargos para recoger y una barra y una cocina que
   ven cada pedido en directo, para una cafetería panadería de Málaga.
@@ -14,8 +15,8 @@ seoDescription: >-
   barra y cocina en tiempo real, cierre diario y automatizaciones con n8n.
 role: Producto · Full Stack · Backend
 platform: Web (PWA)
-status: live
-statusLabel: En producción
+status: building
+statusLabel: Piloto
 tags: [React, TypeScript, Fastify, PostgreSQL, n8n]
 links:
   - label: Abrir Las Delicias

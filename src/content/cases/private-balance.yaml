@@ -1,6 +1,7 @@
 # Caso migrado desde src/pages/projects/private-balance.astro (fase 2D).
 title: Private Balance
-order: 3
+order: 5
+section: laboratorio
 headline: Finanzas privadas diseñadas alrededor del trabajo real, con los datos guardados en el dispositivo.
 summary: >-
   Finanzas personales con privacidad por diseño: los datos se quedan en el dispositivo.
@@ -11,8 +12,8 @@ seoDescription: >-
   Problema, decisiones de arquitectura, Copiloto con IA y stack.
 role: Producto · Arquitectura · Full Stack · UX
 platform: Web · PWA · Android
-status: live
-statusLabel: Pre-release
+status: building
+statusLabel: Beta
 tags: [React, TypeScript, IndexedDB, PWA, Capacitor]
 links:
   - label: Abrir la PWA
