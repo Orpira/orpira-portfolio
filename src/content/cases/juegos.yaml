@@ -24,6 +24,10 @@ links:
     href: https://suite-juegos.orpira.es/juegos
   - label: Ver el código
     href: https://github.com/Orpira/Cleta-s-stop
+cover: ../../assets/images/juegos/portada.webp
+coverAlt: >-
+  Portada de la suite «Elige a qué jugar» con las tarjetas de Dominó 3D, ¡Stop!,
+  Categorías rápidas, Triki y Puntos y Cajas
 
 problem:
   title: Juegos de mesa de toda la vida, para jugar sin estar en la misma mesa.

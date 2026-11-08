@@ -149,7 +149,7 @@ export const labProjects: LabProject[] = [
 		summary:
 			"Pedidos y atención para una cafetería panadería de Málaga que solo tenía Instagram: carta online, QR por mesa, encargos para recoger y barra y cocina viendo cada pedido en directo.",
 		tags: ["React", "Fastify", "PostgreSQL", "n8n"],
-		href: "/casos/las-delicias",
+		href: "https://lasdelicias.orpira.es/",
 		status: "building",
 		statusLabel: "Piloto",
 	},
@@ -176,7 +176,7 @@ export const labProjects: LabProject[] = [
 		summary:
 			"Finanzas personales con privacidad por diseño: los datos se quedan en el dispositivo. Web, PWA y app Android desde el mismo código, con bloqueo por PIN.",
 		tags: ["React", "IndexedDB", "PWA", "Capacitor"],
-		href: "/casos/private-balance",
+		href: "https://private-balance.orpira.es/",
 		status: "building",
 		statusLabel: "Beta",
 	},

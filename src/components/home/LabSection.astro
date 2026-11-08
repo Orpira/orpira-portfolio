@@ -4,7 +4,6 @@ import Tag from "../ui/Tag.astro";
 import Pending from "../ui/Pending.astro";
 import { labProjects, isProduction } from "../../data/home";
 
-const isInternal = (href: string) => href.startsWith("/");
 ---
 
 <Section
@@ -20,12 +19,10 @@ const isInternal = (href: string) => href.startsWith("/");
 				{
 					labProjects.map((project, i) => {
 						const Wrapper = project.href ? "a" : "div";
-						const internal = project.href ? isInternal(project.href) : false;
-						const attrs = !project.href
-							? {}
-							: internal
-								? { href: project.href }
-								: { href: project.href, target: "_blank", rel: "noopener noreferrer" };
+						// Todas las tarjetas abren la app en otra pestaña.
+						const attrs = project.href
+							? { href: project.href, target: "_blank", rel: "noopener noreferrer" }
+							: {};
 						return (
 							<li class="cinta-item">
 								<Wrapper {...attrs} class="lab-card group" data-card>
@@ -37,7 +34,7 @@ const isInternal = (href: string) => href.startsWith("/");
 									</div>
 									<h3 class="mt-8 font-heading text-[1.875rem] leading-[1.05] text-ink">
 										{project.title}
-										{project.href && !internal && <span class="sr-only"> (se abre en otra pestaña)</span>}
+										{project.href && <span class="sr-only"> (se abre en otra pestaña)</span>}
 									</h3>
 									<p class="lab-summary mt-3 text-[0.9375rem] leading-relaxed text-ink-soft">
 										{project.summary}
