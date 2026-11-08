@@ -56,12 +56,46 @@ decisions:
       Las opciones se configuran en la sala antes de empezar y el juego las aplica durante
       la partida.
     why: La misma sala sirve para grupos distintos sin tocar el código.
-  - title: Un ranking por juego
-    context: Mezclar puntuaciones de juegos distintos no dice nada.
-    decision: Ranking separado por juego, con la fecha de la última partida.
-    why: Cada juego tiene su propia competición y se ve si está vivo.
+  - title: Un ranking por juego que se reinicia cada semana
+    context: Mezclar puntuaciones de juegos distintos no dice nada, y un ranking eterno deja de motivar.
+    decision: >-
+      Top 5 separado por juego, con las partidas y la fecha de la última, que empieza de
+      cero cada lunes de madrugada (hora de España).
+    why: Cada juego tiene su propia competición y siempre hay una semana nueva para entrar.
+  - title: La partida de dominó no se para si alguien se va
+    context: >-
+      En una mesa de cuatro, un jugador que se desconecta o no juega a tiempo bloquea a
+      los otros tres.
+    decision: >-
+      El servidor juega por quien agota su tiempo o pierde la conexión (modo automático,
+      con aviso de la jugada) hasta que retoma el control, y si faltan personas completa la
+      mesa con bots, siempre identificados como «Bot».
+    why: La partida sigue para todos y nadie confunde un bot con una persona.
 
-galleryPending: Capturas de la portada de la suite y de una partida en curso
+gallery:
+  - src: ../../assets/images/juegos/domino-mesa.webp
+    alt: Mesa de Dominó 3D con la cadena de fichas sobre el tapete verde y el tiempo del turno
+    caption: Dominó 3D. La mesa en 3D, con el turno y el tiempo de cada jugador.
+  - src: ../../assets/images/juegos/stop-sala.webp
+    alt: >-
+      Sala de ¡Stop! con el código, el botón de invitar, los jugadores conectados y las
+      opciones de validación, jugadores, segundos y rondas
+    caption: ¡Stop!. El anfitrión configura la partida antes de empezar.
+    shape: portrait
+  - src: ../../assets/images/juegos/domino-automatico.webp
+    alt: >-
+      Partida de Dominó 3D con el aviso «Modo automático» y el botón «Retomar el control»
+      junto a los marcadores de los cuatro jugadores
+    caption: Si se agota el tiempo o se pierde la conexión, el servidor juega por ti.
+  - src: ../../assets/images/juegos/stop-podio.webp
+    alt: Podio de fin de partida de ¡Stop! con medallas para el primer y el segundo puesto
+    caption: Fin de partida con podio y enlace al ranking del juego.
+    shape: portrait
+  - src: ../../assets/images/juegos/ranking.webp
+    alt: >-
+      Ranking de la semana de ¡Stop! con el top 5, la mejor puntuación, las partidas y la
+      fecha de la última partida de cada jugador
+    caption: Ranking semanal por juego. Empieza de cero cada lunes.
 
 architecture:
   summary: >-
@@ -73,6 +107,9 @@ architecture:
       note: El Dominó 3D se renderiza en el navegador
     - label: Núcleo compartido
       items: [Salas con código, Turnos, Votos, Puntuación]
+    - label: Servidor del dominó
+      items: [Mesas en tiempo real, Bots, Modo automático]
+      note: Juega por quien se desconecta o agota su tiempo
     - label: Datos
       items: [Supabase, PostgreSQL]
 
