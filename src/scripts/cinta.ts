@@ -1,9 +1,8 @@
 /**
- * Cinta: fila de tarjetas que avanza sola, en bucle.
+ * Cinta tipo Netflix: fila de tarjetas en bucle que avanza por páginas.
  * Marcado: [data-cinta] > [data-cinta-viewport] > [data-cinta-track] > li.
- * - Se detiene al pasar el ratón, al enfocar una tarjeta, al arrastrar, fuera
- *   de pantalla y con la pestaña oculta. El botón de pausa la detiene del todo.
- * - Se arrastra con el dedo o el ratón; las flechas avanzan una tarjeta.
+ * - No avanza sola: las flechas de los extremos pasan una página (las
+ *   tarjetas que caben a la vista) y se arrastra con el dedo o el ratón.
  * - Las copias que cierran el bucle son `inert` y aria-hidden.
  * - Con "reducir movimiento" no hay copias ni avance: scroll nativo con ajuste.
  */
@@ -17,13 +16,12 @@ document.querySelectorAll<HTMLElement>("[data-cinta]").forEach((root) => {
 	const track = root.querySelector<HTMLElement>("[data-cinta-track]")!;
 	const prev = root.querySelector<HTMLButtonElement>("[data-cinta-prev]")!;
 	const next = root.querySelector<HTMLButtonElement>("[data-cinta-next]")!;
-	const toggle = root.querySelector<HTMLButtonElement>("[data-cinta-toggle]")!;
 	const originals = Array.from(track.children) as HTMLElement[];
 
-	const SPEED = 26; // px por segundo
-	const RESUME_MS = 2500;
 	const gap = () => parseFloat(getComputedStyle(track).columnGap) || 0;
 	const step = () => originals[0].offsetWidth + gap();
+	/** Una página: las tarjetas completas que caben a la vista. */
+	const page = () => Math.max(1, Math.floor((viewport.clientWidth + gap()) / step())) * step();
 
 	// La cinta ya va dentro del contenedor: sin desplazamiento inicial.
 	const lead = () => 0;
@@ -39,19 +37,15 @@ document.querySelectorAll<HTMLElement>("[data-cinta]").forEach((root) => {
 
 	if (reduceMotion.matches) {
 		root.classList.add("is-static");
-		prev.addEventListener("click", () => viewport.scrollBy({ left: -step(), behavior: "smooth" }));
-		next.addEventListener("click", () => viewport.scrollBy({ left: step(), behavior: "smooth" }));
+		prev.addEventListener("click", () => viewport.scrollBy({ left: -page(), behavior: "smooth" }));
+		next.addEventListener("click", () => viewport.scrollBy({ left: page(), behavior: "smooth" }));
 		return;
 	}
 
 	let setW = 0;
 	let pos = 0;
 	let target: number | null = null;
-	let hover = false;
-	let focus = false;
 	let visible = false;
-	let userPaused = false;
-	let resumeAt = 0;
 	let last = 0;
 	let raf = 0;
 
@@ -76,9 +70,6 @@ document.querySelectorAll<HTMLElement>("[data-cinta]").forEach((root) => {
 	const paint = () => {
 		track.style.transform = `translate3d(${-pos}px,0,0)`;
 	};
-	const running = (now: number) =>
-		!userPaused && !hover && !focus && !dragging && visible && !document.hidden && now >= resumeAt;
-
 	const tick = (now: number) => {
 		const dt = Math.min(now - (last || now), 50) / 1000;
 		last = now;
@@ -89,14 +80,13 @@ document.querySelectorAll<HTMLElement>("[data-cinta]").forEach((root) => {
 				pos = target;
 				target = null;
 			}
-		} else if (running(now)) {
-			pos += SPEED * dt;
 		}
 		const wrapped = wrap(pos);
 		if (target !== null) target += wrapped - pos;
 		pos = wrapped;
 		paint();
-		raf = visible ? requestAnimationFrame(tick) : 0;
+		// Solo se anima mientras hay un desplazamiento pendiente.
+		raf = visible && target !== null ? requestAnimationFrame(tick) : 0;
 	};
 	const start = () => {
 		if (!raf) {
@@ -110,44 +100,22 @@ document.querySelectorAll<HTMLElement>("[data-cinta]").forEach((root) => {
 		if (visible) start();
 	}).observe(viewport);
 
-	const hold = () => {
-		resumeAt = performance.now() + RESUME_MS;
-	};
 	const go = (dir: number) => {
-		hold();
-		target = (target ?? pos) + dir * step();
+		target = (target ?? pos) + dir * page();
 		start();
 	};
 	prev.addEventListener("click", () => go(-1));
 	next.addEventListener("click", () => go(1));
 
-	toggle.addEventListener("click", () => {
-		userPaused = !userPaused;
-		toggle.setAttribute("aria-pressed", String(userPaused));
-		toggle.setAttribute("aria-label", userPaused ? "Reanudar el movimiento" : "Pausar el movimiento");
-		toggle.querySelector<HTMLElement>("[data-icon-pause]")!.hidden = userPaused;
-		toggle.querySelector<HTMLElement>("[data-icon-play]")!.hidden = !userPaused;
-	});
 
-	viewport.addEventListener("pointerenter", (e) => {
-		if (e.pointerType === "mouse") hover = true;
-	});
-	viewport.addEventListener("pointerleave", () => {
-		hover = false;
-	});
 
 	// Al enfocar una tarjeta con el teclado, se lleva a la vista.
 	track.addEventListener("focusin", (e) => {
-		focus = true;
 		const item = (e.target as HTMLElement).closest<HTMLElement>(".cinta-item");
 		if (item) {
 			target = item.offsetLeft - lead();
 			start();
 		}
-	});
-	track.addEventListener("focusout", () => {
-		focus = false;
-		hold();
 	});
 
 	// Arrastre con dedo o ratón.
@@ -184,7 +152,6 @@ document.querySelectorAll<HTMLElement>("[data-cinta]").forEach((root) => {
 		if (dragging) {
 			dragging = false;
 			viewport.classList.remove("is-dragging");
-			hold();
 		}
 	};
 	viewport.addEventListener("pointerup", end);
@@ -212,7 +179,7 @@ document.querySelectorAll<HTMLElement>("[data-cinta]").forEach((root) => {
 		{ passive: true },
 	);
 	document.addEventListener("visibilitychange", () => {
-		if (!document.hidden && visible) start();
+		if (!document.hidden && visible) paint();
 	});
 
 	layout();

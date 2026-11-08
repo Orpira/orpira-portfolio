@@ -5,7 +5,6 @@ import Pending from "../ui/Pending.astro";
 import { labProjects, isProduction } from "../../data/home";
 
 const isInternal = (href: string) => href.startsWith("/");
-const host = (href: string) => new URL(href).hostname.replace(/^www\./, "");
 ---
 
 <Section
@@ -51,16 +50,6 @@ const host = (href: string) => new URL(href).hostname.replace(/^www\./, "");
 											<Pending hint={project.pendingHint} />
 										)}
 									</div>
-									<div class="mt-5 flex items-center justify-between gap-3 border-t border-line pt-4">
-										<span class="t-data truncate text-ink-muted">
-											{!project.href ? "Sin enlace público" : internal ? "Ver caso de estudio" : host(project.href)}
-										</span>
-										{project.href && (
-											<span aria-hidden="true" class:list={["lab-arrow", internal && "is-internal"]}>
-												{internal ? "→" : "↗"}
-											</span>
-										)}
-									</div>
 								</Wrapper>
 							</li>
 						);
@@ -69,20 +58,12 @@ const host = (href: string) => new URL(href).hostname.replace(/^www\./, "");
 			</ul>
 		</div>
 
-		<div class="relative mt-6 flex items-center justify-end gap-2" data-cinta-controls>
-			<button type="button" class="cinta-btn" data-cinta-prev aria-label="Proyecto anterior">←</button>
-			<button
-				type="button"
-				class="cinta-btn"
-				data-cinta-toggle
-				aria-pressed="false"
-				aria-label="Pausar el movimiento"
-			>
-				<span data-icon-pause aria-hidden="true">❙❙</span>
-				<span data-icon-play aria-hidden="true" hidden>▶</span>
-			</button>
-			<button type="button" class="cinta-btn" data-cinta-next aria-label="Proyecto siguiente">→</button>
-		</div>
+		<button type="button" class="cinta-edge cinta-edge--prev" data-cinta-prev aria-label="Proyectos anteriores">
+			<span aria-hidden="true">‹</span>
+		</button>
+		<button type="button" class="cinta-edge cinta-edge--next" data-cinta-next aria-label="Más proyectos">
+			<span aria-hidden="true">›</span>
+		</button>
 	</div>
 </Section>
 
@@ -128,8 +109,56 @@ const host = (href: string) => new URL(href).hostname.replace(/^www\./, "");
 	.cinta.is-static .cinta-item {
 		scroll-snap-align: start;
 	}
-	.cinta.is-static [data-cinta-toggle] {
-		display: none;
+
+	/* Flechas de los extremos, como en Netflix: una franja sobre el borde de la
+	   cinta que aparece al pasar el ratón. En táctil se desliza con el dedo. */
+	.cinta {
+		position: relative;
+	}
+	.cinta-edge {
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		z-index: 2;
+		display: grid;
+		place-items: center;
+		width: 3.5rem;
+		color: rgb(var(--ink));
+		font-size: 2.75rem;
+		line-height: 1;
+		opacity: 0;
+		transition: opacity 0.25s ease;
+	}
+	.cinta-edge--prev {
+		left: 0;
+		background: linear-gradient(to right, rgb(var(--paper)) 15%, rgb(var(--paper) / 0));
+		border-radius: var(--radius-lg) 0 0 var(--radius-lg);
+	}
+	.cinta-edge--next {
+		right: 0;
+		background: linear-gradient(to left, rgb(var(--paper)) 15%, rgb(var(--paper) / 0));
+		border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+	}
+	.cinta-edge span {
+		transition: transform 0.2s ease;
+	}
+	.cinta-edge:hover span {
+		transform: scale(1.25);
+	}
+	.cinta-edge:focus-visible {
+		opacity: 1;
+		outline: 2px solid rgb(var(--accent));
+		outline-offset: -2px;
+	}
+	@media (hover: hover) {
+		.cinta:hover .cinta-edge {
+			opacity: 1;
+		}
+	}
+	@media (hover: none) {
+		.cinta-edge {
+			display: none;
+		}
 	}
 
 	.cinta-item {
@@ -142,7 +171,7 @@ const host = (href: string) => new URL(href).hostname.replace(/^www\./, "");
 		isolation: isolate;
 		display: flex;
 		height: 100%;
-		min-height: 22rem;
+		min-height: 19rem;
 		flex-direction: column;
 		overflow: hidden;
 		border: 1px solid rgb(var(--line));
@@ -186,60 +215,11 @@ const host = (href: string) => new URL(href).hostname.replace(/^www\./, "");
 		overflow: hidden;
 	}
 
-	.lab-arrow {
-		display: inline-grid;
-		place-items: center;
-		width: 2rem;
-		height: 2rem;
-		flex: none;
-		border: 1px solid rgb(var(--line));
-		border-radius: 999px;
-		color: rgb(var(--ink));
-		transition:
-			transform 0.3s ease,
-			background-color 0.3s ease,
-			color 0.3s ease,
-			border-color 0.3s ease;
-	}
-	a.lab-card:hover .lab-arrow,
-	a.lab-card:focus-visible .lab-arrow {
-		transform: rotate(45deg);
-	}
-	a.lab-card:hover .lab-arrow.is-internal,
-	a.lab-card:focus-visible .lab-arrow.is-internal {
-		transform: translateX(2px);
-		background: rgb(var(--ink));
-		border-color: rgb(var(--ink));
-		color: rgb(var(--paper));
-	}
 
-	.cinta-btn {
-		display: inline-grid;
-		place-items: center;
-		width: 2.75rem;
-		height: 2.75rem;
-		border: 1px solid rgb(var(--line));
-		border-radius: 999px;
-		color: rgb(var(--ink));
-		font-size: 0.95rem;
-		transition:
-			background-color 0.2s ease,
-			border-color 0.2s ease,
-			color 0.2s ease;
-	}
-	.cinta-btn:hover {
-		border-color: rgb(var(--ink));
-		background: rgb(var(--ink));
-		color: rgb(var(--paper));
-	}
-	.cinta-btn:focus-visible {
-		outline: 2px solid rgb(var(--accent));
-		outline-offset: 2px;
-	}
 
 	@media (prefers-reduced-motion: reduce) {
 		.lab-card,
-		.lab-arrow {
+		.cinta-edge {
 			transition: none;
 		}
 		a.lab-card:hover,
