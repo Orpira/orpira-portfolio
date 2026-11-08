@@ -8,6 +8,8 @@ import { createRateLimiter, getClientIp } from "../../lib/rate-limit";
 const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL;
 const serviceKey = import.meta.env.SUPABASE_SERVICE_ROLE_KEY;
 const contactWebhookUrl = import.meta.env.CONTACT_WEBHOOK_URL;
+// Secreto compartido con n8n: el webhook rechaza llamadas sin esta cabecera.
+const contactWebhookSecret = import.meta.env.CONTACT_WEBHOOK_SECRET;
 
 if (!supabaseUrl) {
 	throw new Error("PUBLIC_SUPABASE_URL no configurada");
@@ -176,6 +178,7 @@ export const POST: APIRoute = async ({ request }) => {
 					method: "POST",
 					headers: {
 						"Content-Type": "application/json",
+						...(contactWebhookSecret ? { "X-Webhook-Secret": contactWebhookSecret } : {}),
 					},
 					body: JSON.stringify({ name, email, message }),
 					signal: AbortSignal.timeout(5000),

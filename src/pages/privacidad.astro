@@ -5,6 +5,7 @@ import SiteLayout from "../layouts/SiteLayout.astro";
 
 // Texto legal migrado de la versión anterior (agosto de 2026). Cambio de octubre de 2026:
 // la sección «Datos que se recogen» incluye la analítica sin cookies de Vercel.
+// Cambio de noviembre de 2026: primera respuesta redactada con IA y revisada por Orlando.
 const sections = [
 	{
 		title: "Responsable del tratamiento",
@@ -23,6 +24,7 @@ const sections = [
 		title: "Finalidad y base jurídica",
 		body: [
 			"Los datos del formulario se utilizan exclusivamente para responder a tu solicitud de contacto y, si procede, gestionar una relación profesional o comercial. La base jurídica es tu consentimiento, que otorgas al marcar la casilla de aceptación antes de enviar el formulario.",
+			"Para responder antes, la primera respuesta a tu mensaje la redacta un asistente de inteligencia artificial que se presenta como tal. Te hace unas preguntas sobre lo que necesitas para que Orlando llegue a la primera conversación sabiendo de qué se trata. Orlando revisa cada mensaje antes de enviarlo y ninguna decisión sobre ti se toma de forma automatizada.",
 			"La medición agregada de visitas se basa en el interés legítimo de conocer el uso de la web para mejorarla.",
 		],
 	},
@@ -36,6 +38,7 @@ const sections = [
 		title: "Destinatarios y encargados",
 		body: [
 			"Los datos se almacenan en Supabase (infraestructura en la UE) y el sitio, junto con su analítica, se sirve mediante Vercel. Al enviar el formulario puede enviarse una notificación a través de un servicio automatizado de mensajería. Ninguna de estas plataformas recibe tus datos con fines publicitarios ni los cede a terceros.",
+			"Para redactar la respuesta, el contenido de la conversación se envía a Anthropic, proveedor del modelo de IA Claude, mediante su API. Anthropic está en Estados Unidos, por lo que este tratamiento puede implicar una transferencia internacional de datos. Los emails se envían y se reciben con iCloud Mail (Apple).",
 		],
 	},
 	{

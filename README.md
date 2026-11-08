@@ -55,6 +55,7 @@ versiones valores reales.
 - `PUBLIC_SUPABASE_URL`, `PUBLIC_SUPABASE_ANON_KEY` y
   `SUPABASE_SERVICE_ROLE_KEY`: conexion de Supabase para contacto y CRM.
 - `CONTACT_WEBHOOK_URL`: webhook opcional del formulario de contacto.
+- `CONTACT_WEBHOOK_SECRET`: secreto que se envía al webhook en la cabecera `X-Webhook-Secret` (ver `automatizaciones/agente-contacto`).
 
 Antes de desplegar el endurecimiento de la demo financiera, ejecuta
 `supabase/finance_movements.sql` en Supabase para retirar el acceso anonimo a
