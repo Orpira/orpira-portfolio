@@ -6,18 +6,21 @@
  * - Gira en 3D según la velocidad y dirección del movimiento.
  * - Solo con ratón (hover + pointer: fine) y sin prefers-reduced-motion.
  * - El bucle de animación se detiene cuando el cubo está quieto o fuera del hero.
- * - Se oculta sobre el cubo grande (no duplicar) y sobre enlaces y botones (no tapar su texto).
+ * - Se oculta sobre lo que indique `hideOver` (en el hero: el cubo grande, enlaces y botones).
+ * - Puede haber varios en la página, cada uno en su zona.
  */
 interface Props {
 	/** Selector del contenedor donde se activa. Por defecto, la sección padre. */
 	zone?: string;
 	size?: number;
+	/** Selector de elementos sobre los que el cubo se esconde. */
+	hideOver?: string;
 }
 
-const { zone = "#inicio", size = 32 } = Astro.props;
+const { zone = "#inicio", size = 32, hideOver = "[data-hero-cube], a, button" } = Astro.props;
 ---
 
-<div class="cursor-cube" aria-hidden="true" data-cursor-cube data-zone={zone} style={`--c: ${size}px;`}>
+<div class="cursor-cube" aria-hidden="true" data-cursor-cube data-zone={zone} data-hide-over={hideOver} style={`--c: ${size}px;`}>
 	<div class="cursor-cube__body">
 		<span class="cursor-cube__face cursor-cube__face--front"><span class="cursor-cube__pi" data-mark="π"></span></span>
 		<span class="cursor-cube__face cursor-cube__face--back"><span class="cursor-cube__pi" data-mark="π"></span></span>
@@ -94,11 +97,12 @@ const { zone = "#inicio", size = 32 } = Astro.props;
 </style>
 
 <script>
-	const cube = document.querySelector<HTMLElement>("[data-cursor-cube]");
 	const canHover = window.matchMedia("(hover: hover) and (pointer: fine)");
 	const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
-	if (cube && canHover.matches && !reduceMotion.matches) {
+	document.querySelectorAll<HTMLElement>("[data-cursor-cube]").forEach((cube) => {
+	if (canHover.matches && !reduceMotion.matches) {
+		const hideOver = cube.dataset.hideOver || "[data-hero-cube], a, button";
 		const zone = document.querySelector<HTMLElement>(cube.dataset.zone ?? "#inicio");
 		const body = cube.querySelector<HTMLElement>(".cursor-cube__body");
 
@@ -155,7 +159,7 @@ const { zone = "#inicio", size = 32 } = Astro.props;
 
 				// Se esconde sobre el cubo grande y sobre enlaces y botones (no tapa su texto).
 				const over = event.target as Element | null;
-				const hidden = Boolean(over?.closest("[data-hero-cube], a, button"));
+				const hidden = Boolean(over?.closest(hideOver));
 				cube.classList.toggle("is-visible", !hidden);
 				targetScale = hidden ? 0.6 : 1;
 				run();
@@ -177,4 +181,5 @@ const { zone = "#inicio", size = 32 } = Astro.props;
 			}).observe(zone);
 		}
 	}
+	});
 </script>

@@ -3,6 +3,7 @@ import Section from "../ui/Section.astro";
 import Tag from "../ui/Tag.astro";
 import Pending from "../ui/Pending.astro";
 import LabArt from "./LabArt.astro";
+import CursorCube from "../CursorCube.astro";
 import { labProjects, isProduction } from "../../data/home";
 
 ---
@@ -14,6 +15,7 @@ import { labProjects, isProduction } from "../../data/home";
 	title="Prototipos y pilotos <em class='t-accent'>en evolución.</em>"
 	intro="MVPs, pilotos y herramientas que siguen creciendo. Cuando uno se asienta con uso real, pasa a Proyectos."
 >
+	<CursorCube zone="#laboratorio" hideOver="button" />
 	<div class="cinta" data-cinta>
 		<div class="cinta-viewport" data-cinta-viewport>
 			<ul class="cinta-track" data-cinta-track role="list">
@@ -89,10 +91,6 @@ import { labProjects, isProduction } from "../../data/home";
 		padding-block: 1.5rem 3rem;
 		margin-block: -1.5rem -3rem;
 		touch-action: pan-y;
-		cursor: grab;
-	}
-	.cinta-viewport.is-dragging {
-		cursor: grabbing;
 	}
 	.cinta-viewport.is-dragging .lab-card {
 		pointer-events: none;
@@ -109,7 +107,6 @@ import { labProjects, isProduction } from "../../data/home";
 		overflow-x: auto;
 		scroll-snap-type: x mandatory;
 		scrollbar-width: none;
-		cursor: auto;
 		touch-action: auto;
 	}
 	.cinta.is-static .cinta-viewport::-webkit-scrollbar {
