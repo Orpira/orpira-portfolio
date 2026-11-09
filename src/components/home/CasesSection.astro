@@ -13,7 +13,7 @@ import Section from "../ui/Section.astro";
 import Tag from "../ui/Tag.astro";
 
 // Los casos salen de la colección (src/content/cases): una sola fuente de verdad.
-const cases = (await getCollection("cases")).sort((a, b) => a.data.order - b.data.order);
+const cases = (await getCollection("cases", (e) => e.data.section === "produccion")).sort((a, b) => a.data.order - b.data.order);
 ---
 
 <Section
@@ -21,7 +21,7 @@ const cases = (await getCollection("cases")).sort((a, b) => a.data.order - b.dat
 	index="01"
 	eyebrow="Proyectos"
 	title="Producto propio, <em class='t-accent'>en producción.</em>"
-	intro="Cuatro proyectos que muestran cómo construyo. Pasa por cada franja para abrirla."
+	intro="Tres proyectos que muestran cómo construyo. Pasa por cada franja para abrirla."
 >
 	<div class="persiana-v" data-persiana data-hover data-anchor>
 		{
