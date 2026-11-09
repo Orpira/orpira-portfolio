@@ -2,6 +2,7 @@
 import Section from "../ui/Section.astro";
 import Tag from "../ui/Tag.astro";
 import Pending from "../ui/Pending.astro";
+import LabArt from "./LabArt.astro";
 import { labProjects, isProduction } from "../../data/home";
 
 ---
@@ -25,27 +26,38 @@ import { labProjects, isProduction } from "../../data/home";
 							: {};
 						return (
 							<li class="cinta-item">
-								<Wrapper {...attrs} class="lab-card group" data-card>
+								<Wrapper {...attrs} class="lab-card group" data-card style={`--tone: ${project.tone}`}>
+									<div class="lab-stage">
+										<div class="lab-window">
+											<div class="lab-bar">
+												<span /><span /><span />
+												<em>{project.href ? new URL(project.href).hostname : "demo local"}</em>
+											</div>
+											<LabArt art={project.art} />
+										</div>
+									</div>
+									<div class="lab-body">
 									<div class="flex items-center justify-between gap-3">
 										<span class="t-data text-ink-muted">L—{String(i + 1).padStart(2, "0")}</span>
 										<Tag variant="status" status={project.status}>
 											{project.statusLabel}
 										</Tag>
 									</div>
-									<h3 class="mt-8 font-heading text-[1.875rem] leading-[1.05] text-ink">
+									<h3 class="mt-4 font-heading text-[1.75rem] leading-[1.05] text-ink">
 										{project.title}
 										{project.href && <span class="sr-only"> (se abre en otra pestaña)</span>}
 									</h3>
 									<p class="lab-summary mt-3 text-[0.9375rem] leading-relaxed text-ink-soft">
 										{project.summary}
 									</p>
-									<div class="mt-auto flex flex-wrap items-center gap-1.5 pt-6">
+									<div class="mt-auto flex flex-wrap items-center gap-1.5 pt-5">
 										{project.tags.map((tag) => (
 											<Tag>{tag}</Tag>
 										))}
 										{!project.href && !isProduction && project.pendingHint && (
 											<Pending hint={project.pendingHint} />
 										)}
+									</div>
 									</div>
 								</Wrapper>
 							</li>
@@ -159,7 +171,7 @@ import { labProjects, isProduction } from "../../data/home";
 	}
 
 	.cinta-item {
-		width: clamp(17rem, 78vw, 22rem);
+		width: clamp(17.5rem, 80vw, 24rem);
 		flex: none;
 	}
 
@@ -168,13 +180,11 @@ import { labProjects, isProduction } from "../../data/home";
 		isolation: isolate;
 		display: flex;
 		height: 100%;
-		min-height: 19rem;
 		flex-direction: column;
 		overflow: hidden;
 		border: 1px solid rgb(var(--line));
 		border-radius: var(--radius-lg);
 		background: rgb(var(--paper));
-		padding: 1.5rem;
 		transition:
 			transform 0.35s cubic-bezier(0.2, 0.7, 0.2, 1),
 			border-color 0.25s ease,
@@ -188,7 +198,7 @@ import { labProjects, isProduction } from "../../data/home";
 		z-index: -1;
 		background: radial-gradient(
 			260px circle at var(--mx, 50%) var(--my, 0%),
-			rgb(var(--accent) / 0.12),
+			rgb(var(--tone) / 0.14),
 			transparent 70%
 		);
 		opacity: 0;
@@ -205,9 +215,82 @@ import { labProjects, isProduction } from "../../data/home";
 		opacity: 1;
 	}
 
+	/* Portada: el color del proyecto con su pantalla en una ventana inclinada. */
+	.lab-stage {
+		position: relative;
+		overflow: hidden;
+		padding: 1.5rem 1.5rem 0;
+		background:
+			radial-gradient(120% 90% at 85% 0%, rgb(255 255 255 / 0.18), transparent 60%),
+			rgb(var(--tone));
+		perspective: 900px;
+	}
+	.lab-stage::after {
+		content: "";
+		position: absolute;
+		inset: 0;
+		background-image: radial-gradient(rgb(255 255 255 / 0.16) 1px, transparent 1px);
+		background-size: 14px 14px;
+		pointer-events: none;
+	}
+	.lab-window {
+		position: relative;
+		z-index: 1;
+		overflow: hidden;
+		border-radius: 0.75rem 0.75rem 0 0;
+		background: #fbfaf7;
+		box-shadow: 0 -2px 0 rgb(255 255 255 / 0.25), 0 24px 40px -18px rgb(0 0 0 / 0.55);
+		transform: translateY(10px) rotateX(10deg);
+		transform-origin: 50% 100%;
+		transition: transform 0.5s cubic-bezier(0.2, 0.7, 0.2, 1);
+	}
+	.lab-bar {
+		display: flex;
+		align-items: center;
+		gap: 5px;
+		padding: 0.5rem 0.75rem;
+		border-bottom: 1px solid #ece9e2;
+		background: #f4f2ed;
+	}
+	.lab-bar span {
+		width: 7px;
+		height: 7px;
+		border-radius: 999px;
+		background: #d8d4cb;
+	}
+	.lab-bar em {
+		margin-left: 0.5rem;
+		flex: 1;
+		overflow: hidden;
+		border-radius: 999px;
+		background: #fff;
+		padding: 0.1rem 0.6rem;
+		color: #8a877f;
+		font: 500 0.625rem/1.4 var(--font-mono, ui-monospace, monospace);
+		font-style: normal;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+	a.lab-card:hover .lab-window,
+	a.lab-card:focus-visible .lab-window {
+		transform: translateY(0) rotateX(0);
+	}
+	/* En táctil no hay "pasar por encima": la ventana va recta. */
+	@media (hover: none) {
+		.lab-window {
+			transform: none;
+		}
+	}
+	.lab-body {
+		display: flex;
+		flex: 1;
+		flex-direction: column;
+		padding: 1.25rem 1.5rem 1.5rem;
+	}
+
 	.lab-summary {
 		display: -webkit-box;
-		-webkit-line-clamp: 6;
+		-webkit-line-clamp: 4;
 		-webkit-box-orient: vertical;
 		overflow: hidden;
 	}
@@ -216,8 +299,12 @@ import { labProjects, isProduction } from "../../data/home";
 
 	@media (prefers-reduced-motion: reduce) {
 		.lab-card,
+		.lab-window,
 		.cinta-edge {
 			transition: none;
+		}
+		.lab-window {
+			transform: none;
 		}
 		a.lab-card:hover,
 		a.lab-card:focus-visible {
