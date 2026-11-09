@@ -1,0 +1,144 @@
+---
+/**
+ * Pantalla ilustrada de cada proyecto del Laboratorio: una versión
+ * simplificada de su interfaz, dibujada en SVG para que se lea a cualquier
+ * tamaño y se adapte al color del proyecto (var --tone).
+ */
+interface Props {
+	art: "delicias" | "empleo" | "inout" | "balance";
+}
+const { art } = Astro.props;
+const T = "rgb(var(--tone))";
+const T2 = "rgb(var(--tone) / 0.14)";
+const ink = "#1c1b19";
+const soft = "#8a877f";
+const line = "#e7e4dd";
+---
+
+<svg viewBox="0 0 320 196" class="block h-auto w-full" aria-hidden="true" font-family="ui-sans-serif, system-ui, sans-serif">
+	<rect width="320" height="196" fill="#fbfaf7" />
+	{
+		art === "delicias" && (
+			<g>
+				<text x="18" y="28" font-size="11" font-weight="600" fill={ink}>Carta</text>
+				<rect x="56" y="17" width="48" height="15" rx="7.5" fill={T} />
+				<text x="80" y="28" font-size="8" fill="#fff" text-anchor="middle">Panadería</text>
+				<text x="114" y="28" font-size="8" fill={soft}>Pastelería</text>
+				<text x="162" y="28" font-size="8" fill={soft}>Café</text>
+				{[0, 1, 2].map((i) => (
+					<g transform={`translate(${18 + i * 64} 44)`}>
+						<rect width="56" height="72" rx="8" fill="#fff" stroke={line} />
+						<circle cx="28" cy="26" r="15" fill={T2} />
+						<path d={i === 0 ? "M17 27 q11 -14 22 0 q-11 6 -22 0z" : i === 1 ? "M18 22 h20 v10 h-20z" : "M20 20 h16 l-3 14 h-10z"} fill={T} opacity="0.85" />
+						<rect x="8" y="48" width="34" height="5" rx="2.5" fill={ink} opacity="0.75" />
+						<rect x="8" y="58" width="22" height="5" rx="2.5" fill={T} />
+					</g>
+				))}
+				<g transform="translate(214 40)">
+					<rect width="92" height="132" rx="10" fill="#fff" stroke={line} />
+					<text x="10" y="20" font-size="9" font-weight="600" fill={ink}>Mesa 3</text>
+					<rect x="10" y="28" width="62" height="13" rx="6.5" fill={T2} />
+					<circle cx="18" cy="34.5" r="3" fill={T}>
+						<animate attributeName="opacity" values="1;0.3;1" dur="1.6s" repeatCount="indefinite" />
+					</circle>
+					<text x="25" y="37.5" font-size="7.5" fill={T}>Preparando</text>
+					{[0, 1, 2].map((i) => (
+						<g transform={`translate(10 ${54 + i * 18})`}>
+							<rect width={[44, 52, 38][i]} height="5" rx="2.5" fill={ink} opacity="0.6" />
+							<rect x="60" width="12" height="5" rx="2.5" fill={soft} opacity="0.6" />
+						</g>
+					))}
+					<rect x="10" y="110" width="72" height="14" rx="7" fill={ink} />
+					<text x="46" y="119.5" font-size="7.5" fill="#fff" text-anchor="middle">Seguir pedido</text>
+				</g>
+				<rect x="18" y="128" width="184" height="44" rx="10" fill={T} />
+				<text x="30" y="147" font-size="9" fill="#fff" font-weight="600">Escanea el QR de tu mesa</text>
+				<text x="30" y="161" font-size="7.5" fill="#fff" opacity="0.85">Pide y sigue el pedido en directo</text>
+				<g transform="translate(168 134)" fill="#fff">
+					<rect width="8" height="8" /><rect x="12" width="8" height="8" /><rect y="12" width="8" height="8" /><rect x="12" y="16" width="4" height="4" /><rect x="22" y="4" width="4" height="4" /><rect x="22" y="22" width="4" height="4" />
+				</g>
+			</g>
+		)
+	}
+	{
+		art === "empleo" && (
+			<g>
+				<text x="18" y="28" font-size="11" font-weight="600" fill={ink}>Candidaturas</text>
+				<rect x="242" y="16" width="60" height="16" rx="8" fill={T} />
+				<text x="272" y="27" font-size="7.5" fill="#fff" text-anchor="middle">+ Nueva</text>
+				{["Enviada", "Entrevista", "Oferta"].map((col, c) => (
+					<g transform={`translate(${18 + c * 96} 44)`}>
+						<rect width="88" height="136" rx="10" fill={c === 2 ? T2 : "#f3f1ec"} />
+						<text x="10" y="17" font-size="8" font-weight="600" fill={c === 2 ? T : ink}>{col}</text>
+						<text x="78" y="17" font-size="8" fill={soft} text-anchor="end">{[4, 2, 1][c]}</text>
+						{Array.from({ length: [3, 2, 1][c] }).map((_, k) => (
+							<g transform={`translate(8 ${26 + k * 36})`}>
+								<rect width="72" height="30" rx="7" fill="#fff" stroke={c === 2 ? T : line} />
+								<rect x="8" y="8" width={[44, 52, 36][k]} height="5" rx="2.5" fill={ink} opacity="0.7" />
+								<rect x="8" y="18" width="28" height="4" rx="2" fill={soft} opacity="0.6" />
+								{c === 2 && <circle cx="62" cy="15" r="5" fill={T} />}
+							</g>
+						))}
+					</g>
+				))}
+			</g>
+		)
+	}
+	{
+		art === "inout" && (
+			<g>
+				<rect x="18" y="16" width="148" height="164" rx="12" fill={T} />
+				<text x="92" y="42" font-size="8" fill="#fff" opacity="0.8" text-anchor="middle">Lunes · turno de mañana</text>
+				<text x="92" y="86" font-size="34" font-weight="600" fill="#fff" text-anchor="middle" letter-spacing="-1">08:02</text>
+				<circle cx="92" cy="98" r="2" fill="#fff">
+					<animate attributeName="opacity" values="1;0.2;1" dur="1s" repeatCount="indefinite" />
+				</circle>
+				<rect x="36" y="114" width="112" height="26" rx="13" fill="#fff" />
+				<text x="92" y="130.5" font-size="9" font-weight="600" fill={T} text-anchor="middle">Fichar entrada</text>
+				<text x="92" y="162" font-size="7.5" fill="#fff" opacity="0.8" text-anchor="middle">Funciona sin conexión</text>
+				<text x="182" y="30" font-size="10" font-weight="600" fill={ink}>Hoy</text>
+				{[
+					["Ana R.", "07:58", "Entrada"],
+					["Luis P.", "06:01", "Extra +1h"],
+					["Marta G.", "22:00", "Nocturna"],
+					["Jon A.", "14:03", "Salida"],
+				].map(([n, h, k], i) => (
+					<g transform={`translate(182 ${42 + i * 34})`}>
+						<rect width="122" height="28" rx="7" fill="#fff" stroke={line} />
+						<circle cx="14" cy="14" r="7" fill={T2} />
+						<text x="27" y="12" font-size="7.5" font-weight="600" fill={ink}>{n}</text>
+						<text x="27" y="22" font-size="6.5" fill={soft}>{h}</text>
+						<text x="114" y="17" font-size="6.5" fill={i === 1 ? T : soft} text-anchor="end" font-weight={i === 1 ? "600" : "400"}>{k}</text>
+					</g>
+				))}
+			</g>
+		)
+	}
+	{
+		art === "balance" && (
+			<g>
+				<text x="18" y="30" font-size="8" fill={soft}>Saldo del mes</text>
+				<text x="18" y="56" font-size="24" font-weight="600" fill={ink} letter-spacing="-0.5">2.480,35 €</text>
+				<rect x="18" y="64" width="54" height="13" rx="6.5" fill={T2} />
+				<text x="45" y="73" font-size="7" fill={T} text-anchor="middle">+12% ahorro</text>
+				<g transform="translate(18 92)">
+					{[38, 52, 30, 64, 46, 72, 58].map((h, i) => (
+						<rect x={i * 24} y={80 - h} width="14" height={h} rx="4" fill={i === 5 ? T : T2} />
+					))}
+				</g>
+				<g transform="translate(206 16)">
+					<rect width="98" height="164" rx="14" fill={ink} />
+					<rect x="38" y="10" width="22" height="4" rx="2" fill="#fff" opacity="0.25" />
+					<text x="49" y="44" font-size="8" fill="#fff" opacity="0.8" text-anchor="middle">Introduce tu PIN</text>
+					{[0, 1, 2, 3].map((i) => (
+						<circle cx={25 + i * 16} cy="60" r="4" fill={i < 3 ? "rgb(var(--tone))" : "none"} stroke="rgb(var(--tone))" />
+					))}
+					{Array.from({ length: 9 }).map((_, i) => (
+						<circle cx={25 + (i % 3) * 24} cy={86 + Math.floor(i / 3) * 22} r="8" fill="#fff" opacity="0.1" />
+					))}
+					<path d="M44 152 a5 5 0 0 1 10 0 v4 h-10z" fill="none" stroke="#fff" opacity="0.6" />
+				</g>
+			</g>
+		)
+	}
+</svg>

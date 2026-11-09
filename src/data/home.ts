@@ -141,6 +141,10 @@ export interface LabProject {
 	pendingHint?: string;
 	status: "live" | "building";
 	statusLabel: string;
+	/** Ilustración de la portada de la tarjeta (ver LabArt.astro). */
+	art: "delicias" | "empleo" | "inout" | "balance";
+	/** Color de identidad del proyecto, en canales RGB ("r g b"). */
+	tone: string;
 }
 
 export const labProjects: LabProject[] = [
@@ -150,6 +154,8 @@ export const labProjects: LabProject[] = [
 			"Pedidos y atención para una cafetería panadería de Málaga que solo tenía Instagram: carta online, QR por mesa, encargos para recoger y barra y cocina viendo cada pedido en directo.",
 		tags: ["React", "Fastify", "PostgreSQL", "n8n"],
 		href: "https://lasdelicias.orpira.es/",
+		art: "delicias",
+		tone: "184 92 56",
 		status: "building",
 		statusLabel: "Piloto",
 	},
@@ -159,6 +165,8 @@ export const labProjects: LabProject[] = [
 			"Sustituye el Excel con el que una entidad de empleo sigue las candidaturas de sus aspirantes: cada aspirante registra las suyas, los Excel antiguos se migran una vez (uno a uno o en bloque) y el equipo ve panel, próximas acciones y exportación.",
 		tags: ["Next.js", "Supabase", "ExcelJS"],
 		href: "https://laboratorio.orpira.es/",
+		art: "empleo",
+		tone: "23 114 110",
 		status: "building",
 		statusLabel: "MVP",
 	},
@@ -168,6 +176,8 @@ export const labProjects: LabProject[] = [
 			"Nueva versión de una herramienta que nació en Java para calcular las horas extra de una operación logística: fichaje que funciona sin conexión, turnos rotativos, aprobación de horas extra y liquidación minuto a minuto según la ley vigente en cada fecha.",
 		tags: ["React", "Fastify", "PostgreSQL", "PWA"],
 		href: "https://inout.orpira.es/",
+		art: "inout",
+		tone: "58 86 196",
 		status: "live",
 		statusLabel: "En línea",
 	},
@@ -177,6 +187,8 @@ export const labProjects: LabProject[] = [
 			"Finanzas personales con privacidad por diseño: los datos se quedan en el dispositivo. Web, PWA y app Android desde el mismo código, con bloqueo por PIN.",
 		tags: ["React", "IndexedDB", "PWA", "Capacitor"],
 		href: "https://private-balance.orpira.es/",
+		art: "balance",
+		tone: "109 79 200",
 		status: "building",
 		statusLabel: "Beta",
 	},
