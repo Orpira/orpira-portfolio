@@ -175,7 +175,11 @@ export const POST: APIRoute = async ({ request }) => {
 			);
 		}
 
-		if (contactWebhookUrl) {
+		if (contactWebhookUrl && !contactWebhookSecret) {
+			console.error(JSON.stringify({ correlationId, scope: "contact-webhook", reason: "missing-secret" }));
+		}
+
+		if (contactWebhookUrl && contactWebhookSecret) {
 			try {
 				const response = await fetch(contactWebhookUrl, {
 					method: "POST",
