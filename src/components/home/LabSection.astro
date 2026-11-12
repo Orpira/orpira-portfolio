@@ -4,7 +4,14 @@ import Tag from "../ui/Tag.astro";
 import Pending from "../ui/Pending.astro";
 import LabArt from "./LabArt.astro";
 import CursorCube from "../CursorCube.astro";
+import { getCollection } from "astro:content";
 import { labProjects, isProduction } from "../../data/home";
+
+// Casos de estudio del Laboratorio, por título: la tarjeta abre la app y, si el
+// proyecto tiene caso, debajo se enlaza.
+const caseByTitle = new Map(
+	(await getCollection("cases", (e) => e.data.section === "laboratorio")).map((e) => [e.data.title, `/casos/${e.id}`]),
+);
 
 ---
 
@@ -26,6 +33,7 @@ import { labProjects, isProduction } from "../../data/home";
 						const attrs = project.href
 							? { href: project.href, target: "_blank", rel: "noopener noreferrer" }
 							: {};
+						const caseHref = caseByTitle.get(project.title);
 						return (
 							<li class="cinta-item">
 								<Wrapper {...attrs} class="lab-card group" data-card style={`--tone: ${project.tone}`}>
@@ -62,6 +70,13 @@ import { labProjects, isProduction } from "../../data/home";
 									</div>
 									</div>
 								</Wrapper>
+								<p class="lab-case">
+									{caseHref && (
+										<a class="t-data link-underline text-ink-soft hover:text-ink" href={caseHref}>
+											Caso de estudio<span class="sr-only"> de {project.title}</span> <span aria-hidden="true">→</span>
+										</a>
+									)}
+								</p>
 							</li>
 						);
 					})
@@ -92,7 +107,8 @@ import { labProjects, isProduction } from "../../data/home";
 		margin-block: -1.5rem -3rem;
 		touch-action: pan-y;
 	}
-	.cinta-viewport.is-dragging .lab-card {
+	.cinta-viewport.is-dragging .lab-card,
+	.cinta-viewport.is-dragging .lab-case a {
 		pointer-events: none;
 	}
 	.cinta-track {
@@ -168,15 +184,26 @@ import { labProjects, isProduction } from "../../data/home";
 	}
 
 	.cinta-item {
+		display: flex;
+		flex-direction: column;
 		width: clamp(17.5rem, 80vw, 24rem);
 		flex: none;
+	}
+	/* Enlace al caso, bajo la tarjeta. La fila existe siempre para que todas las
+	   tarjetas midan lo mismo. */
+	.lab-case {
+		display: flex;
+		align-items: center;
+		height: 1.75rem;
+		margin-top: 0.75rem;
+		padding-inline: 0.25rem;
 	}
 
 	.lab-card {
 		position: relative;
 		isolation: isolate;
 		display: flex;
-		height: 100%;
+		flex: 1;
 		flex-direction: column;
 		overflow: hidden;
 		border: 1px solid rgb(var(--line));
