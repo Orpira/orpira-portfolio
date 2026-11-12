@@ -1,0 +1,154 @@
+# Redactado solo con hechos conocidos. Lo que falta está en `pending` o en valores null.
+# Repo Orpira/Inout (README y docs/reglas-liquidacion.md): app en inout.orpira.es.
+title: Inout
+order: 6
+section: laboratorio
+headline: >-
+  Control horario y liquidación de horas extra para una operación logística, con un kiosko
+  de fichaje que sigue funcionando sin conexión.
+summary: >-
+  Fichaje sin conexión, turnos rotativos, aprobación de horas extra y liquidación minuto a
+  minuto según la ley vigente en cada fecha.
+ogLine: Cada minuto, liquidado con la ley de su fecha.
+seoDescription: >-
+  Caso de estudio de Inout: control horario para una operación logística, con fichaje sin
+  conexión, turnos rotativos y liquidación de horas extra minuto a minuto.
+role: Producto · Arquitectura · Full Stack
+platform: Web (PWA)
+status: live
+statusLabel: En línea
+tags: [React, TypeScript, Fastify, PostgreSQL, PWA]
+links:
+  - label: Abrir Inout
+    href: https://inout.orpira.es/
+  - label: Ver el código
+    href: https://github.com/Orpira/Inout
+
+problem:
+  title: Las horas extra de una bodega no caben en una fórmula fija.
+  paragraphs:
+    - >-
+      Inout nació en Java para calcular las horas extra de una operación logística con dos
+      tipos de personal. El administrativo tiene horario fijo, y salir unos minutos tarde no
+      es una hora extra. El de bodega trabaja por turnos rotativos, y cuando un despacho
+      alarga el turno hay que pagar ese tiempo con el recargo nocturno, dominical o festivo
+      que corresponda.
+    - >-
+      La legislación laboral colombiana complica el cálculo, porque cambia por fechas: la
+      jornada semanal se reduce por tramos, la jornada nocturna empieza antes y el recargo
+      dominical sube cada año. La versión anterior calculaba con valores fijos y por franjas
+      horarias, fallaba al cruzar la medianoche y perdía marcaciones cuando la tablet se
+      quedaba sin red.
+  pending:
+    - Cuántos empleados fichan y cuántos turnos se liquidan al mes
+
+beforeAfter:
+  - before: El valor de la hora se calculaba siempre con el mismo divisor.
+    after: Se calcula con la jornada legal vigente en la fecha de cada turno.
+  - before: Si un turno se quedaba sin salida, el sistema inventaba una.
+    after: El turno pasa a «Por revisar» y un supervisor registra la hora real.
+  - before: Sin red, las marcaciones se perdían al recargar la página.
+    after: El kiosko guarda cada marcación y la envía al recuperar la conexión, sin duplicados.
+  - before: El historial de cambios era un campo de texto.
+    after: Cada corrección queda registrada con usuario, motivo y valores antes y después.
+
+decisions:
+  - title: Liquidar minuto a minuto
+    context: El cálculo por franjas necesitaba casos especiales y fallaba cuando un turno cruzaba la medianoche.
+    decision: >-
+      Cada minuto trabajado se clasifica con las normas vigentes en la fecha de ese minuto,
+      en hora de Colombia: ordinario o extra, diurno o nocturno, laborable, domingo o festivo.
+    why: La medianoche, el paso a domingo o festivo y los cambios de norma se resuelven sin casos especiales.
+  - title: Las normas tienen fecha de vigencia
+    context: La jornada semanal, el inicio de la jornada nocturna y el recargo dominical cambian por ley en fechas concretas.
+    decision: >-
+      Los parámetros legales se guardan con su fecha de entrada en vigor, incluidos los
+      cambios ya aprobados para fechas futuras. El calendario de festivos se calcula y se
+      puede ajustar desde el panel.
+    why: Un turno antiguo se liquida con la norma de su día, y el próximo cambio legal no exige tocar el código.
+  - title: Un único paquete de reglas para el servidor y el cliente
+    context: Las reglas duplicadas en dos sitios acaban dando resultados distintos.
+    decision: >-
+      Festivos, parámetros legales y motor de liquidación viven en un paquete TypeScript sin
+      dependencias. El servidor lo usa para liquidar y el cliente para mostrar la franja
+      nocturna, los festivos y la jornada legal.
+    why: Las reglas están en un solo sitio y cubiertas por pruebas.
+  - title: Fichar aunque no haya conexión
+    context: La tablet de la entrada de una bodega no siempre tiene red.
+    decision: >-
+      El kiosko es una PWA que abre sin red, reconoce a cada empleado con un directorio local
+      y guarda cada marcación con un identificador único. Al recuperar la conexión envía la
+      cola en orden, y el servidor corrige el desfase si la tablet tenía la hora mal.
+    why: Nadie se queda sin fichar, reenviar no duplica nada y lo que no se puede aplicar llega a un supervisor.
+  - title: Las horas extra del personal administrativo se aprueban
+    context: Quedarse diez minutos más en la oficina no debe pagarse como hora extra sin que nadie lo decida.
+    decision: >-
+      Cada horario define su tolerancia y si las extras requieren aprobación. Un supervisor
+      las aprueba enteras, en parte o las rechaza, siempre con motivo. Si después se corrigen
+      las horas del turno, la aprobación se anula y vuelve a quedar pendiente.
+    why: La liquidación refleja lo que la empresa reconoce, y queda constancia de quién lo decidió.
+  - title: Las pruebas se repiten en tres zonas horarias
+    context: La app se desarrolla en España y se usa en Colombia.
+    decision: >-
+      En cada cambio, la integración continua ejecuta las pruebas en UTC, en hora de Madrid y
+      en hora de Bogotá, contra un PostgreSQL real.
+    why: El resultado de una liquidación no puede depender de la zona horaria del servidor.
+
+galleryPending: Capturas del kiosko de marcación, del panel de supervisión y de una liquidación
+
+architecture:
+  summary: >-
+    Un monorepo con tres piezas: un paquete de dominio sin dependencias, una API Fastify con
+    PostgreSQL y una PWA en React. En producción la API sirve también la web: un solo proceso
+    y un solo origen.
+  layers:
+    - label: Kiosko
+      items: [Marcación, Directorio local, Cola sin conexión]
+      note: Tablet en la entrada, con teclado numérico, lector de código de barras o cámara.
+    - label: Panel
+      items: [Personal en turno, Extras por aprobar, Liquidación, Horarios, Festivos]
+      note: Acceso con sesión y rol de administrador o supervisor.
+    - label: Dominio
+      items: [Festivos, Parámetros legales, Motor de liquidación]
+      note: Paquete compartido por el servidor y el cliente.
+    - label: Servidor
+      items: [Fastify, Drizzle ORM, PostgreSQL]
+      note: En Docker, con las migraciones aplicadas al arrancar.
+
+stack:
+  - layer: Interfaz
+    tech: [React, TypeScript, Vite, Tailwind CSS, TanStack Query]
+    why: Una sola app para el kiosko y el panel de supervisión.
+  - layer: Sin conexión
+    tech: [PWA, Workbox]
+    why: El kiosko abre y ficha aunque la tablet se reinicie sin red.
+  - layer: API
+    tech: [Node.js, Fastify, Zod]
+    why: Validación de cada petición, sesiones por rol y límites de uso.
+  - layer: Datos
+    tech: [PostgreSQL, Drizzle ORM]
+    why: Marcaciones, líneas de liquidación y auditoría en tablas normalizadas.
+  - layer: Calidad
+    tech: [Vitest, GitHub Actions]
+    why: El motor de liquidación y la API se prueban en cada cambio.
+  - layer: Despliegue
+    tech: [Docker]
+    why: La API y la web en un único contenedor.
+
+results:
+  - value: "8"
+    label: conceptos de liquidación, de la hora ordinaria a la extra nocturna festiva
+  - value: "3"
+    label: zonas horarias en las que se repiten las pruebas en cada cambio
+  - value: null
+    label: empleados que fichan al mes
+    pendingHint: Empleados o turnos que pasan por la app al mes
+
+learned:
+  - Una regla legal con fecha no es una constante, es un dato con vigencia.
+  - Guardar sin conexión no basta. Hay que poder reenviar sin duplicar.
+  - Si el sistema no sabe una hora, es mejor que pregunte a que la invente.
+
+next: >-
+  Validar con nómina los supuestos de liquidación de los domingos y de los días no
+  laborables de cada horario.
