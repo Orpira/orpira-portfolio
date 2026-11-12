@@ -1,0 +1,145 @@
+# Redactado solo con hechos conocidos. Lo que falta está en `pending` o en valores null.
+# El repositorio es privado y la entidad no se nombra. Demo en laboratorio.orpira.es.
+title: Seguimiento de empleabilidad
+order: 7
+section: laboratorio
+headline: >-
+  Una plataforma que sustituye los Excel con los que una entidad de empleo sigue las
+  candidaturas de sus aspirantes, sin cambiar su forma de trabajar.
+summary: >-
+  Cada aspirante registra sus candidaturas, los Excel antiguos se migran una vez (uno a uno
+  o en bloque) y el equipo ve panel, próximas acciones y exportación.
+ogLine: Del Excel de cada aspirante a un panel para todo el equipo.
+seoDescription: >-
+  Caso de estudio de una plataforma de seguimiento de empleabilidad: candidaturas por
+  aspirante, migración de Excel antiguos, panel del equipo y permisos por rol.
+role: Producto · Full Stack · Datos
+platform: Web
+status: building
+statusLabel: MVP
+tags: [Next.js, TypeScript, Supabase, PostgreSQL, ExcelJS]
+links:
+  - label: Abrir la demo
+    href: https://laboratorio.orpira.es/
+
+problem:
+  title: Un Excel por aspirante no se puede seguir en equipo.
+  paragraphs:
+    - >-
+      Una entidad de empleo acompaña a sus aspirantes en la búsqueda de trabajo, y cada
+      aspirante anota sus candidaturas en una hoja de Excel: empresa, puesto, estado,
+      contacto y próxima acción. Con un archivo por persona, el equipo no tiene una vista
+      de conjunto, las próximas acciones se quedan en una celda y cada hoja acumula sus
+      propias erratas y formatos.
+    - >-
+      La condición era no cambiar el método de trabajo. La plataforma tenía que usar las
+      mismas columnas que el Excel, admitir a quien empieza de cero y recoger a quien ya
+      llevaba meses apuntando en su archivo.
+  pending:
+    - Cuántos aspirantes y candidaturas sigue la entidad
+
+beforeAfter:
+  - before: Cada aspirante lleva sus candidaturas en su propio Excel.
+    after: Las registra en la plataforma, en un formulario con las mismas columnas.
+  - before: Para saber cómo va alguien, el orientador tiene que pedir su archivo y abrirlo.
+    after: El equipo ve un panel con las candidaturas por estado y quién necesita atención.
+  - before: Las próximas acciones se quedan en una celda del Excel.
+    after: Aparecen en una lista, con las vencidas a la vista.
+  - before: Pasar los Excel antiguos a otro sistema sería copiarlos a mano.
+    after: Se suben una vez, de uno en uno o en bloque, y se revisan antes de guardar.
+
+decisions:
+  - title: Las mismas columnas que el Excel
+    context: Una herramienta que obliga a cambiar la forma de trabajar no se adopta.
+    decision: >-
+      El formulario y la tabla de candidaturas repiten las columnas del Excel original, y
+      todo se puede exportar a un CSV que se abre en Excel con sus tildes.
+    why: Nadie tiene que aprender un método nuevo, y los datos siempre se pueden sacar.
+  - title: Migrar una vez, revisando antes de guardar
+    context: Los Excel reales traen erratas, formatos distintos y cabeceras fuera de sitio.
+    decision: >-
+      La lectura localiza la cabecera aunque esté desplazada y normaliza estados, modalidad,
+      localidad, contacto y fechas. El equipo revisa el resultado fila a fila y puede excluir
+      las que quiera. Volver a subir el mismo archivo no duplica nada.
+    why: Los datos entran limpios y nadie pierde lo que ya había apuntado.
+  - title: Carga en bloque para la cartera existente
+    context: Subir los archivos de uno en uno no es viable cuando hay muchos aspirantes.
+    decision: >-
+      Se pueden subir varios Excel a la vez o un archivo comprimido. Cada aspirante se
+      reconoce por el nombre del archivo o se elige a mano, y después se le da acceso con
+      una invitación por correo o una contraseña temporal.
+    why: El equipo migra toda su cartera en una sesión y decide cuándo entra cada persona.
+  - title: Toda migración se puede deshacer
+    context: Cargar datos de otra persona da respeto si no hay vuelta atrás.
+    decision: >-
+      Se conserva el Excel original en un almacén privado y un historial de cada migración.
+      La última de cada aspirante se puede deshacer, y cada cambio en una candidatura queda
+      registrado.
+    why: Un error en una carga se corrige en un clic, sin tocar la base de datos.
+  - title: Los permisos viven en la base de datos
+    context: Son datos personales de gente que busca empleo, y no todo el equipo debe ver ni editar lo mismo.
+    decision: >-
+      Cuatro roles con permisos por fila en PostgreSQL: administración, orientación, consulta
+      y aspirante. Un aspirante solo ve su ficha, un orientador ve a sus aspirantes y el
+      perfil de consulta no puede editar.
+    why: Aunque la interfaz tuviera un fallo, la base de datos no entrega datos de otra persona.
+  - title: Las altas las hace el equipo
+    context: Una plataforma con datos personales no puede tener el registro abierto.
+    decision: >-
+      El registro público está desactivado. Cada cuenta la crea el equipo, con invitación
+      por correo o con una contraseña temporal que el aspirante cambia al entrar.
+    why: Solo entra quien la entidad ha invitado.
+
+galleryPending: Capturas del panel del equipo, de «Mi seguimiento» y de la revisión de una migración, con datos de demostración
+
+architecture:
+  summary: >-
+    Una app Next.js desplegada en Vercel sobre Supabase: PostgreSQL con permisos por fila,
+    autenticación y un almacén privado para los Excel originales.
+  layers:
+    - label: Aspirante
+      items: [Mi seguimiento, Candidaturas, Próximas acciones]
+      note: Cada aspirante ve y edita solo lo suyo.
+    - label: Equipo
+      items: [Panel, Aspirantes, Candidaturas, Acciones, Empresas]
+      note: Con roles de administración, orientación y consulta.
+    - label: Migración
+      items: [Lectura del Excel, Normalización, Revisión, Historial]
+      note: De un archivo o en bloque, con opción de deshacer.
+    - label: Datos
+      items: [PostgreSQL, Permisos por fila, Historial de cambios, Almacén privado]
+      note: En un proyecto de Supabase alojado en la Unión Europea.
+
+stack:
+  - layer: Interfaz
+    tech: [Next.js, React, TypeScript, Tailwind CSS]
+    why: Páginas y acciones de servidor en un mismo proyecto.
+  - layer: Datos
+    tech: [Supabase, PostgreSQL]
+    why: Autenticación, permisos por fila y almacenamiento sin mantener un servidor propio.
+  - layer: Excel
+    tech: [ExcelJS, JSZip]
+    why: Leer los archivos originales, sueltos o comprimidos, y exportar.
+  - layer: Despliegue
+    tech: [Vercel]
+    why: Cada cambio se publica con una vista previa.
+
+results:
+  - value: "4"
+    label: roles con permisos distintos, aplicados en la base de datos
+  - value: "9"
+    label: estados posibles de una candidatura, de identificada a contratado
+  - value: "200"
+    label: archivos de Excel como máximo en una carga en bloque
+  - value: null
+    label: aspirantes en la plataforma
+    pendingHint: Aspirantes y candidaturas activas
+
+learned:
+  - Sustituir un Excel empieza por respetar sus columnas.
+  - Migrar datos reales es sobre todo limpiarlos.
+  - Poder deshacer una carga es lo que da la confianza para hacerla.
+
+next: >-
+  Avisar por correo de las acciones vencidas, para que ni el aspirante ni su orientador
+  dependan de entrar a mirar.
