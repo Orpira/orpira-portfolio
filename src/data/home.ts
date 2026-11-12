@@ -57,6 +57,7 @@ const P = {
 	balance: { label: "Private Balance", href: "/casos/private-balance" },
 	domino: { label: "Dominó 3D", href: "https://domino-3d.orpira.es/" },
 	delicias: { label: "Las Delicias", href: "/casos/las-delicias" },
+	inout: { label: "Inout", href: "/casos/inout" },
 };
 
 export const capabilities: Capability[] = [
@@ -64,7 +65,7 @@ export const capabilities: Capability[] = [
 		title: "Apps web y PWA",
 		summary: "Aplicaciones que se instalan desde el navegador, funcionan sin conexión y guardan los datos donde tienen que estar.",
 		tech: ["React", "TypeScript", "IndexedDB", "PWA"],
-		proof: [P.delicias, P.balance, P.webwiz],
+		proof: [P.delicias, P.balance, P.webwiz, P.inout],
 	},
 	{
 		title: "Android desde el mismo código",
