@@ -14,6 +14,10 @@ if (
   return Astro.redirect("/dashboard", 303);
 }
 
+const leadDateFormat = new Intl.DateTimeFormat("es-ES", {
+  timeZone: "Europe/Madrid",
+});
+
 const { data: leads, error } = await supabaseAdmin
   .from("contacts")
   .select("id, name, email, lead_type, priority, lead_score, notified, created_at")
@@ -222,9 +226,7 @@ const pending =
                     <td class="p-4">
 
                         {
-                        new Date(
-                            lead.created_at
-                        ).toLocaleDateString("es-ES")
+                        leadDateFormat.format(new Date(lead.created_at))
                         }
 
                     </td>
