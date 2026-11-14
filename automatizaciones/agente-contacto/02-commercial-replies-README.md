@@ -16,3 +16,23 @@ Esta fase añade persistencia de borradores a `public.contacts`, sin modificar l
 6. Solicitar aprobación expresa antes de habilitar SMTP o activar envío automático.
 
 **Criterio de aceptación:** una clasificación genera un único borrador, nunca un envío; el CRM podrá mostrar estados reales solo cuando esté implementada la lectura del historial.
+
+## Editor del CRM y conexión con n8n
+
+- En el flujo de captación, el paso que completa la clasificación debe llamar a
+  `complete_contact_ai_with_draft` con los mismos argumentos de
+  `complete_contact_ai` y el texto generado en `p_body`. La función guarda
+  clasificación y borrador juntos. Conserva la rama de notificaciones existente.
+- La ficha consulta `commercial_replies` por el ID del lead. Si todavía no hay
+  borrador, se puede redactar y guardar uno desde el CRM.
+- Tras aplicar `05-crm-reply-editor.sql`, el editor puede guardar borradores.
+  El flujo de entrega es independiente de la captación. Importa
+  `entrega-comercial-manual.workflow.json` y asigna las credenciales de Supabase,
+  iCloud y autenticación por cabecera `X-Webhook-Secret`.
+- Configura `CRM_REPLY_WEBHOOK_URL` con la URL HTTPS de producción de ese
+  webhook y `CRM_REPLY_WEBHOOK_SECRET` con el mismo valor de la credencial
+  de cabecera. Mantén `CRM_REPLY_SEND_ENABLED=false` y el bloqueo interno
+  del workflow hasta contar con autorización expresa para habilitar la entrega.
+- Una solicitud manual aprueba la versión visible de la respuesta. Supabase
+  reserva una sola entrega por lead. Si el resultado SMTP queda incierto, la ficha
+  conserva el estado para revisión y bloquea nuevos envíos de esa respuesta.

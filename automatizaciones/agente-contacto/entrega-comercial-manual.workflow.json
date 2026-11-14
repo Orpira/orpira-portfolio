@@ -3,14 +3,21 @@
   "nodes": [
     {
       "id": "f9006d80-335a-4fde-92d0-000000000001",
-      "name": "Inicio manual",
-      "type": "n8n-nodes-base.manualTrigger",
-      "typeVersion": 1,
+      "name": "Solicitud manual del CRM",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
       "position": [
         0,
         0
       ],
-      "parameters": {}
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "orpira-crm-enviar-respuesta",
+        "authentication": "headerAuth",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "webhookId": "f9006d80-335a-4fde-92d0-000000000001"
     },
     {
       "id": "f9006d80-335a-4fde-92d0-000000000002",
@@ -22,7 +29,7 @@
         0
       ],
       "parameters": {
-        "jsCode": "const sendingEnabled = false;\nconst replyId = '';\nif (!sendingEnabled) return [];\nif (!/^[0-9a-f-]{36}$/i.test(replyId)) throw new Error('Indica un ID de borrador aprobado');\nreturn [{ json: { reply_id: replyId } }];"
+        "jsCode": "const sendingEnabled = false;\nif (!sendingEnabled) return [];\nconst replyId = $input.first().json.body?.reply_id;\nif (typeof replyId !== 'string' || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(replyId)) return [];\nreturn [{ json: { reply_id: replyId } }];"
       }
     },
     {
@@ -128,17 +135,6 @@
     }
   ],
   "connections": {
-    "Inicio manual": {
-      "main": [
-        [
-          {
-            "node": "Bloqueo de envío",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Bloqueo de envío": {
       "main": [
         [
@@ -184,6 +180,17 @@
         [
           {
             "node": "Enviar por SMTP iCloud",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Solicitud manual del CRM": {
+      "main": [
+        [
+          {
+            "node": "Bloqueo de envío",
             "type": "main",
             "index": 0
           }
