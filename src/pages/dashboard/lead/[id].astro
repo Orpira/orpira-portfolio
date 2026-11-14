@@ -1,4 +1,5 @@
 ---
+import { getCrmReplyDelivery } from "../../../lib/crm-reply-delivery";
 import CRMLayout from "../../../layouts/CRMLayout.astro";
 import { supabaseAdmin } from "../../../lib/supabase-admin";
 import {
@@ -25,6 +26,40 @@ const { data: lead } = await supabaseAdmin
 if (!lead) {
   return Astro.redirect("/dashboard/leads");
 }
+
+const { data: replies, error: repliesError } = await supabaseAdmin
+  .from("commercial_replies")
+  .select("id, subject, body, status, created_at, sent_at, smtp_message_id, approved_recipient, send_started_at, send_finished_at")
+  .eq("contact_id", lead.id)
+  .order("created_at", { ascending: false });
+
+const draft = replies?.find((reply) => reply.status === "draft");
+const showEditor = !repliesError && (draft || !replies?.length);
+const canSend = Boolean(getCrmReplyDelivery());
+const replyMessages: Record<string, string> = {
+  saved: "Borrador guardado.",
+  requested: "Solicitud recibida. Actualizá la ficha para consultar el resultado.",
+  unconfirmed: "No se pudo confirmar la solicitud. Revisá el historial antes de volver a solicitarla.",
+  disabled: "El envío de correo está deshabilitado.",
+  invalid: "Revisá el asunto y el contenido de la respuesta.",
+  conflict: "El borrador cambió o ya entró en envío. Actualizá la ficha.",
+  error: "No se pudo guardar la respuesta.",
+};
+const feedback = replyMessages[Astro.url.searchParams.get("reply") ?? ""];
+const replyUrl = `/dashboard/lead/${lead.id}/reply`;
+const replyStatuses: Record<string, string> = {
+  draft: "Borrador",
+  sending: "Envío en curso",
+  sent: "Enviado",
+  failed: "Envío fallido",
+  unknown: "Resultado sin confirmar",
+};
+
+const dateFormat = new Intl.DateTimeFormat("es-ES", {
+  dateStyle: "medium",
+  timeStyle: "short",
+  timeZone: "Europe/Madrid",
+});
 ---
 
 <CRMLayout title={lead.name}>
@@ -116,6 +151,69 @@ if (!lead) {
 
   </div>
 
+  <section id="respuesta" class="rounded-xl bg-slate-900 p-6" aria-labelledby="reply-title">
+    <h2 id="reply-title" class="mb-4 font-bold">Responder al lead</h2>
+    {feedback && <p role="status" class="mb-4 text-sky-200">{feedback}</p>}
+    {showEditor && (
+      <form method="post" action={replyUrl} class="space-y-4">
+        {draft && <input type="hidden" name="replyId" value={draft.id} />}
+        <input type="hidden" name="recipient" value={lead.email} />
+        <p class="break-all text-sm text-slate-300">Destinatario {lead.email}</p>
+        <label class="block">
+          <span class="block">Asunto</span>
+          <input name="subject" maxlength="200" required readonly={Boolean(draft?.approved_recipient)}
+            value={draft?.subject ?? "Re: Consulta a OrPiRa"}
+            class="mt-1 w-full rounded-lg border-slate-600 bg-slate-800 text-white" />
+        </label>
+        <label class="block">
+          <span class="block">Mensaje</span>
+          <textarea name="body" maxlength="10000" rows="8" required readonly={Boolean(draft?.approved_recipient)}
+            class="mt-1 w-full rounded-lg border-slate-600 bg-slate-800 text-white">{draft?.body ?? ""}</textarea>
+        </label>
+        <div class="flex flex-wrap gap-3">
+          {!draft?.approved_recipient && (
+            <button name="action" value="save" class="rounded-lg bg-slate-700 px-4 py-2 font-semibold text-white">
+              Guardar borrador
+            </button>
+          )}
+          {canSend && draft && (
+            <button name="action" value="send" class="rounded-lg bg-sky-700 px-4 py-2 font-semibold text-white">
+              {draft.approved_recipient ? "Volver a solicitar envío" : "Enviar correo"}
+            </button>
+          )}
+        </div>
+        {!canSend && <p class="text-sm text-slate-300">El envío de correo está deshabilitado.</p>}
+      </form>
+    )}
+  </section>
+
+  <section class="bg-slate-900 rounded-xl p-6" aria-labelledby="commercial-replies-title">
+    <h2 id="commercial-replies-title" class="font-bold mb-4">Historial de respuestas comerciales</h2>
+    {repliesError ? (
+      <p class="text-amber-300">El historial no está disponible en este momento.</p>
+    ) : !replies?.length ? (
+      <p class="text-slate-400">Todavía no hay respuestas registradas para este lead.</p>
+    ) : (
+      <ul class="space-y-4">
+        {replies.map((reply) => (
+          <li class="rounded-lg border border-slate-700 p-4">
+            <h3 class="font-semibold break-words">{reply.subject}</h3>
+            <p class="text-sm text-slate-400">{replyStatuses[reply.status] ?? reply.status}</p>
+            <p class="text-sm text-slate-400">
+              Creado el <time datetime={reply.created_at}>{dateFormat.format(new Date(reply.created_at))}</time>
+            </p>
+            {reply.sent_at && (
+              <p class="text-sm text-slate-400">
+                Enviado el <time datetime={reply.sent_at}>{dateFormat.format(new Date(reply.sent_at))}</time>
+              </p>
+            )}
+            {reply.smtp_message_id && <p class="text-sm text-slate-400 break-all">ID SMTP {reply.smtp_message_id}</p>}
+            <p class="mt-3 whitespace-pre-wrap break-words text-slate-300">{reply.body}</p>
+          </li>
+        ))}
+      </ul>
+    )}
+  </section>
 </div>
 
 </CRMLayout>
