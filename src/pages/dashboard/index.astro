@@ -5,7 +5,7 @@ const error =
 const errorMessage =
   error === "2"
     ? "Demasiados intentos. Espera 15 minutos"
-    : "Contrasena incorrecta";
+    : "Correo o contraseña incorrectos, o cuenta sin acceso al CRM.";
 ---
 
 <html lang="es">
@@ -30,10 +30,15 @@ const errorMessage =
   method="POST"
   action="/dashboard/login"
 >
+  <label for="email">Correo electrónico</label>
+  <input type="email" id="email" name="email" autocomplete="username" required />
+
+  <label for="password">Contraseña</label>
   <input
     type="password"
+    id="password"
+    autocomplete="current-password"
     name="password"
-    placeholder="Contraseña"
     required
   />
 
