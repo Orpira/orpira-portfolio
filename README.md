@@ -49,13 +49,18 @@ El sitio estará disponible en `http://localhost:4321`
 Copia los nombres de `.env.example` en tu entorno local y en Vercel. No
 versiones valores reales.
 
-- `ADMIN_PASSWORD`: contrasena unica para acceder al CRM.
-- `ADMIN_SESSION_SECRET`: secreto aleatorio de al menos 32 caracteres para
-  firmar sesiones. Puedes generarlo con `openssl rand -base64 48`.
+- `CRM_ADMIN_USER_IDS`: UUID de las cuentas de Supabase Auth autorizadas para el CRM, separados por comas.
 - `PUBLIC_SUPABASE_URL`, `PUBLIC_SUPABASE_ANON_KEY` y
   `SUPABASE_SERVICE_ROLE_KEY`: conexion de Supabase para contacto y CRM.
 - `CONTACT_WEBHOOK_URL`: webhook opcional del formulario de contacto.
 - `CONTACT_WEBHOOK_SECRET`: secreto que se envía al webhook en la cabecera `X-Webhook-Secret` (ver `automatizaciones/agente-contacto`).
+
+Para habilitar el CRM, crea primero una cuenta de correo y contraseña en
+**Authentication → Users** del proyecto Supabase y copia su UUID a
+`CRM_ADMIN_USER_IDS` en el entorno correspondiente de Vercel. Despliega solo
+después de configurar esa variable. Prueba el acceso en `/dashboard` con la
+cuenta autorizada y confirma que una visita sin sesión a `/dashboard/leads`
+redirige al formulario. El CRM carece de registro público.
 
 Antes de desplegar el endurecimiento de la demo financiera, ejecuta
 `supabase/finance_movements.sql` en Supabase para retirar el acceso anonimo a

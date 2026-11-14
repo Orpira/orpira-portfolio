@@ -1,10 +1,9 @@
 import { defineMiddleware } from "astro:middleware";
 import {
-	ADMIN_SESSION_COOKIE,
-	verifyAdminSession,
-} from "./lib/admin-session";
-
-const PUBLIC_DASHBOARD_PATHS = new Set(["/dashboard", "/dashboard/login"]);
+	createCrmAuthClient,
+	hasCrmAuthCookies,
+	isCrmAdmin,
+} from "./lib/crm-auth";
 
 // Mantener sincronizado con vercel.json: las páginas prerenderizadas
 // (portada, privacidad, proyectos) no pasan por este middleware en producción.
@@ -39,7 +38,7 @@ const withSecurityHeaders = (response: Response) => {
 
 const normalizePathname = (value: string) => {
 	try {
-		return decodeURIComponent(value).toLowerCase();
+		return decodeURIComponent(value).toLowerCase().replace(/\/+$/, "") || "/";
 	} catch {
 		return value.toLowerCase();
 	}
@@ -50,17 +49,21 @@ export const onRequest = defineMiddleware(async (context, next) => {
 	const isDashboardRoute =
 		pathname === "/dashboard" || pathname.startsWith("/dashboard/");
 
-	if (
-		isDashboardRoute &&
-		!PUBLIC_DASHBOARD_PATHS.has(pathname) &&
-		!verifyAdminSession(context.cookies.get(ADMIN_SESSION_COOKIE)?.value)
-	) {
-		const response = context.redirect("/dashboard", 303);
-		response.headers.set("Cache-Control", "private, no-store");
-		return withSecurityHeaders(response);
+	const isAuthAction = ["/dashboard/login", "/dashboard/logout"].includes(pathname) &&
+		context.request.method === "POST";
+	const isSignInPage = pathname === "/dashboard" &&
+		["GET", "HEAD"].includes(context.request.method);
+
+	let canAccess = true;
+	if (isDashboardRoute && !isAuthAction && !isSignInPage) {
+		canAccess = false;
+		if (hasCrmAuthCookies(context.request)) {
+			const { data, error } = await createCrmAuthClient(context.cookies, context.request).auth.getUser();
+			canAccess = !error && !!data.user && isCrmAdmin(data.user);
+		}
 	}
 
-	const response = await next();
+	const response = canAccess ? await next() : context.redirect("/dashboard", 303);
 
 	if (isDashboardRoute) {
 		response.headers.set("Cache-Control", "private, no-store");

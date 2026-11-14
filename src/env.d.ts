@@ -6,8 +6,7 @@ interface ImportMetaEnv {
 	readonly SUPABASE_SERVICE_ROLE_KEY: string;
 	readonly CONTACT_WEBHOOK_URL?: string;
 	readonly CONTACT_WEBHOOK_SECRET?: string;
-	readonly ADMIN_PASSWORD: string;
-	readonly ADMIN_SESSION_SECRET: string;
+	readonly CRM_ADMIN_USER_IDS?: string;
 }
 
 interface ImportMeta {

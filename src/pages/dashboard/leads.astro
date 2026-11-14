@@ -1,19 +1,6 @@
 ---
 import { supabaseAdmin } from "../../lib/supabase-admin";
 import CRMLayout from "../../layouts/CRMLayout.astro";
-import {
-  ADMIN_SESSION_COOKIE,
-  verifyAdminSession,
-} from "../../lib/admin-session";
-
-if (
-  !verifyAdminSession(
-    Astro.cookies.get(ADMIN_SESSION_COOKIE)?.value
-  )
-) {
-  return Astro.redirect("/dashboard", 303);
-}
-
 const { data: leads, error } = await supabaseAdmin
   .from("contacts")
   .select("id, name, email, lead_type, priority, lead_score, notified, created_at")
