@@ -1,0 +1,79 @@
+.crm-main {
+  overflow-wrap: anywhere;
+}
+
+.crm-data-table {
+  width: 100%;
+}
+
+.crm-cell-label {
+  display: none;
+}
+
+@media (max-width: 1120px) {
+  .crm-data-table {
+    display: block;
+  }
+
+  .crm-data-table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+
+  .crm-data-table tbody {
+    display: block;
+  }
+
+  .crm-data-table tbody tr:not([hidden]) {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: .65rem 1rem;
+    padding: .95rem;
+  }
+
+  .crm-data-table td {
+    display: block;
+    padding: 0;
+    white-space: normal;
+  }
+
+  .crm-data-table td:nth-child(-n + 2) {
+    grid-column: 1 / -1;
+  }
+
+  .crm-data-table td:first-child {
+    font-weight: 650;
+  }
+
+  .crm-data-table td a {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+  }
+
+  .crm-cell-label {
+    display: block;
+    margin-bottom: .15rem;
+    color: #cbd5e1;
+    font-size: .75rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .crm-main :is(button, select, input:not([type="hidden"])) {
+    min-height: 44px;
+  }
+
+  .crm-main :is(input, select, textarea) {
+    min-width: 0;
+    max-width: 100%;
+    font-size: 1rem;
+  }
+
+  .crm-main :is(form, label) {
+    min-width: 0;
+  }
+}
