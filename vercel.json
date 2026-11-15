@@ -16,6 +16,15 @@
 			]
 		},
 		{
+			"source": "/dashboard/lead/:id",
+			"headers": [
+				{
+					"key": "Content-Security-Policy",
+					"value": "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; object-src 'none'; form-action 'self'; upgrade-insecure-requests; frame-src https://cal.com https://app.cal.com"
+				}
+			]
+		},
+		{
 			"source": "/brand/(.*)",
 			"headers": [
 				{ "key": "Cache-Control", "value": "public, max-age=2592000" }

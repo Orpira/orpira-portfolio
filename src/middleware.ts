@@ -29,9 +29,11 @@ const SECURITY_HEADERS: Record<string, string> = {
 	"Cross-Origin-Opener-Policy": "same-origin",
 };
 
-const withSecurityHeaders = (response: Response) => {
+const withSecurityHeaders = (response: Response, allowBookingFrame = false) => {
 	for (const [name, value] of Object.entries(SECURITY_HEADERS)) {
-		response.headers.set(name, value);
+		response.headers.set(name, allowBookingFrame && name === "Content-Security-Policy"
+			? `${value}; frame-src https://cal.com https://app.cal.com`
+			: value);
 	}
 
 	return response;
@@ -68,5 +70,5 @@ export const onRequest = defineMiddleware(async (context, next) => {
 		response.headers.set("X-Robots-Tag", "noindex, nofollow");
 	}
 
-	return withSecurityHeaders(response);
+	return withSecurityHeaders(response, /^\/dashboard\/lead\/[^/]+\/?$/.test(pathname));
 });
