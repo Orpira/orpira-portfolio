@@ -74,15 +74,17 @@ const isLeads = path === "/dashboard/leads" || path.startsWith("/dashboard/lead/
         </a>
 
       <a
-        href="#"
-        class="block px-4 py-3 rounded-lg hover:bg-slate-800"
+        href="/dashboard/reportes"
+        aria-current={path === "/dashboard/reportes" ? "page" : undefined}
+        class:list={["block px-4 py-3 rounded-lg hover:bg-slate-800", { "bg-slate-800": path === "/dashboard/reportes" }]}
       >
         📈 Reportes
       </a>
 
       <a
-        href="#"
-        class="block px-4 py-3 rounded-lg hover:bg-slate-800"
+        href="/dashboard/configuracion"
+        aria-current={path === "/dashboard/configuracion" ? "page" : undefined}
+        class:list={["block px-4 py-3 rounded-lg hover:bg-slate-800", { "bg-slate-800": path === "/dashboard/configuracion" }]}
       >
         ⚙️ Configuración
       </a>
