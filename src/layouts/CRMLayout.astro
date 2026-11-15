@@ -8,6 +8,10 @@ interface Props {
 const {
   title = "CRM OrPiRa",
 } = Astro.props;
+
+const path = Astro.url.pathname.replace(/\/$/, "");
+const isOverview = path === "/dashboard/resumen";
+const isLeads = path === "/dashboard/leads" || path.startsWith("/dashboard/lead/");
 ---
 
 <!DOCTYPE html>
@@ -47,15 +51,17 @@ const {
     <nav class="p-4 space-y-2">
 
       <a
-        href="/dashboard/leads"
-        class="block px-4 py-3 rounded-lg hover:bg-slate-800"
+        href="/dashboard/resumen"
+        aria-current={isOverview ? "page" : undefined}
+        class:list={["block px-4 py-3 rounded-lg hover:bg-slate-800", { "bg-slate-800": isOverview }]}
       >
         📊 Dashboard
       </a>
 
       <a
         href="/dashboard/leads"
-        class="block px-4 py-3 rounded-lg hover:bg-slate-800"
+        aria-current={isLeads ? "page" : undefined}
+        class:list={["block px-4 py-3 rounded-lg hover:bg-slate-800", { "bg-slate-800": isLeads }]}
       >
         👥 Leads
       </a>
