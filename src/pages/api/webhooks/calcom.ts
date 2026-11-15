@@ -6,6 +6,13 @@ const maxBytes = 64 * 1024;
 const object = (value: unknown): Record<string, unknown> =>
   value && typeof value === "object" && !Array.isArray(value) ? value as Record<string, unknown> : {};
 
+const validUid = (value: unknown): value is string =>
+  typeof value === "string" && /^[\w-]{1,128}$/.test(value);
+const isoDate = (value: unknown) =>
+  typeof value === "string" && /T.*(?:Z|[+-]\d\d:\d\d)$/i.test(value) && Number.isFinite(Date.parse(value))
+    ? new Date(value).toISOString()
+    : null;
+
 function meetingUrl(values: unknown[]) {
   for (const value of values) {
     if (typeof value !== "string" || value.length > 2048) continue;
@@ -50,24 +57,43 @@ export const POST: APIRoute = async ({ request }) => {
   } catch {
     return new Response(null, { status: 400 });
   }
-  if (event.triggerEvent !== "BOOKING_CREATED") return new Response(null, { status: 204 });
+  const trigger = event.triggerEvent;
+  if (trigger !== "BOOKING_CREATED" && trigger !== "BOOKING_RESCHEDULED" && trigger !== "BOOKING_CANCELLED") {
+    return new Response(null, { status: 204 });
+  }
+
   const payload = object(event.payload);
-  const firstAttendee = object(Array.isArray(payload.attendees) ? payload.attendees[0] : null);
-  const email = firstAttendee.email;
+  const attendee = object(Array.isArray(payload.attendees) ? payload.attendees[0] : null);
+  const email = typeof attendee.email === "string" ? attendee.email.trim().toLowerCase() : "";
   const uid = payload.uid;
-  const start = payload.startTime;
-  if (typeof email !== "string" || email.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ||
-    typeof uid !== "string" || !/^[\w-]{1,128}$/.test(uid) ||
-    typeof start !== "string" || !/T.*(?:Z|[+-]\d\d:\d\d)$/i.test(start) || !Number.isFinite(Date.parse(start))) {
+  const start = isoDate(payload.startTime);
+  const validEmail = email.length <= 254 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  if (!validUid(uid) || (trigger !== "BOOKING_CANCELLED" && !start)) {
     return new Response(null, { status: 400 });
   }
 
-  const { data, error } = await supabaseAdmin.rpc("record_crm_booking", {
-    p_uid: uid,
-    p_email: email.trim().toLowerCase(),
-    p_start_at: new Date(start).toISOString(),
-    p_meeting_url: meetingUrl([payload.videoCallUrl, object(payload.metadata).videoCallUrl, payload.location]),
-  });
+  const url = meetingUrl([payload.videoCallUrl, object(payload.metadata).videoCallUrl, payload.location]);
+  const eventAt = isoDate(event.createdAt);
+  const previousUid = [payload.rescheduleUid, payload.rescheduledFromUid].find(validUid);
+  if ((trigger === "BOOKING_CREATED" && !validEmail) ||
+    (trigger !== "BOOKING_CREATED" && !eventAt) ||
+    (trigger === "BOOKING_RESCHEDULED" && !previousUid && !validEmail)) {
+    return new Response(null, { status: 400 });
+  }
+
+  const { data, error } = trigger === "BOOKING_CREATED"
+    ? await supabaseAdmin.rpc("record_crm_booking", {
+        p_uid: uid, p_email: email, p_start_at: start, p_meeting_url: url,
+      })
+    : await supabaseAdmin.rpc("revise_crm_booking", {
+        p_uid: uid,
+        p_previous_uid: previousUid ?? null,
+        p_event: trigger === "BOOKING_CANCELLED" ? "cancelled" : "rescheduled",
+        p_event_at: eventAt,
+        p_email: validEmail ? email : null,
+        p_start_at: start,
+        p_meeting_url: url,
+      });
   if (error) {
     console.error("No se pudo guardar la reserva de Cal.com", error.code);
     return new Response(null, { status: 503 });

@@ -39,7 +39,7 @@ const [{ data: replies, error: repliesError }, { data: notes, error: notesError 
   supabaseAdmin.from("crm_contact_stage_changes")
     .select("id, from_stage, to_stage, changed_at").eq("contact_id", lead.id)
     .order("changed_at", { ascending: false }).order("id"),
-  supabaseAdmin.from("crm_bookings").select("uid,start_at,meeting_url,created_at").eq("contact_id", lead.id)
+  supabaseAdmin.from("crm_bookings").select("uid,start_at,meeting_url,created_at,revision,revised_at").eq("contact_id", lead.id)
     .order("start_at", { ascending: false }),
   supabaseAdmin.from("crm_follow_up_completions").select("id,action,completed_at").eq("contact_id", lead.id)
     .order("completed_at", { ascending: false }),
@@ -110,8 +110,12 @@ type Activity = { label: string; date: string; detail?: string; url?: string; me
 const activity: Activity[] = [
   { label: "Contacto recibido", date: lead.created_at },
   ...(lead.last_contacted_at ? [{ label: "Contacto registrado", date: lead.last_contacted_at }] : []),
-  ...(bookings ?? []).map((booking) => ({
-    label: "Reunión agendada", date: booking.created_at, meetingAt: booking.start_at, url: booking.meeting_url,
+  ...(bookings ?? []).filter((booking) => booking.revision !== "superseded").map((booking) => ({
+    label: booking.revision === "cancelled" ? "Reserva cancelada" :
+      booking.revision === "rescheduled" ? "Reserva reprogramada" : "Reunión agendada",
+    date: booking.revised_at ?? booking.created_at,
+    meetingAt: booking.start_at,
+    url: booking.revision === "cancelled" ? null : booking.meeting_url,
   })),
   ...(followUpHistory ?? []).map((task) => ({ label: "Seguimiento completado", detail: task.action, date: task.completed_at })),
   ...(changes ?? []).map((change) => ({ label: `${stageLabel(change.from_stage)} → ${stageLabel(change.to_stage)}`, date: change.changed_at })),
