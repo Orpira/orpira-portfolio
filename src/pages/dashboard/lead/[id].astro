@@ -28,7 +28,7 @@ if (!lead) {
   return Astro.redirect("/dashboard/leads");
 }
 
-const [{ data: replies, error: repliesError }, { data: notes, error: notesError }, { data: changes, error: changesError }, { data: bookings, error: bookingsError }, { data: followUpHistory, error: followUpHistoryError }] = await Promise.all([
+const [{ data: replies, error: repliesError }, { data: notes, error: notesError }, { data: changes, error: changesError }, { data: bookings, error: bookingsError }, { data: followUpHistory, error: followUpHistoryError }, { data: bookingSettings }] = await Promise.all([
   supabaseAdmin.from("commercial_replies")
     .select("id, subject, body, status, created_at, sent_at, smtp_message_id, approved_recipient, manual_requested_at, send_started_at, send_finished_at")
     .eq("contact_id", lead.id).order("created_at", { ascending: false }),
@@ -42,6 +42,7 @@ const [{ data: replies, error: repliesError }, { data: notes, error: notesError 
     .order("start_at", { ascending: false }),
   supabaseAdmin.from("crm_follow_up_completions").select("id,action,completed_at").eq("contact_id", lead.id)
     .order("completed_at", { ascending: false }),
+  supabaseAdmin.from("crm_booking_settings").select("booking_url").eq("singleton", true).maybeSingle(),
 ]);
 
 const draft = replies?.find((reply) => reply.status === "draft");
@@ -49,6 +50,17 @@ const queued = Boolean(draft?.manual_requested_at);
 const showEditor = !repliesError && (!replies?.length || Boolean(draft && !draft.approved_recipient));
 const validRecipient = /^[a-z0-9_.+%\-]+@[a-z0-9.-]+\.[a-z]{2,}$/i.test(lead.email) &&
   !/@([a-z0-9-]+\.)*(example\.(com|net|org)|[^@]+\.(test|invalid|localhost))$/i.test(lead.email);
+
+const configuredBookingUrl = bookingSettings?.booking_url;
+const bookingUrl = validRecipient && configuredBookingUrl &&
+  /^https:\/\/(app\.)?cal\.com\/[\w-]+\/[\w-]+$/.test(configuredBookingUrl)
+  ? new URL(configuredBookingUrl)
+  : null;
+bookingUrl?.searchParams.set("name", lead.name);
+bookingUrl?.searchParams.set("email", lead.email);
+const embeddedBookingUrl = bookingUrl ? new URL(bookingUrl) : null;
+embeddedBookingUrl?.searchParams.set("embed", "true");
+embeddedBookingUrl?.searchParams.set("embedType", "inline");
 
 const replyMessages: Record<string, string> = {
   saved: "Borrador guardado.",
@@ -120,8 +132,35 @@ activity.sort((a, b) => Date.parse(b.date) - Date.parse(a.date));
         <h1 class="mt-3 break-words text-3xl font-bold tracking-tight sm:text-4xl">{lead.name}</h1>
         <p class="mt-1 break-all text-slate-600">{lead.email}</p>
       </div>
-      <time class="text-sm text-slate-600" datetime={lead.created_at}>Recibido el {formatDate(lead.created_at)}</time>
+      <div class="flex flex-wrap items-center gap-3">
+        <time class="text-sm text-slate-600" datetime={lead.created_at}>Recibido el {formatDate(lead.created_at)}</time>
+        {bookingUrl && embeddedBookingUrl && (
+          <a id="lead-booking-open" href={bookingUrl.href} target="_blank" rel="noopener noreferrer"
+            class="rounded-lg bg-teal-700 px-4 py-3 text-sm font-semibold text-white hover:bg-teal-800">
+            Agendar reunión
+          </a>
+        )}
+      </div>
     </header>
+
+    {bookingUrl && embeddedBookingUrl && (
+      <dialog id="lead-booking" aria-labelledby="lead-booking-title"
+        class="m-auto w-[min(96vw,64rem)] max-w-none rounded-xl border border-slate-300 bg-white p-0 text-slate-900 shadow-xl backdrop:bg-slate-950/60">
+        <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 p-4">
+          <h2 id="lead-booking-title" class="font-semibold">Agendar reunión</h2>
+          <form method="dialog" class="flex flex-wrap items-center gap-3">
+            <a href={bookingUrl.href} target="_blank" rel="noopener noreferrer" class="text-sm font-semibold text-teal-800 underline">Abrir en Cal.com</a>
+            <button class="min-h-11 rounded-lg border border-slate-300 px-3 text-sm font-semibold">Cerrar</button>
+          </form>
+        </div>
+        <iframe id="lead-booking-frame" title="Calendario de reservas de Cal.com" data-src={embeddedBookingUrl.href}
+          referrerpolicy="no-referrer" class="block h-[min(66dvh,42rem)] w-full border-0"></iframe>
+        <div class="flex flex-wrap items-center justify-between gap-2 border-t border-slate-200 p-4 text-sm">
+          <p class="text-slate-600">Después de confirmar la cita, actualizá la ficha para verla en Actividad.</p>
+          <a id="lead-booking-refresh" href={`/dashboard/lead/${lead.id}#activity-title`} class="font-semibold text-teal-800 underline">Actualizar ficha</a>
+        </div>
+      </dialog>
+    )}
 
     <section class="space-y-3 rounded-xl border border-slate-200 bg-white p-4" aria-labelledby="stage-title">
       <div class="flex flex-wrap items-center justify-between gap-3">
@@ -272,7 +311,7 @@ activity.sort((a, b) => Date.parse(b.date) - Date.parse(a.date));
       <div class="flex flex-wrap items-center justify-between gap-3">
         <h2 id="activity-title" class="text-lg font-semibold">Actividad del contacto</h2>
         {(queued || replies?.some((reply) => reply.status === "sending")) && (
-          <a href={`/dashboard/lead/${lead.id}#activity-title`} class="text-sm font-semibold text-teal-800 hover:underline">Actualizar estado</a>
+          <a id="lead-booking-refresh" href={`/dashboard/lead/${lead.id}#activity-title`} class="text-sm font-semibold text-teal-800 hover:underline">Actualizar estado</a>
         )}
       </div>
       <ol class="mt-4 space-y-4 border-l-2 border-slate-200 pl-4">
@@ -361,6 +400,27 @@ activity.sort((a, b) => Date.parse(b.date) - Date.parse(a.date));
 </CRMLayout>
 
 <script>
+  const bookingLink = document.querySelector<HTMLAnchorElement>("#lead-booking-open");
+  const bookingDialog = document.querySelector<HTMLDialogElement>("#lead-booking");
+  const bookingFrame = document.querySelector<HTMLIFrameElement>("#lead-booking-frame");
+  bookingLink?.addEventListener("click", (event) => {
+    if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+    if (!bookingDialog?.showModal || !bookingFrame?.dataset.src) return;
+
+    event.preventDefault();
+    if (!bookingFrame.hasAttribute("src")) bookingFrame.src = bookingFrame.dataset.src;
+    bookingDialog.showModal();
+  });
+
+
+  const bookingRefresh = document.querySelector<HTMLAnchorElement>("#lead-booking-refresh");
+  bookingRefresh?.addEventListener("click", (event) => {
+    if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+    event.preventDefault();
+    history.replaceState(history.state, "", bookingRefresh.href);
+    window.location.reload();
+  });
+
   const form = document.querySelector<HTMLFormElement>("#crm-reply-form");
   const templates = {
     project: ["Sobre tu proyecto", "Gracias por contarme sobre tu proyecto. ¿Qué te gustaría conseguir y para cuándo lo necesitas?"],
