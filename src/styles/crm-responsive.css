@@ -63,7 +63,7 @@
 }
 
 @media (max-width: 640px) {
-  .crm-main :is(button, select, input:not([type="hidden"])) {
+  .crm-main :is(button, select, input:not([type="hidden"], [type="checkbox"])) {
     min-height: 44px;
   }
 
