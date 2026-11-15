@@ -3,6 +3,7 @@ import "@fontsource-variable/geist";
 import { Image } from "astro:assets";
 import portrait from "../assets/images/orpira-hero-professional.png";
 import "../styles/global.css";
+import "../styles/crm-responsive.css";
 
 interface Props {
   title?: string;
@@ -31,27 +32,44 @@ const navigation = [
   <body class="crm-shell">
     <a href="#contenido-crm" class="sr-only focus:not-sr-only">Saltar al contenido</a>
     <aside class="crm-sidebar">
-      <a href="/dashboard/resumen" class="crm-brand">
-        <img src="/brand/wordmark-crm.webp" width="560" height="198" alt="OrPiRa" decoding="async" />
-        <small>CRM</small>
-      </a>
-      <nav aria-label="Navegación del CRM">
-        {navigation.map(({ href, label }) => {
-          const active = path === href || (label === "Leads" && path.startsWith("/dashboard/lead/"));
-          return <a href={href} aria-current={active ? "page" : undefined}>{label}</a>;
-        })}
-      </nav>
-      <form method="post" action="/dashboard/logout">
-        <div class="crm-profile">
-          <Image src={portrait} alt="" width={96} format="webp" quality={78} />
-          <span>Orlando Pineda</span>
-        </div>
-        <button type="submit">Cerrar sesión</button>
-      </form>
+      <div class="crm-sidebar-header">
+        <a href="/dashboard/resumen" class="crm-brand">
+          <img src="/brand/wordmark-crm.webp" width="560" height="198" alt="OrPiRa" decoding="async" />
+          <small>CRM</small>
+        </a>
+        <button type="button" id="crm-menu-toggle" aria-expanded="true" aria-controls="crm-menu" hidden>Menú</button>
+      </div>
+      <div id="crm-menu" class="crm-menu">
+        <nav aria-label="Navegación del CRM">
+          {navigation.map(({ href, label }) => {
+            const active = path === href || (label === "Leads" && path.startsWith("/dashboard/lead/"));
+            return <a href={href} aria-current={active ? "page" : undefined}>{label}</a>;
+          })}
+        </nav>
+        <form method="post" action="/dashboard/logout">
+          <div class="crm-profile">
+            <Image src={portrait} alt="" width={96} format="webp" quality={78} />
+            <span>Orlando Pineda</span>
+          </div>
+          <button type="submit">Cerrar sesión</button>
+        </form>
+      </div>
     </aside>
     <main id="contenido-crm" class="crm-main"><slot /></main>
   </body>
 </html>
+
+<script>
+  const toggle = document.querySelector<HTMLButtonElement>("#crm-menu-toggle");
+  if (toggle) {
+    toggle.setAttribute("aria-expanded", "false");
+    toggle.hidden = false;
+    toggle.addEventListener("click", () => {
+      const expanded = toggle.getAttribute("aria-expanded") === "true";
+      toggle.setAttribute("aria-expanded", String(!expanded));
+    });
+  }
+</script>
 
 <style>
   .crm-shell {
@@ -74,6 +92,9 @@ const navigation = [
     padding: 1.5rem 1rem;
     background: #101829;
   }
+  .crm-sidebar-header { display: flex; align-items: center; justify-content: space-between; gap: .5rem; }
+  .crm-menu { display: flex; flex: 1; flex-direction: column; gap: .75rem; }
+  #crm-menu-toggle { display: none; }
   .crm-brand { display: flex; align-items: center; gap: .75rem; padding: 0 .5rem; }
   .crm-brand img { display: block; width: min(70%, 9rem); height: auto; }
   .crm-profile {
@@ -99,12 +120,21 @@ const navigation = [
   nav a[aria-current] { background: #20354a; color: #a7f3d0; font-weight: 650; }
   form { margin-top: auto; }
   .crm-main { padding: clamp(.9rem, 3vw, 2.75rem); min-width: 0; }
-  @media (max-width: 760px) {
-    .crm-shell { grid-template-columns: minmax(0, 1fr); }
-    .crm-sidebar { position: static; height: auto; gap: .65rem; padding: .8rem; }
-    nav { flex-flow: row wrap; }
+  @media (max-width: 900px) {
+    .crm-shell { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto 1fr; }
+    .crm-sidebar { position: static; height: auto; gap: .65rem; padding: .65rem .9rem; }
+    .crm-brand img { width: 6.25rem; }
+    #crm-menu-toggle:not([hidden]) {
+      display: block;
+      min-height: 44px;
+      padding: .45rem .85rem;
+      border: 1px solid #516377;
+      border-radius: .5rem;
+    }
+    .crm-sidebar:has(#crm-menu-toggle[aria-expanded="false"]) .crm-menu { display: none; }
+    nav { display: grid; grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr)); }
     form { display: flex; align-items: center; justify-content: space-between; gap: .4rem; border-top: 1px solid #293950; }
     .crm-profile { border: 0; padding: .45rem .55rem; }
-    nav a, form button { padding: .4rem .6rem; }
+    nav a, form button { min-height: 44px; padding: .65rem .55rem; }
   }
 </style>

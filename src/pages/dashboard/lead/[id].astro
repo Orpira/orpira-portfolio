@@ -118,17 +118,17 @@ activity.sort((a, b) => Date.parse(b.date) - Date.parse(a.date));
     <section class="space-y-3 rounded-xl border border-slate-200 bg-white p-4" aria-labelledby="stage-title">
       <div class="flex flex-wrap items-center justify-between gap-3">
         <h2 id="stage-title" class="font-semibold"><a href="/dashboard/embudo" class="text-teal-800 hover:underline">Embudo comercial</a></h2>
-        <form method="post" action={`/dashboard/lead/${lead.id}/etapa`} class="flex flex-wrap gap-2">
+        <form method="post" action={`/dashboard/lead/${lead.id}/etapa`} class="flex w-full flex-wrap gap-2 sm:w-auto">
           <input type="hidden" name="from" value={lead.status ?? ""} />
           <input type="hidden" name="return" value="lead" />
           <select name="to" required aria-label="Cambiar etapa" class="rounded-lg border-slate-300 bg-white text-sm">
             <option value="">Mover a…</option>
             {stages.filter((stage) => stage.id !== lead.status).map((stage) => <option value={stage.id}>{stage.label}</option>)}
           </select>
-          <button class="rounded-lg bg-teal-700 px-3 text-sm font-semibold text-white hover:bg-teal-800">Cambiar etapa</button>
+          <button class="rounded-lg bg-teal-700 px-3 py-2 text-sm font-semibold text-white hover:bg-teal-800">Cambiar etapa</button>
         </form>
       </div>
-      <ol class="grid grid-cols-2 gap-2 text-sm sm:grid-cols-6">
+      <ol class="grid grid-cols-2 gap-2 text-sm sm:grid-cols-3 xl:grid-cols-6">
         {stages.map((stage, index) => (
           <li aria-current={index === currentStage ? "step" : undefined}
             class:list={["rounded-lg px-3 py-2", index === currentStage ? "bg-teal-800 font-semibold text-white" : "bg-slate-100 text-slate-700"]}>
@@ -167,19 +167,19 @@ activity.sort((a, b) => Date.parse(b.date) - Date.parse(a.date));
             Astro.url.searchParams.get("seguimiento") === "saved" ? "Seguimiento guardado." : "No se pudo guardar el seguimiento."}
         </p>
       )}
-      <form method="post" action={`/dashboard/lead/${lead.id}/seguimiento`} class="mt-4 flex flex-wrap items-end gap-3">
-        <label class="grid gap-1 text-sm font-medium">
+      <form method="post" action={`/dashboard/lead/${lead.id}/seguimiento`} class="mt-4 grid gap-3 sm:flex sm:flex-wrap sm:items-end">
+        <label class="grid min-w-0 gap-1 text-sm font-medium">
           Categoría
           <select name="category" class="rounded-lg border-slate-300 bg-white">
             <option value="">Sin categorizar</option>
             {Object.entries(categories).map(([key, label]) => <option value={key} selected={lead.contact_category === key}>{label}</option>)}
           </select>
         </label>
-        <label class="grid gap-1 text-sm font-medium">
+        <label class="grid min-w-0 gap-1 text-sm font-medium">
           Próximo seguimiento
           <input type="date" name="date" value={lead.next_follow_up_on} class="rounded-lg border-slate-300 bg-white" />
         </label>
-        <label class="grid gap-1 text-sm font-medium">
+        <label class="grid min-w-0 gap-1 text-sm font-medium">
           Próxima acción
           <input name="nextAction" maxlength="160" value={lead.next_follow_up_action}
             placeholder="Ej. Preparar propuesta" class="rounded-lg border-slate-300 bg-white" />
@@ -219,12 +219,12 @@ activity.sort((a, b) => Date.parse(b.date) - Date.parse(a.date));
                 <option value="network">Networking</option>
               </select>
             </label>
-            <label class="grid gap-1 text-sm font-medium">
+            <label class="grid min-w-0 gap-1 text-sm font-medium">
               Asunto
               <input name="subject" maxlength="200" required value={draft?.subject ?? "Re: Consulta a OrPiRa"}
                 class="w-full rounded-lg border-slate-300 bg-white text-slate-900" />
             </label>
-            <label class="grid gap-1 text-sm font-medium">
+            <label class="grid min-w-0 gap-1 text-sm font-medium">
               Mensaje
               <textarea name="body" maxlength="10000" rows="8" required
                 class="w-full rounded-lg border-slate-300 bg-white text-slate-900">{draft?.body ?? ""}</textarea>
@@ -304,7 +304,7 @@ activity.sort((a, b) => Date.parse(b.date) - Date.parse(a.date));
       ) : (
         <>
           <form method="post" action={`/dashboard/lead/${lead.id}/nota`} class="mt-4 space-y-3">
-            <label class="grid gap-1 text-sm font-medium">
+            <label class="grid min-w-0 gap-1 text-sm font-medium">
               Añadir nota de seguimiento
               <textarea name="body" rows="3" maxlength="4000" required
                 class="rounded-lg border-slate-300 bg-white text-slate-900" />

@@ -52,7 +52,7 @@ const statusFor = (related: { status: string; manual_requested_at: string | null
 <CRMLayout title="Leads | CRM OrPiRa">
 
 
-    <div class="max-w-7xl mx-auto p-6">  
+    <div class="max-w-7xl mx-auto">
         
         <div class="mb-8 flex flex-wrap items-start justify-between gap-3"><div>
 
@@ -71,7 +71,7 @@ const statusFor = (related: { status: string; manual_requested_at: string | null
         <!-- Buscador -->
 
         <div class="mb-6 grid gap-3 sm:grid-cols-[1fr_auto]">
-        <form action="/dashboard/leads" method="get" class="flex gap-2 sm:order-2">
+        <form action="/dashboard/leads" method="get" class="flex flex-wrap gap-2 sm:order-2">
           <label class="sr-only" for="orden">Orden</label>
           <select id="orden" name="orden" class="rounded-lg border-slate-300 bg-white text-slate-900">
             <option value="fecha" selected={!byScore}>Más recientes</option>
@@ -99,34 +99,34 @@ const statusFor = (related: { status: string; manual_requested_at: string | null
 
         <div class="overflow-x-auto">
 
-            <table class="w-full">
+            <table class="crm-data-table" role="table">
 
-            <thead class="bg-slate-800">
+            <thead role="rowgroup" class="bg-slate-800">
 
-                <tr>
+                <tr role="row">
 
-                <th class="text-left p-4">
+                <th scope="col" role="columnheader" class="text-left p-4">
                     Nombre
                 </th>
 
-                <th class="text-left p-4">
+                <th scope="col" role="columnheader" class="text-left p-4">
                     Email
                 </th>
 
-                <th class="text-left p-4">
+                <th scope="col" role="columnheader" class="text-left p-4">
                     Tipo
                 </th>
 
-                <th class="text-left p-4">
+                <th scope="col" role="columnheader" class="text-left p-4">
                     Prioridad
                 </th>
 
-                <th class="text-left p-4">
+                <th scope="col" role="columnheader" class="text-left p-4">
                     Score
                 </th>
 
-                <th class="text-left p-4">Correo</th>
-                <th class="text-left p-4">
+                <th scope="col" role="columnheader" class="text-left p-4">Correo</th>
+                <th scope="col" role="columnheader" class="text-left p-4">
                     Fecha
                 </th>
 
@@ -134,14 +134,14 @@ const statusFor = (related: { status: string; manual_requested_at: string | null
 
             </thead>
 
-            <tbody>
+            <tbody role="rowgroup">
 
                 {
                 leads?.map((lead) => (
 
-                    <tr data-lead-row class="border-t border-slate-800">
+                    <tr role="row" data-lead-row class="border-t border-slate-800">
 
-                    <td class="p-4">
+                    <td role="cell" class="p-4">
                         <a
                             href={`/dashboard/lead/${lead.id}`}
                             class="text-cyan-400 hover:underline"
@@ -150,11 +150,11 @@ const statusFor = (related: { status: string; manual_requested_at: string | null
                         </a>
                     </td>
 
-                    <td class="p-4">
+                    <td role="cell" class="p-4">
                         {lead.email}
                     </td>
 
-                    <td class="p-4">
+                    <td role="cell" class="p-4"><span class="crm-cell-label" aria-hidden="true">Tipo</span>
 
                         <span class="px-3 py-1 rounded-full bg-blue-500/20 text-blue-300 text-sm">
 
@@ -164,7 +164,7 @@ const statusFor = (related: { status: string; manual_requested_at: string | null
 
                     </td>
 
-                    <td class="p-4">
+                    <td role="cell" class="p-4"><span class="crm-cell-label" aria-hidden="true">Prioridad</span>
                         <span
                             class={
                                 lead.priority === "alta"
@@ -178,7 +178,7 @@ const statusFor = (related: { status: string; manual_requested_at: string | null
                         </span>                      
                     </td>
 
-                    <td class="p-4">
+                    <td role="cell" class="p-4"><span class="crm-cell-label" aria-hidden="true">Score</span>
                         <span
                             class={
                             lead.lead_score >= 80
@@ -192,11 +192,11 @@ const statusFor = (related: { status: string; manual_requested_at: string | null
                         </span>
                     </td>
 
-                    <td class="p-4 whitespace-nowrap">
+                    <td role="cell" class="p-4"><span class="crm-cell-label" aria-hidden="true">Correo</span>
                         {statusFor(lead.commercial_replies)}
                     </td>
 
-                    <td class="p-4">
+                    <td role="cell" class="p-4"><span class="crm-cell-label" aria-hidden="true">Fecha</span>
 
                         {leadDateFormat.format(new Date(lead.created_at))}
 

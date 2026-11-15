@@ -29,11 +29,11 @@ const { data: clientes } = await supabaseAdmin
 
   <div class="mb-8">
 
-    <h1 class="text-4xl font-bold">
+    <h1 class="text-3xl font-bold text-slate-950 sm:text-4xl">
       Clientes
     </h1>
 
-    <p class="text-slate-400 mt-2">
+    <p class="mt-2 text-slate-600">
       Clientes potenciales clasificados automáticamente
     </p>
 
@@ -42,7 +42,7 @@ const { data: clientes } = await supabaseAdmin
   <div
     class="bg-slate-900 rounded-xl border border-slate-800 overflow-hidden"
   >
-    <div class="grid grid-cols-3 gap-4 mb-8">
+    <div class="mb-3">
         <div class="bg-slate-900 p-6 rounded-xl">
             <p class="text-slate-400">
                 Total Clientes
@@ -53,25 +53,25 @@ const { data: clientes } = await supabaseAdmin
         </div>
     </div>
 
-    <table class="w-full">
+    <table class="crm-data-table" role="table">
 
-      <thead class="bg-slate-800">
+      <thead role="rowgroup" class="bg-slate-800">
 
-        <tr>
+        <tr role="row">
 
-          <th class="text-left p-4">
+          <th scope="col" role="columnheader" class="text-left p-4">
             Nombre
           </th>
 
-          <th class="text-left p-4">
+          <th scope="col" role="columnheader" class="text-left p-4">
             Email
           </th>
 
-          <th class="text-left p-4">
+          <th scope="col" role="columnheader" class="text-left p-4">
             Prioridad
           </th>
 
-          <th class="text-left p-4">
+          <th scope="col" role="columnheader" class="text-left p-4">
             Score
           </th>
 
@@ -79,26 +79,26 @@ const { data: clientes } = await supabaseAdmin
 
       </thead>
 
-      <tbody>
+      <tbody role="rowgroup">
 
         {
           clientes?.map(cliente => (
 
-            <tr class="border-t border-slate-800">
+            <tr role="row" class="border-t border-slate-800">
 
-              <td class="p-4">
-                {cliente.name}
+              <td role="cell" class="p-4">
+                <a class="text-cyan-400 hover:underline" href={`/dashboard/lead/${cliente.id}`}>{cliente.name}</a>
               </td>
 
-              <td class="p-4">
+              <td role="cell" class="p-4">
                 {cliente.email}
               </td>
 
-              <td class="p-4">
+              <td role="cell" class="p-4"><span class="crm-cell-label" aria-hidden="true">Prioridad</span>
                 {cliente.priority}
               </td>
 
-              <td class="p-4">
+              <td role="cell" class="p-4"><span class="crm-cell-label" aria-hidden="true">Score</span>
                 {cliente.lead_score}
               </td>
 
