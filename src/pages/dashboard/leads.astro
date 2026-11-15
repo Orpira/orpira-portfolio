@@ -20,11 +20,12 @@ const leadDateFormat = new Intl.DateTimeFormat("es-ES", {
   timeStyle: "short",
 });
 
-const byScore = Astro.url.searchParams.get("orden") === "puntuacion";
+const pageSize = 10;
 const { data: leads, error } = await supabaseAdmin
   .from("contacts")
   .select("id, name, email, lead_type, priority, lead_score, created_at, commercial_replies(status, manual_requested_at)")
-  .order(byScore ? "lead_score" : "created_at", { ascending: false, nullsFirst: false })
+  .order("lead_score", { ascending: false, nullsFirst: false })
+  .order("created_at", { ascending: false })
   .order("id");
 
 if (error) {
@@ -52,7 +53,7 @@ const statusFor = (related: { status: string; manual_requested_at: string | null
 <CRMLayout title="Leads | CRM OrPiRa">
 
 
-    <div class="max-w-7xl mx-auto">
+    <div id="lead-list" data-page-size={pageSize} class="max-w-7xl mx-auto">
         
         <div class="mb-8 flex flex-wrap items-start justify-between gap-3"><div>
 
@@ -70,16 +71,7 @@ const statusFor = (related: { status: string; manual_requested_at: string | null
 
         <!-- Buscador -->
 
-        <div class="mb-6 grid gap-3 sm:grid-cols-[1fr_auto]">
-        <form action="/dashboard/leads" method="get" class="flex flex-wrap gap-2 sm:order-2">
-          <label class="sr-only" for="orden">Orden</label>
-          <select id="orden" name="orden" class="rounded-lg border-slate-300 bg-white text-slate-900">
-            <option value="fecha" selected={!byScore}>Más recientes</option>
-            <option value="puntuacion" selected={byScore}>Mayor puntuación</option>
-          </select>
-          <button class="rounded-lg bg-slate-900 px-3 font-semibold text-white">Ordenar</button>
-        </form>
-
+        <div class="mb-6">
         <input
             type="search"
             id="lead-search"
@@ -128,8 +120,8 @@ const statusFor = (related: { status: string; manual_requested_at: string | null
                     Prioridad
                 </th>
 
-                <th scope="col" role="columnheader" class="text-left p-4">
-                    Score
+                <th scope="col" role="columnheader" aria-sort="descending" class="text-left p-4">
+                    Puntaje
                 </th>
 
                 <th scope="col" role="columnheader" class="text-left p-4">Correo</th>
@@ -144,9 +136,9 @@ const statusFor = (related: { status: string; manual_requested_at: string | null
             <tbody role="rowgroup">
 
                 {
-                leads?.map((lead) => (
+                leads?.map((lead, index) => (
 
-                    <tr role="row" data-lead-row class="border-t border-slate-800">
+                    <tr role="row" data-lead-row hidden={index >= pageSize} class="border-t border-slate-800">
 
                     <td role="cell" class="p-4">
                         <a
@@ -185,7 +177,7 @@ const statusFor = (related: { status: string; manual_requested_at: string | null
                         </span>                      
                     </td>
 
-                    <td role="cell" class="p-4"><span class="crm-cell-label" aria-hidden="true">Score</span>
+                    <td role="cell" class="p-4"><span class="crm-cell-label" aria-hidden="true">Puntaje</span>
                         <span
                             class={
                             lead.lead_score >= 80
@@ -222,18 +214,72 @@ const statusFor = (related: { status: string; manual_requested_at: string | null
 
         </div>
         <p id="lead-search-empty" hidden class="mt-4 text-slate-800" role="status">No se encontraron leads.</p>
+        {!error && Boolean(leads?.length) && (
+          <nav aria-label="Páginas de leads" class="mt-4 flex flex-wrap items-center justify-between gap-3 text-sm text-slate-800">
+            <p id="lead-page-status" role="status">
+              1–{Math.min(pageSize, leads?.length ?? 0)} de {leads?.length} leads
+            </p>
+            <div id="lead-page-buttons" class="flex flex-wrap gap-2" hidden>
+              <button type="button" id="lead-page-prev" class="min-h-11 rounded-lg border border-slate-300 bg-white px-3 font-semibold disabled:opacity-50">Anterior</button>
+              <button type="button" id="lead-page-next" class="min-h-11 rounded-lg border border-slate-300 bg-white px-3 font-semibold disabled:opacity-50">Siguiente</button>
+            </div>
+          </nav>
+        )}
     </div>
 </CRMLayout>
 
 <script>
+  const list = document.querySelector<HTMLElement>("#lead-list");
   const search = document.querySelector<HTMLInputElement>("#lead-search");
-  const rows = Array.from(document.querySelectorAll<HTMLTableRowElement>("[data-lead-row]"));
+  const rows = Array.from(list?.querySelectorAll<HTMLTableRowElement>("[data-lead-row]") ?? []);
   const empty = document.querySelector<HTMLElement>("#lead-search-empty");
+  const controls = document.querySelector<HTMLElement>("#lead-page-buttons");
+  const status = document.querySelector<HTMLElement>("#lead-page-status");
+  const previous = document.querySelector<HTMLButtonElement>("#lead-page-prev");
+  const next = document.querySelector<HTMLButtonElement>("#lead-page-next");
+  const pageSize = Number(list?.dataset.pageSize);
   const normalize = (text: string) => text.toLocaleLowerCase("es-ES").normalize("NFD").replace(/\p{M}/gu, "");
+  const searchableRows = rows.map((row) => ({ row, text: normalize(row.textContent ?? "") }));
+  let page = 1;
+
+  function renderPage() {
+    const query = normalize(search?.value.trim() ?? "");
+    const matches = searchableRows.filter(({ text }) => text.includes(query));
+    const pages = Math.max(1, Math.ceil(matches.length / pageSize));
+    page = Math.max(1, Math.min(page, pages));
+
+    const start = (page - 1) * pageSize;
+    const visible = new Set(matches.slice(start, start + pageSize).map(({ row }) => row));
+    for (const row of rows) row.hidden = !visible.has(row);
+
+    if (empty) empty.hidden = !query || rows.length === 0 || matches.length > 0;
+    if (controls) controls.hidden = pages <= 1;
+    if (previous) previous.disabled = page === 1;
+    if (next) next.disabled = page === pages;
+    if (status) {
+      status.hidden = matches.length === 0;
+      if (!status.hidden) {
+        status.textContent = `${start + 1}–${start + visible.size} de ${matches.length} leads · Página ${page} de ${pages}`;
+      }
+    }
+  }
 
   search?.addEventListener("input", () => {
-    const query = normalize(search.value.trim());
-    for (const row of rows) row.hidden = !normalize(row.textContent ?? "").includes(query);
-    if (empty) empty.hidden = !query || rows.some((row) => !row.hidden);
+    page = 1;
+    renderPage();
   });
+  previous?.addEventListener("click", () => {
+    page--;
+    renderPage();
+  });
+  next?.addEventListener("click", () => {
+    page++;
+    renderPage();
+  });
+
+  renderPage();
 </script>
+
+<style>
+  #lead-page-buttons[hidden] { display: none; }
+</style>
