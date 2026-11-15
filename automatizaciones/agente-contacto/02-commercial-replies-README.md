@@ -56,7 +56,7 @@ despublica el flujo en n8n.
    que entregue un enlace HTTPS, si la reunión será por vídeo.
 3. Aplica `10-crm-calcom.sql` antes del despliegue. Configura el secreto
    `CALCOM_WEBHOOK_SECRET` en Vercel y en el webhook del evento en Cal.com.
-   Usa el payload predeterminado, `BOOKING_CREATED` y la URL
+   Usa el payload predeterminado, `BOOKING_CREATED`, `BOOKING_RESCHEDULED`, `BOOKING_CANCELLED` y la URL
    `https://www.orpira.es/api/webhooks/calcom`.
 4. Prueba con un contacto de tu propiedad y comprueba en su ficha la reserva,
    la hora y el enlace. La reserva se identifica por el UID de Cal.com y se
