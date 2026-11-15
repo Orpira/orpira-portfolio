@@ -54,7 +54,7 @@ const statusFor = (related: { status: string; manual_requested_at: string | null
 
     <div class="max-w-7xl mx-auto p-6">  
         
-        <div class="mb-8">
+        <div class="mb-8 flex flex-wrap items-start justify-between gap-3"><div>
 
         <h1 class="text-black text-4xl font-bold">
             Leads
@@ -64,6 +64,8 @@ const statusFor = (related: { status: string; manual_requested_at: string | null
             Seguimiento y clasificación automática
         </p>
 
+        </div>
+        <a href="/dashboard/embudo" class="rounded-lg border border-slate-300 bg-white px-4 py-2 font-semibold text-teal-800 hover:bg-teal-50">Ver embudo</a>
         </div>
 
         <!-- Buscador -->
