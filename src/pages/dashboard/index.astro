@@ -1,5 +1,7 @@
 ---
 import "@fontsource-variable/geist";
+import { Image } from "astro:assets";
+import portrait from "../../assets/images/orpira-hero-professional.png";
 import { ADMIN_SESSION_COOKIE, verifyAdminSession } from "../../lib/admin-session";
 
 if (verifyAdminSession(Astro.cookies.get(ADMIN_SESSION_COOKIE)?.value)) {
@@ -25,8 +27,15 @@ const errorMessage =
   <body>
     <main class="access">
       <aside class="brand" aria-label="CRM OrPiRa">
-        <div class="brand-name"><span aria-hidden="true">π</span> <strong>OrPiRa <small>CRM</small></strong></div>
-        <p>Contactos, oportunidades y seguimiento comercial.</p>
+        <div class="brand-name">
+          <img src="/brand/opr-cubo-192.webp" width="44" height="44" alt="" decoding="async" />
+          <strong>OrPiRa <small>CRM</small></strong>
+        </div>
+        <div class="brand-profile">
+          <Image src={portrait} alt="Orlando Pineda Raad" width={360} format="webp" quality={82}
+            class="brand-portrait" />
+          <p>Contactos, oportunidades y seguimiento comercial.</p>
+        </div>
         <a href="/">Volver al portfolio <span aria-hidden="true">↗</span></a>
       </aside>
       <section class="login" aria-labelledby="login-title">
@@ -95,16 +104,17 @@ const errorMessage =
     background: radial-gradient(ellipse at 100% 0%, #1c4252, transparent 70%), #101829;
   }
   .brand-name { display: flex; align-items: center; gap: .75rem; font-size: 1.1rem; }
-  .brand-name > span {
-    display: grid;
-    place-items: center;
-    width: 2.75rem;
-    height: 2.75rem;
-    border-radius: .7rem;
-    background: #99f6e4;
-    color: #134e4a;
-    font-size: 1.65rem;
-    font-weight: 750;
+  .brand-name img { display: block; width: 2.75rem; height: 2.75rem; object-fit: contain; }
+  .brand-profile { display: grid; gap: 1.2rem; }
+  .brand-portrait {
+    display: block;
+    width: min(100%, 11rem);
+    height: auto;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    object-position: 50% 30%;
+    border: 1px solid #b7cbd94d;
+    border-radius: .75rem;
   }
   .brand small { margin-left: .3rem; color: #b7cbd9; font-size: .75rem; font-weight: 550; }
   .brand p {
@@ -136,7 +146,9 @@ const errorMessage =
   @media (max-width: 650px) {
     .access { grid-template-columns: minmax(0, 1fr); width: calc(100% - 1.5rem); min-height: 0; margin: .75rem auto; }
     .brand { gap: 1.05rem; }
-    .brand p { font-size: 1.35rem; max-width: 24ch; }
+    .brand-profile { grid-template-columns: 4.6rem minmax(0, 1fr); gap: .8rem; align-items: center; }
+    .brand-portrait { aspect-ratio: 1; }
+    .brand p { font-size: 1.28rem; max-width: 24ch; }
     .login { padding-block: 2rem; }
     h1 { margin-bottom: 1.4rem; }
   }
