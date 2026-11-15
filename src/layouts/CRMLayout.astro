@@ -1,5 +1,7 @@
 ---
 import "@fontsource-variable/geist";
+import { Image } from "astro:assets";
+import portrait from "../assets/images/orpira-hero-professional.png";
 import "../styles/global.css";
 
 interface Props {
@@ -30,7 +32,7 @@ const navigation = [
     <a href="#contenido-crm" class="sr-only focus:not-sr-only">Saltar al contenido</a>
     <aside class="crm-sidebar">
       <a href="/dashboard/resumen" class="crm-brand">
-        <span aria-hidden="true">π</span>
+        <img src="/brand/opr-cubo-192.webp" width="40" height="40" alt="" decoding="async" />
         <strong>OrPiRa <small>CRM</small></strong>
       </a>
       <nav aria-label="Navegación del CRM">
@@ -40,6 +42,10 @@ const navigation = [
         })}
       </nav>
       <form method="post" action="/dashboard/logout">
+        <div class="crm-profile">
+          <Image src={portrait} alt="" width={96} format="webp" quality={78} />
+          <span>Orlando Pineda</span>
+        </div>
         <button type="submit">Cerrar sesión</button>
       </form>
     </aside>
@@ -64,20 +70,27 @@ const navigation = [
     position: sticky;
     top: 0;
     height: 100vh;
+    overflow-y: auto;
     padding: 1.5rem 1rem;
     background: #101829;
   }
   .crm-brand { display: flex; align-items: center; gap: .75rem; padding: 0 .5rem; }
-  .crm-brand > span {
-    display: grid;
-    place-items: center;
-    width: 2.5rem;
-    height: 2.5rem;
-    border-radius: .7rem;
-    background: #99f6e4;
-    color: #134e4a;
-    font-size: 1.5rem;
-    font-weight: 700;
+  .crm-brand img { display: block; width: 2.5rem; height: 2.5rem; object-fit: contain; }
+  .crm-profile {
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+    padding: .75rem .6rem .45rem;
+    border-top: 1px solid #293950;
+    font-size: .85rem;
+    font-weight: 600;
+  }
+  .crm-profile img {
+    width: 2.2rem;
+    height: 2.2rem;
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: 50% 28%;
   }
   .crm-brand small { margin-left: .25rem; color: #a7bacf; font-weight: 500; }
   nav { display: flex; flex-direction: column; gap: .4rem; }
@@ -90,6 +103,8 @@ const navigation = [
     .crm-shell { grid-template-columns: minmax(0, 1fr); }
     .crm-sidebar { position: static; height: auto; gap: .65rem; padding: .8rem; }
     nav { flex-flow: row wrap; }
+    form { display: flex; align-items: center; justify-content: space-between; gap: .4rem; border-top: 1px solid #293950; }
+    .crm-profile { border: 0; padding: .45rem .55rem; }
     nav a, form button { padding: .4rem .6rem; }
   }
 </style>
