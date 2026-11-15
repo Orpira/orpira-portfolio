@@ -1,7 +1,7 @@
 ---
 import "@fontsource-variable/geist";
 import { Image } from "astro:assets";
-import portrait from "../../assets/images/orpira-hero-professional.png";
+import cube from "../../../design/brand/opr-cubo.png";
 import { ADMIN_SESSION_COOKIE, verifyAdminSession } from "../../lib/admin-session";
 
 if (verifyAdminSession(Astro.cookies.get(ADMIN_SESSION_COOKIE)?.value)) {
@@ -28,12 +28,11 @@ const errorMessage =
     <main class="access">
       <aside class="brand" aria-label="CRM OrPiRa">
         <div class="brand-name">
-          <img src="/brand/opr-cubo-192.webp" width="44" height="44" alt="" decoding="async" />
-          <strong>OrPiRa <small>CRM</small></strong>
+          <img src="/brand/wordmark-crm.webp" width="560" height="198" alt="OrPiRa" decoding="async" />
+          <small>CRM</small>
         </div>
         <div class="brand-profile">
-          <Image src={portrait} alt="Orlando Pineda Raad" width={360} format="webp" quality={82}
-            class="brand-portrait" />
+          <Image src={cube} alt="Cubo OrPiRa" width={360} format="webp" quality={85} class="brand-cube" />
           <p>Contactos, oportunidades y seguimiento comercial.</p>
         </div>
         <a href="/">Volver al portfolio <span aria-hidden="true">↗</span></a>
@@ -104,17 +103,14 @@ const errorMessage =
     background: radial-gradient(ellipse at 100% 0%, #1c4252, transparent 70%), #101829;
   }
   .brand-name { display: flex; align-items: center; gap: .75rem; font-size: 1.1rem; }
-  .brand-name img { display: block; width: 2.75rem; height: 2.75rem; object-fit: contain; }
+  .brand-name img { display: block; width: min(65%, 11rem); height: auto; }
   .brand-profile { display: grid; gap: 1.2rem; }
-  .brand-portrait {
+  .brand-cube {
     display: block;
-    width: min(100%, 11rem);
+    width: min(100%, 10rem);
     height: auto;
-    aspect-ratio: 4 / 3;
-    object-fit: cover;
-    object-position: 50% 30%;
-    border: 1px solid #b7cbd94d;
-    border-radius: .75rem;
+    aspect-ratio: 1;
+    object-fit: contain;
   }
   .brand small { margin-left: .3rem; color: #b7cbd9; font-size: .75rem; font-weight: 550; }
   .brand p {
@@ -147,7 +143,7 @@ const errorMessage =
     .access { grid-template-columns: minmax(0, 1fr); width: calc(100% - 1.5rem); min-height: 0; margin: .75rem auto; }
     .brand { gap: 1.05rem; }
     .brand-profile { grid-template-columns: 4.6rem minmax(0, 1fr); gap: .8rem; align-items: center; }
-    .brand-portrait { aspect-ratio: 1; }
+    .brand-name img { width: min(55%, 9rem); }
     .brand p { font-size: 1.28rem; max-width: 24ch; }
     .login { padding-block: 2rem; }
     h1 { margin-bottom: 1.4rem; }
