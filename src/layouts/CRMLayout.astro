@@ -32,8 +32,8 @@ const navigation = [
     <a href="#contenido-crm" class="sr-only focus:not-sr-only">Saltar al contenido</a>
     <aside class="crm-sidebar">
       <a href="/dashboard/resumen" class="crm-brand">
-        <img src="/brand/opr-cubo-192.webp" width="40" height="40" alt="" decoding="async" />
-        <strong>OrPiRa <small>CRM</small></strong>
+        <img src="/brand/wordmark-crm.webp" width="560" height="198" alt="OrPiRa" decoding="async" />
+        <small>CRM</small>
       </a>
       <nav aria-label="Navegación del CRM">
         {navigation.map(({ href, label }) => {
@@ -75,7 +75,7 @@ const navigation = [
     background: #101829;
   }
   .crm-brand { display: flex; align-items: center; gap: .75rem; padding: 0 .5rem; }
-  .crm-brand img { display: block; width: 2.5rem; height: 2.5rem; object-fit: contain; }
+  .crm-brand img { display: block; width: min(70%, 9rem); height: auto; }
   .crm-profile {
     display: flex;
     align-items: center;
@@ -92,7 +92,7 @@ const navigation = [
     object-fit: cover;
     object-position: 50% 28%;
   }
-  .crm-brand small { margin-left: .25rem; color: #a7bacf; font-weight: 500; }
+  .crm-brand small { color: #a7bacf; font-weight: 600; }
   nav { display: flex; flex-direction: column; gap: .4rem; }
   nav a, form button { padding: .65rem .8rem; border-radius: .5rem; color: #cbd5e1; }
   nav a:hover, form button:hover { background: #243349; color: white; }
