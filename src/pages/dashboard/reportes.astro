@@ -1,0 +1,73 @@
+---
+import CRMLayout from "../../layouts/CRMLayout.astro";
+import { supabaseAdmin } from "../../lib/supabase-admin";
+
+const periods = [7, 30, 90];
+const selected = Number(Astro.url.searchParams.get("dias"));
+const days = periods.includes(selected) ? selected : 30;
+const since = new Date(Date.now() - days * 86_400_000).toISOString();
+
+const countContacts = () => supabaseAdmin.from("contacts")
+  .select("id", { count: "exact", head: true }).gte("created_at", since);
+const countReplies = () => supabaseAdmin.from("commercial_replies")
+  .select("id", { count: "exact", head: true });
+
+const [total, priority, clients, drafts, sent, review] = await Promise.all([
+  countContacts(),
+  countContacts().eq("priority", "alta"),
+  countContacts().eq("lead_type", "cliente"),
+  countReplies().eq("status", "draft").gte("created_at", since),
+  countReplies().eq("status", "sent").gte("sent_at", since),
+  countReplies().in("status", ["failed", "unknown"]).gte("send_finished_at", since),
+]);
+
+const sections = [
+  {
+    title: "Contactos recibidos",
+    metrics: [
+      { label: "Leads recibidos", result: total },
+      { label: "Prioridad alta", result: priority },
+      { label: "Clasificados como cliente", result: clients },
+    ],
+  },
+  {
+    title: "Respuestas comerciales",
+    metrics: [
+      { label: "Borradores pendientes creados", result: drafts },
+      { label: "Correos enviados", result: sent },
+      { label: "Envíos fallidos o sin confirmar", result: review },
+    ],
+  },
+];
+---
+
+<CRMLayout title="Reportes | CRM OrPiRa">
+  <div class="mx-auto max-w-7xl space-y-8 p-6">
+    <div class="flex flex-wrap items-end justify-between gap-4">
+      <h1 class="text-4xl font-bold text-slate-950">Reportes</h1>
+      <form action="/dashboard/reportes" method="get" class="flex flex-wrap items-end gap-3 text-slate-950">
+        <label class="grid gap-1">
+          <span class="text-sm font-medium">Período</span>
+          <select name="dias" class="rounded-lg border-slate-400 bg-white">
+            {periods.map((period) => <option value={period} selected={days === period}>Últimos {period} días</option>)}
+          </select>
+        </label>
+        <button class="rounded-lg bg-slate-900 px-4 py-2 font-semibold text-white">Aplicar</button>
+      </form>
+    </div>
+
+    {sections.map(({ title, metrics }) => (
+      <section class="space-y-4">
+        <h2 class="text-xl font-semibold text-slate-950">{title}</h2>
+        <dl class="grid gap-4 md:grid-cols-3">
+          {metrics.map(({ label, result }) => (
+            <div class="rounded-xl bg-slate-900 p-6">
+              <dt class="text-slate-300">{label}</dt>
+              <dd class="mt-2 text-3xl font-bold">{result.error ? "Sin datos" : result.count ?? "Sin datos"}</dd>
+            </div>
+          ))}
+        </dl>
+      </section>
+    ))}
+  </div>
+</CRMLayout>

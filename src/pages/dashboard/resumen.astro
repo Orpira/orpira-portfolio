@@ -1,0 +1,69 @@
+---
+import CRMLayout from "../../layouts/CRMLayout.astro";
+import { supabaseAdmin } from "../../lib/supabase-admin";
+
+const contacts = () => supabaseAdmin.from("contacts").select("id", { count: "exact", head: true });
+
+const [total, clients, highPriority, pending, recent] = await Promise.all([
+  contacts(),
+  contacts().eq("lead_type", "cliente"),
+  contacts().eq("priority", "alta"),
+  contacts().or("notified.eq.false,notified.is.null"),
+  supabaseAdmin.from("contacts")
+    .select("id, name, priority, created_at")
+    .order("created_at", { ascending: false }).order("id").limit(5),
+]);
+
+const metrics = [
+  { label: "Total de leads", result: total },
+  { label: "Clasificados como cliente", result: clients },
+  { label: "Prioridad alta", result: highPriority },
+  { label: "Pendientes de notificar", result: pending },
+];
+const formatter = new Intl.DateTimeFormat("es-ES", {
+  dateStyle: "short",
+  timeStyle: "short",
+  timeZone: "Europe/Madrid",
+});
+---
+
+<CRMLayout title="Dashboard | CRM OrPiRa">
+  <div class="mx-auto max-w-7xl space-y-8 p-6">
+    <h1 class="text-4xl font-bold text-slate-950">Dashboard</h1>
+
+    <dl class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      {metrics.map(({ label, result }) => (
+        <div class="rounded-xl bg-slate-900 p-6">
+          <dt class="text-slate-300">{label}</dt>
+          <dd class="mt-2 text-3xl font-bold">{result.error ? "Sin datos" : result.count}</dd>
+        </div>
+      ))}
+    </dl>
+
+    <section class="rounded-xl bg-slate-900 p-6" aria-labelledby="recent-leads">
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <h2 id="recent-leads" class="text-xl font-semibold">Leads recientes</h2>
+        <a href="/dashboard/leads" class="text-cyan-300 hover:underline">Ver todos los leads</a>
+      </div>
+      {recent.error ? (
+        <p class="mt-4 text-amber-200">No se pudieron cargar los leads recientes.</p>
+      ) : !recent.data?.length ? (
+        <p class="mt-4 text-slate-300">Todavía no hay leads.</p>
+      ) : (
+        <ul class="mt-3 divide-y divide-slate-700">
+          {recent.data.map((lead) => (
+            <li class="flex flex-wrap justify-between gap-x-4 gap-y-1 py-3">
+              <a class="min-w-0 break-words text-cyan-300 hover:underline" href={`/dashboard/lead/${lead.id}`}>
+                {lead.name}
+              </a>
+              <div class="flex flex-wrap gap-x-4 text-sm text-slate-300">
+                {lead.priority && <span>Prioridad {lead.priority}</span>}
+                <time datetime={lead.created_at}>{formatter.format(new Date(lead.created_at))}</time>
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
+    </section>
+  </div>
+</CRMLayout>

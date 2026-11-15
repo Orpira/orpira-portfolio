@@ -1,0 +1,41 @@
+---
+import CRMLayout from "../../layouts/CRMLayout.astro";
+import { getCrmReplyDelivery } from "../../lib/crm-reply-delivery";
+
+const deliveryEnabled = Boolean(getCrmReplyDelivery());
+---
+
+<CRMLayout title="Configuración | CRM OrPiRa">
+  <div class="mx-auto max-w-7xl space-y-8 p-6">
+    <h1 class="text-4xl font-bold text-slate-950">Configuración</h1>
+
+    <div class="grid gap-4 lg:grid-cols-2">
+      <section class="rounded-xl bg-slate-900 p-6">
+        <h2 class="text-xl font-semibold">Envío de respuestas</h2>
+        <dl class="mt-4 space-y-4">
+          <div>
+            <dt class="text-sm text-slate-300">Envío manual desde la ficha del lead</dt>
+            <dd class:list={["mt-1 font-semibold", deliveryEnabled ? "text-emerald-300" : "text-amber-300"]}>
+              {deliveryEnabled ? "Habilitado en el CRM" : "Deshabilitado en el CRM"}
+            </dd>
+          </div>
+        </dl>
+        <p class="mt-4 text-sm text-slate-300">El envío se configura en Vercel y en el flujo de entrega de n8n.</p>
+      </section>
+
+      <section class="rounded-xl bg-slate-900 p-6">
+        <h2 class="text-xl font-semibold">Fecha y hora</h2>
+        <dl class="mt-4 space-y-4">
+          <div>
+            <dt class="text-sm text-slate-300">Zona horaria del listado y el resumen</dt>
+            <dd class="mt-1 font-semibold">Bilbao · Europe/Madrid</dd>
+          </div>
+          <div>
+            <dt class="text-sm text-slate-300">Formato de fechas</dt>
+            <dd class="mt-1 font-semibold">Español (España)</dd>
+          </div>
+        </dl>
+      </section>
+    </div>
+  </div>
+</CRMLayout>

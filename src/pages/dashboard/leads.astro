@@ -14,9 +14,13 @@ if (
   return Astro.redirect("/dashboard", 303);
 }
 
+const leadDateFormat = new Intl.DateTimeFormat("es-ES", {
+  timeZone: "Europe/Madrid",
+});
+
 const { data: leads, error } = await supabaseAdmin
   .from("contacts")
-  .select("id, name, email, lead_type, priority, lead_score, notified, created_at")
+  .select("id, name, email, lead_type, priority, lead_score, created_at")
   .order("lead_score", { ascending: false });
 
 if (error) {
@@ -28,25 +32,9 @@ if (error) {
   );
 }
 
-const totalLeads = leads?.length ?? 0;
-
-const highPriority =
-  leads?.filter(
-    lead => lead.priority === "alta"
-  ).length ?? 0;
-
-const clients =
-  leads?.filter(
-    lead => lead.lead_type === "cliente"
-  ).length ?? 0;
-
-const pending =
-  leads?.filter(
-    lead => !lead.notified
-  ).length ?? 0;
 ---
 
-<CRMLayout title="CRM OrPiRa">
+<CRMLayout title="Leads | CRM OrPiRa">
 
 
     <div class="max-w-7xl mx-auto p-6">  
@@ -54,7 +42,7 @@ const pending =
         <div class="mb-8">
 
         <h1 class="text-black text-4xl font-bold">
-            Dashboard de Leads
+            Leads
         </h1>
 
         <p class="text-black mt-2">
@@ -63,58 +51,14 @@ const pending =
 
         </div>
 
-        <!-- KPIs -->
-
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-
-        <div class="bg-slate-900 rounded-xl p-6 border border-slate-800">
-            <p class="text-slate-400">
-            Total Leads
-            </p>
-
-            <h2 class="text-4xl font-bold mt-2">
-            {totalLeads}
-            </h2>
-        </div>
-
-        <div class="bg-slate-900 rounded-xl p-6 border border-slate-800">
-            <p class="text-slate-400">
-            Clientes
-            </p>
-
-            <h2 class="text-4xl font-bold text-blue-400 mt-2">
-            {clients}
-            </h2>
-        </div>
-
-        <div class="bg-slate-900 rounded-xl p-6 border border-slate-800">
-            <p class="text-slate-400">
-            Alta Prioridad
-            </p>
-
-            <h2 class="text-4xl font-bold text-red-400 mt-2">
-            {highPriority}
-            </h2>
-        </div>
-
-        <div class="bg-slate-900 rounded-xl p-6 border border-slate-800">
-            <p class="text-slate-400">
-            Pendientes
-            </p>
-
-            <h2 class="text-4xl font-bold text-yellow-400 mt-2">
-            {pending}
-            </h2>
-        </div>
-
-        </div>
-
         <!-- Buscador -->
 
         <div class="mb-6">
 
         <input
-            type="text"
+            type="search"
+            id="lead-search"
+            aria-label="Buscar por nombre, correo o fecha"
             placeholder="Buscar lead..."
             class="w-full bg-slate-900 border border-slate-800 rounded-lg px-4 py-3"
         />
@@ -166,7 +110,7 @@ const pending =
                 {
                 leads?.map((lead) => (
 
-                    <tr class="border-t border-slate-800">
+                    <tr data-lead-row class="border-t border-slate-800">
 
                     <td class="p-4">
                         <a
@@ -222,9 +166,7 @@ const pending =
                     <td class="p-4">
 
                         {
-                        new Date(
-                            lead.created_at
-                        ).toLocaleDateString("es-ES")
+                        leadDateFormat.format(new Date(lead.created_at))
                         }
 
                     </td>
@@ -241,8 +183,19 @@ const pending =
         </div>
 
         </div>
-
-
-
+        <p id="lead-search-empty" hidden class="mt-4 text-slate-800" role="status">No se encontraron leads.</p>
     </div>
 </CRMLayout>
+
+<script>
+  const search = document.querySelector<HTMLInputElement>("#lead-search");
+  const rows = Array.from(document.querySelectorAll<HTMLTableRowElement>("[data-lead-row]"));
+  const empty = document.querySelector<HTMLElement>("#lead-search-empty");
+  const normalize = (text: string) => text.toLocaleLowerCase("es-ES").normalize("NFD").replace(/\p{M}/gu, "");
+
+  search?.addEventListener("input", () => {
+    const query = normalize(search.value.trim());
+    for (const row of rows) row.hidden = !normalize(row.textContent ?? "").includes(query);
+    if (empty) empty.hidden = !query || rows.some((row) => !row.hidden);
+  });
+</script>
