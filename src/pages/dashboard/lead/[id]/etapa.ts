@@ -11,7 +11,8 @@ export const POST: APIRoute = async ({ params, request, redirect }) => {
   const form = await request.formData().catch(() => null);
   const from = form?.get("from");
   const to = form?.get("to");
-  const destination = form?.get("return") === "lead" ? `/dashboard/lead/${id}` : "/dashboard/embudo";
+  const returnToLead = form?.get("return") === "lead";
+  const destination = returnToLead ? `/dashboard/lead/${id}` : "/dashboard/embudo";
   const back = (result: string) => redirect(`${destination}?etapa=${result}`, 303);
 
   if (typeof from !== "string" || typeof to !== "string" || !stages.some((stage) => stage.id === to)) {
@@ -28,5 +29,6 @@ export const POST: APIRoute = async ({ params, request, redirect }) => {
     console.error("Error al mover la etapa del CRM", error.code);
     return back("error");
   }
-  return back(data ? "saved" : "conflict");
+  if (!data) return back("conflict");
+  return returnToLead ? back("saved") : redirect(`${destination}?etapa=saved&contacto=${id}`, 303);
 };

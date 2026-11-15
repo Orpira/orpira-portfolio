@@ -13,7 +13,12 @@ const columns = stages.map((stage) => ({
     lead.status === stage.id || (stage.id === "new" && !stages.some(({ id }) => id === lead.status))),
 }));
 
-const feedback = stageFeedback[Astro.url.searchParams.get("etapa") ?? ""];
+const result = Astro.url.searchParams.get("etapa");
+const feedback = stageFeedback[result ?? ""];
+const movedId = Astro.url.searchParams.get("contacto");
+const movedColumn = result === "saved"
+  ? columns.find((column) => column.leads.some((lead) => lead.id === movedId))
+  : undefined;
 const date = new Intl.DateTimeFormat("es-ES", {
   day: "numeric", month: "short", timeZone: "Europe/Madrid",
 });
@@ -34,15 +39,31 @@ const date = new Intl.DateTimeFormat("es-ES", {
         <a href="/dashboard/leads">Vista de lista</a>
       </div>
     </header>
-    {feedback && <p role="status" class="notice">{feedback}</p>}
+    {!error && (
+      <nav class="stage-links" aria-label="Ir a una etapa del embudo">
+        {columns.map((column) => (
+          <a href={`#etapa-${column.id}`} class:list={["stage-link", column.id]}>
+            <span>{column.label}</span>
+            <strong data-shortcut-count={column.id}>{column.leads.length}</strong>
+            <span aria-hidden="true">↓</span>
+          </a>
+        ))}
+      </nav>
+    )}
+    {feedback && (
+      <div class="notice">
+        <p role="status">{movedColumn ? `Contacto movido a «${movedColumn.label}».` : feedback}</p>
+        {movedColumn && <a href={`#contacto-${movedId}`}>Ver contacto en el embudo ↓</a>}
+      </div>
+    )}
     {error ? <p role="alert" class="notice">No se pudo cargar el embudo.</p> : (
       <div class="board" aria-label="Etapas del embudo">
         {columns.map((column) => (
-          <section class="column" data-stage={column.id} aria-label={column.label} style={`--stage-color: ${column.color}`}>
+          <section id={`etapa-${column.id}`} tabindex="-1" class="column" data-stage={column.id} aria-label={column.label} style={`--stage-color: ${column.color}`}>
             <h2>{column.label} <span data-stage-count>{column.leads.length}</span></h2>
             <div class="cards">
               {column.leads.map((lead) => (
-                <article draggable="true" data-card data-id={lead.id}
+                <article id={`contacto-${lead.id}`} tabindex="-1" draggable="true" data-card data-id={lead.id}
                   data-search={`${lead.name} ${lead.email} ${lead.lead_type ?? ""}`}>
                   <a class="contact" href={`/dashboard/lead/${lead.id}`} draggable="false">{lead.name}</a>
                   <p class="email">{lead.email}</p>
@@ -78,6 +99,8 @@ const date = new Intl.DateTimeFormat("es-ES", {
   const search = document.querySelector<HTMLInputElement>("#pipeline-search");
   const normalize = (value: string) => value.toLocaleLowerCase("es-ES").normalize("NFD").replace(/\p{M}/gu, "");
 
+  const shortcutCounts = Array.from(document.querySelectorAll<HTMLElement>("[data-shortcut-count]"));
+
   search?.addEventListener("input", () => {
     const term = normalize(search.value.trim());
     for (const column of columns) {
@@ -89,6 +112,8 @@ const date = new Intl.DateTimeFormat("es-ES", {
       const badge = column.querySelector("[data-stage-count]");
       const empty = column.querySelector<HTMLElement>("[data-empty]");
       if (badge) badge.textContent = String(count);
+      const shortcutCount = shortcutCounts.find((item) => item.dataset.shortcutCount === column.dataset.stage);
+      if (shortcutCount) shortcutCount.textContent = String(count);
       if (empty) empty.hidden = count > 0;
     }
   });
@@ -140,6 +165,17 @@ const date = new Intl.DateTimeFormat("es-ES", {
   .controls a, .controls input, .move select, .move button { border: 1px solid #c5d1d9; border-radius: .45rem; background: white; color: #172635; }
   .controls a, .controls input { padding: .55rem .75rem; }
   .controls a, .move button { font-weight: 650; }
+  .stage-links { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .65rem; margin-bottom: 1rem; }
+  @container (min-width: 30rem) { .stage-links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  @container (min-width: 65rem) { .stage-links { grid-template-columns: repeat(6, minmax(0, 1fr)); } }
+  .stage-link { display: flex; align-items: center; gap: .45rem; min-height: 44px; border: 1px solid #c5d1d9; border-radius: .65rem; padding: .65rem; font-weight: 650; background: white; font-size: .875rem; }
+  .stage-link strong { margin-left: auto; }
+  .stage-link.won { color: #065f46; background: #ecfdf5; border-color: #a7e6d0; }
+  .stage-link.lost { color: #991b1b; background: #fff1f2; border-color: #fecdd3; }
+  .stage-link:hover, .notice a:hover { text-decoration: underline; }
+  .notice a { color: #075b48; font-weight: 650; text-decoration: underline; }
+  .column, article { scroll-margin-top: 1rem; }
+  .column:target, article:target { outline: 2px solid #087567; outline-offset: 2px; }
   .notice { background: #e0f2ec; border-radius: .55rem; padding: .7rem 1rem; margin-bottom: 1rem; }
   .pipeline { container-type: inline-size; }
   .controls, .controls label, .controls input { max-width: 100%; }

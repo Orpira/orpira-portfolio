@@ -72,7 +72,8 @@ const replyStatuses: Record<string, string> = {
   unknown: "Resultado sin confirmar",
 };
 const currentStage = stages.findIndex((stage) => stage.id === lead.status);
-const stageNotice = stageFeedback[Astro.url.searchParams.get("etapa") ?? ""];
+const stageResult = Astro.url.searchParams.get("etapa");
+const stageNotice = stageFeedback[stageResult ?? ""];
 const dateFormat = new Intl.DateTimeFormat("es-ES", {
   dateStyle: "medium",
   timeStyle: "short",
@@ -136,7 +137,16 @@ activity.sort((a, b) => Date.parse(b.date) - Date.parse(a.date));
           </li>
         ))}
       </ol>
-      {stageNotice && <p role="status" class="text-sm text-teal-900">{stageNotice}</p>}
+      {stageNotice && (
+        <div class="rounded-lg bg-teal-50 p-3 text-sm text-teal-900">
+          <p role="status">{stageResult === "saved" ? `Contacto movido a «${stageLabel(lead.status)}».` : stageNotice}</p>
+          {stageResult === "saved" && (
+            <a href={`/dashboard/embudo#contacto-${lead.id}`} class="mt-1 inline-block font-semibold underline">
+              Ver contacto en el embudo
+            </a>
+          )}
+        </div>
+      )}
     </section>
 
     <dl class="grid grid-cols-2 gap-3 lg:grid-cols-4">
