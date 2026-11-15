@@ -1,8 +1,5 @@
 ---
 import CRMLayout from "../../layouts/CRMLayout.astro";
-import { getCrmReplyDelivery } from "../../lib/crm-reply-delivery";
-
-const deliveryEnabled = Boolean(getCrmReplyDelivery());
 ---
 
 <CRMLayout title="Configuración | CRM OrPiRa">
@@ -15,12 +12,10 @@ const deliveryEnabled = Boolean(getCrmReplyDelivery());
         <dl class="mt-4 space-y-4">
           <div>
             <dt class="text-sm text-slate-300">Envío manual desde la ficha del lead</dt>
-            <dd class:list={["mt-1 font-semibold", deliveryEnabled ? "text-emerald-300" : "text-amber-300"]}>
-              {deliveryEnabled ? "Habilitado en el CRM" : "Deshabilitado en el CRM"}
-            </dd>
+            <dd class="mt-1 font-semibold">Cola de entrega de n8n</dd>
           </div>
         </dl>
-        <p class="mt-4 text-sm text-slate-300">El envío se configura en Vercel y en el flujo de entrega de n8n.</p>
+        <p class="mt-4 text-sm text-slate-300">n8n revisa la cola cada cinco minutos. El historial del lead muestra el resultado de cada intento.</p>
       </section>
 
       <section class="rounded-xl bg-slate-900 p-6">

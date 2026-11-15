@@ -16,12 +16,16 @@ if (
 
 const leadDateFormat = new Intl.DateTimeFormat("es-ES", {
   timeZone: "Europe/Madrid",
+  dateStyle: "short",
+  timeStyle: "short",
 });
 
+const byScore = Astro.url.searchParams.get("orden") === "puntuacion";
 const { data: leads, error } = await supabaseAdmin
   .from("contacts")
-  .select("id, name, email, lead_type, priority, lead_score, created_at")
-  .order("lead_score", { ascending: false });
+  .select("id, name, email, lead_type, priority, lead_score, created_at, commercial_replies(status, manual_requested_at)")
+  .order(byScore ? "lead_score" : "created_at", { ascending: false, nullsFirst: false })
+  .order("id");
 
 if (error) {
   console.error(
@@ -31,6 +35,17 @@ if (error) {
     })
   );
 }
+
+const replyStatusLabels: Record<string, string> = {
+  draft: "Borrador", sending: "En proceso", sent: "Enviado",
+  failed: "Fallido", unknown: "Por confirmar",
+};
+const statusFor = (related: { status: string; manual_requested_at: string | null }[] | { status: string; manual_requested_at: string | null } | null) => {
+  const reply = Array.isArray(related) ? related[0] : related;
+  if (!reply) return "Sin respuesta";
+  if (reply.status === "draft" && reply.manual_requested_at) return "En cola";
+  return replyStatusLabels[reply.status] ?? reply.status;
+};
 
 ---
 
@@ -53,7 +68,15 @@ if (error) {
 
         <!-- Buscador -->
 
-        <div class="mb-6">
+        <div class="mb-6 grid gap-3 sm:grid-cols-[1fr_auto]">
+        <form action="/dashboard/leads" method="get" class="flex gap-2 sm:order-2">
+          <label class="sr-only" for="orden">Orden</label>
+          <select id="orden" name="orden" class="rounded-lg border-slate-300 bg-white text-slate-900">
+            <option value="fecha" selected={!byScore}>Más recientes</option>
+            <option value="puntuacion" selected={byScore}>Mayor puntuación</option>
+          </select>
+          <button class="rounded-lg bg-slate-900 px-3 font-semibold text-white">Ordenar</button>
+        </form>
 
         <input
             type="search"
@@ -64,6 +87,9 @@ if (error) {
         />
 
         </div>
+
+        {error && <p class="mb-3 text-sm text-amber-800">No se pudieron cargar los leads.</p>}
+        {!error && !leads?.length && <p class="mb-3 text-sm text-slate-700">Todavía no hay leads registrados.</p>}
 
         <!-- Tabla -->
 
@@ -97,6 +123,7 @@ if (error) {
                     Score
                 </th>
 
+                <th class="text-left p-4">Correo</th>
                 <th class="text-left p-4">
                     Fecha
                 </th>
@@ -163,11 +190,13 @@ if (error) {
                         </span>
                     </td>
 
+                    <td class="p-4 whitespace-nowrap">
+                        {statusFor(lead.commercial_replies)}
+                    </td>
+
                     <td class="p-4">
 
-                        {
-                        leadDateFormat.format(new Date(lead.created_at))
-                        }
+                        {leadDateFormat.format(new Date(lead.created_at))}
 
                     </td>
 

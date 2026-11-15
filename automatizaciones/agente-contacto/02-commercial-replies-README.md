@@ -25,14 +25,23 @@ Esta fase añade persistencia de borradores a `public.contacts`, sin modificar l
   clasificación y borrador juntos. Conserva la rama de notificaciones existente.
 - La ficha consulta `commercial_replies` por el ID del lead. Si todavía no hay
   borrador, se puede redactar y guardar uno desde el CRM.
-- Tras aplicar `05-crm-reply-editor.sql`, el editor puede guardar borradores.
-  El flujo de entrega es independiente de la captación. Importa
-  `entrega-comercial-manual.workflow.json` y asigna las credenciales de Supabase,
-  iCloud y autenticación por cabecera `X-Webhook-Secret`.
-- Configura `CRM_REPLY_WEBHOOK_URL` con la URL HTTPS de producción de ese
-  webhook y `CRM_REPLY_WEBHOOK_SECRET` con el mismo valor de la credencial
-  de cabecera. Mantén `CRM_REPLY_SEND_ENABLED=false` y el bloqueo interno
-  del workflow hasta contar con autorización expresa para habilitar la entrega.
-- Una solicitud manual aprueba la versión visible de la respuesta. Supabase
-  reserva una sola entrega por lead. Si el resultado SMTP queda incierto, la ficha
-  conserva el estado para revisión y bloquea nuevos envíos de esa respuesta.
+- Tras aplicar `05-crm-reply-editor.sql` y `07-crm-manual-queue.sql`, el CRM
+  puede guardar y poner en cola un correo. El flujo programado reserva primero
+  las solicitudes manuales. El CRM valida la dirección contra el contacto
+  guardado y conserva la hora de solicitud, la reserva y el resultado SMTP.
+
+## Respuesta automática
+
+Importa `entrega-comercial-automatica.workflow.json` como un flujo separado.
+Vincula las credenciales de Supabase y SMTP iCloud y aplica
+`06-automatic-reply-reservation.sql` antes de publicarlo. En
+**Bloqueo de envío**, indica en `enabledSince` la fecha y hora ISO 8601 de la
+activación. El valor vacío detiene los envíos. Esta modalidad funciona desde
+n8n y no requiere un webhook de Vercel.
+
+Cada cinco minutos se reserva hasta un borrador de un contacto nuevo del
+portfolio. Los borradores ya aprobados manualmente, los contactos anteriores
+a la activación y los dominios de ejemplo quedan fuera. La reserva es atómica
+y limita a un intento por destinatario en 24 horas. Un resultado incierto puede
+revisarse en el CRM antes de cualquier seguimiento. Para detener la tarea,
+despublica el flujo en n8n.
