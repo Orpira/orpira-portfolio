@@ -1,145 +1,93 @@
 ---
+import "@fontsource-variable/geist";
 import "../styles/global.css";
 
 interface Props {
   title?: string;
 }
 
-const {
-  title = "CRM OrPiRa",
-} = Astro.props;
-
+const { title = "CRM OrPiRa" } = Astro.props;
 const path = Astro.url.pathname.replace(/\/$/, "");
-const isOverview = path === "/dashboard/resumen";
-const isLeads = path === "/dashboard/leads" || path.startsWith("/dashboard/lead/");
+const navigation = [
+  { href: "/dashboard/resumen", label: "Dashboard" },
+  { href: "/dashboard/leads", label: "Leads" },
+  { href: "/dashboard/clientes", label: "Clientes" },
+  { href: "/dashboard/reportes", label: "Reportes" },
+  { href: "/dashboard/configuracion", label: "Configuración" },
+];
 ---
 
 <!DOCTYPE html>
 <html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  />
-
-  <title>{title}</title>
-</head>
-
-<body class="bg-slate-950 text-slate-100">
-
-<div class="flex min-h-screen">
-
-  <!-- Sidebar -->
-
-  <aside
-    class="w-64 bg-slate-900 border-r border-slate-800"
-  >
-
-    <div class="p-6 border-b border-slate-800">
-
-      <h1 class="text-2xl font-bold">
-        CRM OrPiRa
-      </h1>
-
-      <p class="text-slate-400 text-sm">
-        Lead Management
-      </p>
-
-    </div>
-
-    <nav class="p-4 space-y-2">
-
-      <a
-        href="/dashboard/resumen"
-        aria-current={isOverview ? "page" : undefined}
-        class:list={["block px-4 py-3 rounded-lg hover:bg-slate-800", { "bg-slate-800": isOverview }]}
-      >
-        📊 Dashboard
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+  </head>
+  <body class="crm-shell">
+    <a href="#contenido-crm" class="sr-only focus:not-sr-only">Saltar al contenido</a>
+    <aside class="crm-sidebar">
+      <a href="/dashboard/resumen" class="crm-brand">
+        <span aria-hidden="true">π</span>
+        <strong>OrPiRa <small>CRM</small></strong>
       </a>
-
-      <a
-        href="/dashboard/leads"
-        aria-current={isLeads ? "page" : undefined}
-        class:list={["block px-4 py-3 rounded-lg hover:bg-slate-800", { "bg-slate-800": isLeads }]}
-      >
-        👥 Leads
-      </a>
-
-      <a
-        href="/dashboard/clientes"
-        class="block px-4 py-3 rounded-lg hover:bg-slate-800"
-        >
-        ⭐ Clientes
-        </a>
-
-      <a
-        href="/dashboard/reportes"
-        aria-current={path === "/dashboard/reportes" ? "page" : undefined}
-        class:list={["block px-4 py-3 rounded-lg hover:bg-slate-800", { "bg-slate-800": path === "/dashboard/reportes" }]}
-      >
-        📈 Reportes
-      </a>
-
-      <a
-        href="/dashboard/configuracion"
-        aria-current={path === "/dashboard/configuracion" ? "page" : undefined}
-        class:list={["block px-4 py-3 rounded-lg hover:bg-slate-800", { "bg-slate-800": path === "/dashboard/configuracion" }]}
-      >
-        ⚙️ Configuración
-      </a>
-
-    </nav>
-
-  
-
-    <form method="POST" action="/dashboard/logout">
-      <button
-        type="submit"
-        class="
-            flex
-            w-full
-            items-center
-            gap-3
-            p-4
-            rounded-xl
-            bg-red-500/10
-            border
-            border-red-500/20
-            hover:bg-red-500/20
-            transition-all
-            duration-300
-            text-red-400
-            hover:text-red-300
-        "
-        >
-        <span class="text-xl">
-            🚪
-        </span>
-
-        <div>
-            <p class="font-semibold">
-            Salir
-            </p>
-
-            <p class="text-xs opacity-70">
-            Cerrar sesión
-            </p>
-        </div>
-      </button>
-    </form>
-
-    
-
-  </aside>
-
-  <!-- Contenido -->
-
-  <main class="flex-1 p-8">
-    <slot />
-  </main>
-
-</div>
-
-</body>
+      <nav aria-label="Navegación del CRM">
+        {navigation.map(({ href, label }) => {
+          const active = path === href || (label === "Leads" && path.startsWith("/dashboard/lead/"));
+          return <a href={href} aria-current={active ? "page" : undefined}>{label}</a>;
+        })}
+      </nav>
+      <form method="post" action="/dashboard/logout">
+        <button type="submit">Cerrar sesión</button>
+      </form>
+    </aside>
+    <main id="contenido-crm" class="crm-main"><slot /></main>
+  </body>
 </html>
+
+<style>
+  .crm-shell {
+    display: grid;
+    grid-template-columns: 14rem minmax(0, 1fr);
+    min-height: 100vh;
+    color: #f1f5f9;
+    background: #f1f5f9;
+    font-family: "Geist Variable", sans-serif;
+  }
+  .crm-shell::before { display: none; }
+  .crm-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 1.75rem;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    padding: 1.5rem 1rem;
+    background: #101829;
+  }
+  .crm-brand { display: flex; align-items: center; gap: .75rem; padding: 0 .5rem; }
+  .crm-brand > span {
+    display: grid;
+    place-items: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: .7rem;
+    background: #99f6e4;
+    color: #134e4a;
+    font-size: 1.5rem;
+    font-weight: 700;
+  }
+  .crm-brand small { margin-left: .25rem; color: #a7bacf; font-weight: 500; }
+  nav { display: flex; flex-direction: column; gap: .4rem; }
+  nav a, form button { padding: .65rem .8rem; border-radius: .5rem; color: #cbd5e1; }
+  nav a:hover, form button:hover { background: #243349; color: white; }
+  nav a[aria-current] { background: #20354a; color: #a7f3d0; font-weight: 650; }
+  form { margin-top: auto; }
+  .crm-main { padding: clamp(.9rem, 3vw, 2.75rem); min-width: 0; }
+  @media (max-width: 760px) {
+    .crm-shell { grid-template-columns: minmax(0, 1fr); }
+    .crm-sidebar { position: static; height: auto; gap: .65rem; padding: .8rem; }
+    nav { flex-flow: row wrap; }
+    nav a, form button { padding: .4rem .6rem; }
+  }
+</style>
