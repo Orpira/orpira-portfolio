@@ -1,0 +1,211 @@
+{
+  "name": "OrPiRa - Respuesta comercial automática",
+  "nodes": [
+    {
+      "id": "f9006d81-335a-4fde-92d0-000000000001",
+      "name": "Cada cinco minutos",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 5
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "f9006d81-335a-4fde-92d0-000000000002",
+      "name": "Bloqueo de envío",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        220,
+        0
+      ],
+      "parameters": {
+        "jsCode": "const enabledSince = '';\nif (!enabledSince || !Number.isFinite(Date.parse(enabledSince))) return [];\nreturn [{ json: { enabled_since: new Date(enabledSince).toISOString() } }];"
+      }
+    },
+    {
+      "id": "f9006d81-335a-4fde-92d0-000000000003",
+      "name": "Reservar borrador aprobado",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        440,
+        0
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "https://kzeypvgmhupcrkvjxsdd.supabase.co/rest/v1/rpc/reserve_next_automatic_reply",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ p_enabled_since: $json.enabled_since }) }}",
+        "options": {
+          "timeout": 12000
+        }
+      }
+    },
+    {
+      "id": "f9006d81-335a-4fde-92d0-000000000004",
+      "name": "Enviar por SMTP iCloud",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        660,
+        0
+      ],
+      "parameters": {
+        "fromEmail": "orpira@icloud.com",
+        "toEmail": "={{ $json.recipient }}",
+        "subject": "={{ $json.subject }}",
+        "emailFormat": "text",
+        "text": "={{ $json.body }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "onError": "continueErrorOutput",
+      "retryOnFail": false
+    },
+    {
+      "id": "f9006d81-335a-4fde-92d0-000000000005",
+      "name": "Registrar respuesta SMTP",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        900,
+        -80
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "https://kzeypvgmhupcrkvjxsdd.supabase.co/rest/v1/rpc/record_commercial_reply_result",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ p_reply_id: $('Verificar reserva').item.json.reply_id, p_token: $('Verificar reserva').item.json.token, p_status: Array.isArray($json.accepted) && $json.accepted.length === 1 && $json.accepted[0] === $('Verificar reserva').item.json.recipient ? 'sent' : 'unknown', p_smtp_message_id: $json.messageId ?? null }) }}",
+        "options": {
+          "timeout": 12000
+        }
+      }
+    },
+    {
+      "id": "f9006d81-335a-4fde-92d0-000000000006",
+      "name": "Registrar resultado incierto",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        900,
+        120
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "https://kzeypvgmhupcrkvjxsdd.supabase.co/rest/v1/rpc/record_commercial_reply_result",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ p_reply_id: $('Verificar reserva').item.json.reply_id, p_token: $('Verificar reserva').item.json.token, p_status: 'unknown' }) }}",
+        "options": {
+          "timeout": 12000
+        }
+      }
+    },
+    {
+      "id": "f9006d81-335a-4fde-92d0-000000000007",
+      "name": "Verificar reserva",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        540,
+        0
+      ],
+      "parameters": {
+        "jsCode": "const reserved = $input.all().flatMap(({ json }) => Array.isArray(json) ? json : [json]);\nif (reserved.length !== 1) return [];\nconst [reply] = reserved;\nreturn reply.reply_id && reply.token && reply.recipient ? [{ json: reply }] : [];"
+      }
+    }
+  ],
+  "connections": {
+    "Bloqueo de envío": {
+      "main": [
+        [
+          {
+            "node": "Reservar borrador aprobado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Reservar borrador aprobado": {
+      "main": [
+        [
+          {
+            "node": "Verificar reserva",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enviar por SMTP iCloud": {
+      "main": [
+        [
+          {
+            "node": "Registrar respuesta SMTP",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Registrar resultado incierto",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Verificar reserva": {
+      "main": [
+        [
+          {
+            "node": "Enviar por SMTP iCloud",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cada cinco minutos": {
+      "main": [
+        [
+          {
+            "node": "Bloqueo de envío",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "saveDataErrorExecution": "none",
+    "saveDataSuccessExecution": "none",
+    "saveManualExecutions": false,
+    "timezone": "Europe/Madrid"
+  }
+}
