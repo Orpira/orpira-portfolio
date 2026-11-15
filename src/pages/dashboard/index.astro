@@ -1,46 +1,143 @@
 ---
-const error =
-  Astro.url.searchParams.get("error");
+import "@fontsource-variable/geist";
+import { ADMIN_SESSION_COOKIE, verifyAdminSession } from "../../lib/admin-session";
 
+if (verifyAdminSession(Astro.cookies.get(ADMIN_SESSION_COOKIE)?.value)) {
+  return Astro.redirect("/dashboard/leads", 303);
+}
+
+const error = Astro.url.searchParams.get("error");
 const errorMessage =
-  error === "2"
-    ? "Demasiados intentos. Espera 15 minutos"
-    : "Contrasena incorrecta";
+  error === "2" ? "Demasiados intentos. Esperá 15 minutos antes de volver a probar." :
+  error === "1" ? "Contraseña incorrecta. Revisala e intentá de nuevo." :
+  null;
 ---
 
+<!DOCTYPE html>
 <html lang="es">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="robots" content="noindex, nofollow" />
-  <title>Acceso CRM</title>
-</head>
-
-<body>
-
-<h1>CRM OrPiRa</h1>
-
-{error && (
-  <p style="color:red;">
-    {errorMessage}
-  </p>
-)}
-
-<form
-  method="POST"
-  action="/dashboard/login"
->
-  <input
-    type="password"
-    name="password"
-    placeholder="Contraseña"
-    required
-  />
-
-  <button type="submit">
-    Entrar
-  </button>
-</form>
-
-</body>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="theme-color" content="#101829" />
+    <title>Iniciar sesión | CRM OrPiRa</title>
+  </head>
+  <body>
+    <main class="access">
+      <aside class="brand" aria-label="CRM OrPiRa">
+        <div class="brand-name"><span aria-hidden="true">π</span> <strong>OrPiRa <small>CRM</small></strong></div>
+        <p>Contactos, oportunidades y seguimiento comercial.</p>
+        <a href="/">Volver al portfolio <span aria-hidden="true">↗</span></a>
+      </aside>
+      <section class="login" aria-labelledby="login-title">
+        <div class="panel">
+          <h1 id="login-title">Iniciar sesión</h1>
+          <form method="post" action="/dashboard/login">
+            {errorMessage && <p id="login-error" class="error" role="alert">{errorMessage}</p>}
+            <label for="crm-password">Contraseña</label>
+            <div class="password-field">
+              <input id="crm-password" type="password" name="password" autocomplete="current-password"
+                required maxlength="1024" aria-invalid={error === "1" ? "true" : undefined}
+                aria-describedby={errorMessage ? "login-error" : undefined} />
+              <button id="password-toggle" type="button" aria-controls="crm-password" hidden>Mostrar</button>
+            </div>
+            <button class="submit" type="submit">Entrar al CRM</button>
+          </form>
+        </div>
+      </section>
+    </main>
+  </body>
 </html>
+
+<script>
+  const password = document.querySelector<HTMLInputElement>("#crm-password");
+  const toggle = document.querySelector<HTMLButtonElement>("#password-toggle");
+
+  if (password && toggle) {
+    toggle.hidden = false;
+    toggle.addEventListener("click", () => {
+      const reveal = password.type === "password";
+      password.type = reveal ? "text" : "password";
+      toggle.textContent = reveal ? "Ocultar" : "Mostrar";
+    });
+  }
+</script>
+
+<style>
+  :global(*) { box-sizing: border-box; }
+  :global(body) {
+    margin: 0;
+    min-height: 100vh;
+    background: #edf2f5;
+    color: #101829;
+    font-family: "Geist Variable", system-ui, sans-serif;
+  }
+  .access {
+    display: grid;
+    grid-template-columns: minmax(0, .86fr) minmax(0, 1fr);
+    align-items: stretch;
+    width: min(58rem, calc(100% - 3rem));
+    min-height: 29rem;
+    margin: max(2rem, calc((100vh - 29rem) / 2)) auto 2rem;
+    border: 1px solid #dce4ea;
+    border-radius: 1.4rem;
+    overflow: hidden;
+    background: #fff;
+    box-shadow: 0 20px 65px #14243a12;
+  }
+  .brand {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 2.4rem;
+    padding: clamp(1.5rem, 5vw, 3.1rem);
+    color: #ebf4fc;
+    background: radial-gradient(ellipse at 100% 0%, #1c4252, transparent 70%), #101829;
+  }
+  .brand-name { display: flex; align-items: center; gap: .75rem; font-size: 1.1rem; }
+  .brand-name > span {
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: .7rem;
+    background: #99f6e4;
+    color: #134e4a;
+    font-size: 1.65rem;
+    font-weight: 750;
+  }
+  .brand small { margin-left: .3rem; color: #b7cbd9; font-size: .75rem; font-weight: 550; }
+  .brand p {
+    margin: 0;
+    max-width: 17ch;
+    font-weight: 650;
+    line-height: 1.15;
+    font-size: clamp(1.65rem, 3.4vw, 2.5rem);
+    letter-spacing: -.045em;
+  }
+  .brand a { align-self: start; color: #a7f3d0; text-underline-offset: .25rem; font-size: .9rem; }
+  .brand a span { margin-left: .25rem; }
+  .login { display: grid; place-items: center; padding: clamp(1.5rem, 5vw, 3.4rem); }
+  .panel { width: min(100%, 22rem); }
+  h1 { margin: 0 0 2rem; font-size: clamp(1.65rem, 3.4vw, 2.2rem); letter-spacing: -.045em; }
+  form { display: grid; gap: .65rem; }
+  label { font-size: .9rem; font-weight: 650; }
+  .password-field { display: flex; gap: .5rem; }
+  input, button { font: inherit; min-height: 2.9rem; border-radius: .58rem; }
+  input { flex: 1; min-width: 0; width: 100%; border: 1px solid #aebdcb; padding: .7rem .75rem; color: #101829; background: #fff; }
+  input[aria-invalid="true"] { border-color: #b42318; }
+  button { cursor: pointer; font-weight: 650; padding: .65rem .85rem; }
+  #password-toggle { border: 1px solid #c4d0db; background: #f1f5f9; color: #203348; font-size: .85rem; }
+  #password-toggle:hover { background: #e3eaf0; }
+  .submit { margin-top: .6rem; border: 1px solid transparent; background: #0f6d61; color: #fff; }
+  .submit:hover { background: #0c574e; }
+  :is(a, button, input):focus-visible { outline: 3px solid #29a793; outline-offset: 3px; }
+  .error { margin: 0 0 .5rem; border-left: .25rem solid #b42318; border-radius: .35rem; padding: .75rem; background: #fff0ef; color: #84251e; font-size: .9rem; }
+  @media (max-width: 650px) {
+    .access { grid-template-columns: minmax(0, 1fr); width: calc(100% - 1.5rem); min-height: 0; margin: .75rem auto; }
+    .brand { gap: 1.05rem; }
+    .brand p { font-size: 1.35rem; max-width: 24ch; }
+    .login { padding-block: 2rem; }
+    h1 { margin-bottom: 1.4rem; }
+  }
+</style>
