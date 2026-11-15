@@ -20,7 +20,7 @@ const { id } = Astro.params;
 
 const { data: lead } = await supabaseAdmin
   .from("contacts")
-  .select("id, name, email, status, lead_type, priority, lead_score, message, created_at, contact_category, company, social_profile, source, source_page, last_contacted_at, next_follow_up_on")
+  .select("id, name, email, status, lead_type, priority, lead_score, message, created_at, contact_category, company, social_profile, source, source_page, last_contacted_at, next_follow_up_on, next_follow_up_action")
   .eq("id", id)
   .single();
 
@@ -28,7 +28,7 @@ if (!lead) {
   return Astro.redirect("/dashboard/leads");
 }
 
-const [{ data: replies, error: repliesError }, { data: notes, error: notesError }, { data: changes, error: changesError }] = await Promise.all([
+const [{ data: replies, error: repliesError }, { data: notes, error: notesError }, { data: changes, error: changesError }, { data: bookings, error: bookingsError }, { data: followUpHistory, error: followUpHistoryError }] = await Promise.all([
   supabaseAdmin.from("commercial_replies")
     .select("id, subject, body, status, created_at, sent_at, smtp_message_id, approved_recipient, manual_requested_at, send_started_at, send_finished_at")
     .eq("contact_id", lead.id).order("created_at", { ascending: false }),
@@ -38,6 +38,10 @@ const [{ data: replies, error: repliesError }, { data: notes, error: notesError 
   supabaseAdmin.from("crm_contact_stage_changes")
     .select("id, from_stage, to_stage, changed_at").eq("contact_id", lead.id)
     .order("changed_at", { ascending: false }).order("id"),
+  supabaseAdmin.from("crm_bookings").select("uid,start_at,meeting_url,created_at").eq("contact_id", lead.id)
+    .order("start_at", { ascending: false }),
+  supabaseAdmin.from("crm_follow_up_completions").select("id,action,completed_at").eq("contact_id", lead.id)
+    .order("completed_at", { ascending: false }),
 ]);
 
 const draft = replies?.find((reply) => reply.status === "draft");
@@ -81,6 +85,23 @@ const fields = [
   { label: "Prioridad", value: lead.priority },
   { label: "Puntuación", value: lead.lead_score },
 ];
+type Activity = { label: string; date: string; detail?: string; url?: string; meetingAt?: string; reply?: NonNullable<typeof replies>[number] };
+const activity: Activity[] = [
+  { label: "Contacto recibido", date: lead.created_at },
+  ...(lead.last_contacted_at ? [{ label: "Contacto registrado", date: lead.last_contacted_at }] : []),
+  ...(bookings ?? []).map((booking) => ({
+    label: "Reunión agendada", date: booking.created_at, meetingAt: booking.start_at, url: booking.meeting_url,
+  })),
+  ...(followUpHistory ?? []).map((task) => ({ label: "Seguimiento completado", detail: task.action, date: task.completed_at })),
+  ...(changes ?? []).map((change) => ({ label: `${stageLabel(change.from_stage)} → ${stageLabel(change.to_stage)}`, date: change.changed_at })),
+  ...(notes ?? []).map((note) => ({ label: "Nota interna", detail: note.body, date: note.created_at })),
+  ...(replies ?? []).map((reply) => ({
+    label: reply.status === "draft" && reply.manual_requested_at ? "Correo en cola" : replyStatuses[reply.status] ?? reply.status,
+    date: reply.sent_at ?? reply.send_finished_at ?? reply.send_started_at ?? reply.manual_requested_at ?? reply.created_at, reply,
+  })),
+];
+activity.sort((a, b) => Date.parse(b.date) - Date.parse(a.date));
+
 ---
 
 <CRMLayout title={`${lead.name} | CRM OrPiRa`}>
@@ -107,7 +128,7 @@ const fields = [
           <button class="rounded-lg bg-teal-700 px-3 text-sm font-semibold text-white hover:bg-teal-800">Cambiar etapa</button>
         </form>
       </div>
-      <ol class="grid grid-cols-2 gap-2 text-sm sm:grid-cols-5">
+      <ol class="grid grid-cols-2 gap-2 text-sm sm:grid-cols-6">
         {stages.map((stage, index) => (
           <li aria-current={index === currentStage ? "step" : undefined}
             class:list={["rounded-lg px-3 py-2", index === currentStage ? "bg-teal-800 font-semibold text-white" : "bg-slate-100 text-slate-700"]}>
@@ -142,7 +163,8 @@ const fields = [
       </p>
       {Astro.url.searchParams.has("seguimiento") && (
         <p role="status" class="mt-2 text-sm text-teal-900">
-          {Astro.url.searchParams.get("seguimiento") === "saved" ? "Seguimiento guardado." : "No se pudo guardar el seguimiento."}
+          {Astro.url.searchParams.get("seguimiento") === "completed" ? "Seguimiento marcado como hecho." :
+            Astro.url.searchParams.get("seguimiento") === "saved" ? "Seguimiento guardado." : "No se pudo guardar el seguimiento."}
         </p>
       )}
       <form method="post" action={`/dashboard/lead/${lead.id}/seguimiento`} class="mt-4 flex flex-wrap items-end gap-3">
@@ -157,9 +179,21 @@ const fields = [
           Próximo seguimiento
           <input type="date" name="date" value={lead.next_follow_up_on} class="rounded-lg border-slate-300 bg-white" />
         </label>
+        <label class="grid gap-1 text-sm font-medium">
+          Próxima acción
+          <input name="nextAction" maxlength="160" value={lead.next_follow_up_action}
+            placeholder="Ej. Preparar propuesta" class="rounded-lg border-slate-300 bg-white" />
+        </label>
         <button name="action" value="save" class="rounded-lg bg-teal-700 px-3 py-2 text-sm font-semibold text-white">Guardar seguimiento</button>
         <button name="action" value="contacted" class="rounded-lg border border-slate-300 px-3 py-2 text-sm font-semibold">Registrar contacto de hoy</button>
       </form>
+      {lead.next_follow_up_on && (
+        <form method="post" action={`/dashboard/lead/${lead.id}/seguimiento`} class="mt-3">
+          <input type="hidden" name="date" value={lead.next_follow_up_on} />
+          <input type="hidden" name="nextAction" value={lead.next_follow_up_action ?? ""} />
+          <button name="action" value="complete" class="rounded-lg border border-teal-700 px-3 py-2 text-sm font-semibold text-teal-800">Marcar como hecha</button>
+        </form>
+      )}
     </section>
 
     <div class="grid gap-6 lg:grid-cols-2">
@@ -176,6 +210,15 @@ const fields = [
             {draft && <input type="hidden" name="replyId" value={draft.id} />}
             <input type="hidden" name="recipient" value={lead.email} />
             <p class="break-all text-sm text-slate-600">Para {lead.email}</p>
+            <label class="block text-sm font-medium">
+              Plantilla de respuesta
+              <select id="reply-template" class="mt-1 w-full rounded-lg border-slate-300 bg-white" data-first-name={lead.name.trim().split(/\s+/)[0]}>
+                <option value="">Elegir plantilla…</option>
+                <option value="project">Proyecto</option>
+                <option value="job">Oferta laboral</option>
+                <option value="network">Networking</option>
+              </select>
+            </label>
             <label class="grid gap-1 text-sm font-medium">
               Asunto
               <input name="subject" maxlength="200" required value={draft?.subject ?? "Re: Consulta a OrPiRa"}
@@ -216,52 +259,41 @@ const fields = [
         )}
       </div>
       <ol class="mt-4 space-y-4 border-l-2 border-slate-200 pl-4">
-        <li>
-          <p class="font-medium">Contacto recibido</p>
-          <time class="text-sm text-slate-600" datetime={lead.created_at}>{formatDate(lead.created_at)}</time>
-        </li>
-        {changes?.map((change) => (
-          <li>
-            <p class="font-medium">{stageLabel(change.from_stage)} → {stageLabel(change.to_stage)}</p>
-            <time class="text-sm text-slate-600" datetime={change.changed_at}>{formatDate(change.changed_at)}</time>
-          </li>
-        ))}
-        {replies?.map((reply) => {
-          const status = reply.status === "draft" && reply.manual_requested_at ? "En cola" : replyStatuses[reply.status] ?? reply.status;
-          const events = [
-            { label: "Borrador creado", at: reply.created_at },
-            { label: "Envío manual solicitado", at: reply.manual_requested_at },
-            { label: "Envío iniciado", at: reply.send_started_at },
-            { label: reply.sent_at ? "Aceptado por SMTP" : "Resultado registrado", at: reply.sent_at ?? reply.send_finished_at },
-          ];
-          return (
-            <li class="space-y-3 rounded-lg border border-slate-200 p-4">
-              <div class="flex flex-wrap items-center justify-between gap-2">
-                <h3 class="break-words font-semibold">{reply.subject}</h3>
-                <span class:list={["rounded-full px-2.5 py-1 text-xs font-semibold",
-                  reply.status === "sent" ? "bg-emerald-100 text-emerald-900" :
-                  ["unknown", "failed"].includes(reply.status) ? "bg-amber-100 text-amber-900" : "bg-slate-100 text-slate-800"]}>{status}</span>
-              </div>
-              <dl class="space-y-1 text-sm">
-                {events.filter(({ at }) => at).map(({ label, at }) => (
-                  <div class="flex flex-wrap gap-x-2">
-                    <dt class="font-medium">{label}</dt>
-                    <dd class="text-slate-600"><time datetime={at}>{formatDate(at)}</time></dd>
-                  </div>
-                ))}
-                {reply.smtp_message_id && (
-                  <div><dt class="font-medium">Identificador SMTP</dt><dd class="break-all text-slate-600">{reply.smtp_message_id}</dd></div>
-                )}
-              </dl>
+        {activity.map(({ label, date, detail, url, meetingAt, reply }) => (
+          <li class="space-y-2">
+            <div class="flex flex-wrap items-baseline justify-between gap-x-3">
+              <p class="font-semibold">{label}{reply && ` · ${reply.subject}`}</p>
+              <time class="text-sm text-slate-600" datetime={date}>{formatDate(date)}</time>
+            </div>
+            {detail && <p class="whitespace-pre-wrap break-words text-sm text-slate-700">{detail}</p>}
+            {meetingAt && <p class="text-sm text-slate-700">Cita el <time datetime={meetingAt}>{formatDate(meetingAt)}</time></p>}
+            {url && <a href={url} class="text-sm font-semibold text-teal-800 hover:underline" rel="noreferrer">Abrir reunión</a>}
+            {reply && (
               <details>
-                <summary class="cursor-pointer text-sm font-semibold text-teal-800">Ver respuesta</summary>
+                <summary class="cursor-pointer text-sm font-semibold text-teal-800">Ver correo y detalles de envío</summary>
+                <dl class="mt-2 space-y-1 text-sm">
+                  {[
+                    { label: "Borrador creado", at: reply.created_at },
+                    { label: "Envío manual solicitado", at: reply.manual_requested_at },
+                    { label: "Envío iniciado", at: reply.send_started_at },
+                    { label: reply.sent_at ? "Aceptado por SMTP" : "Resultado registrado", at: reply.sent_at ?? reply.send_finished_at },
+                  ].filter(({ at }) => at).map(({ label, at }) => (
+                    <div class="flex flex-wrap gap-x-2">
+                      <dt class="font-medium">{label}</dt>
+                      <dd class="text-slate-600"><time datetime={at}>{formatDate(at)}</time></dd>
+                    </div>
+                  ))}
+                  {reply.smtp_message_id && (
+                    <div><dt class="font-medium">Identificador SMTP</dt><dd class="break-all text-slate-600">{reply.smtp_message_id}</dd></div>
+                  )}
+                </dl>
                 <p class="mt-2 whitespace-pre-wrap break-words text-slate-700">{reply.body}</p>
               </details>
-            </li>
-          );
-        })}
+            )}
+          </li>
+        ))}
       </ol>
-      {changesError && <p class="mt-3 text-sm text-amber-800">No se pudieron cargar los cambios de etapa.</p>}
+      {(changesError || bookingsError || followUpHistoryError) && <p class="mt-3 text-sm text-amber-800">No se pudo cargar parte de la actividad.</p>}
       {repliesError && <p class="mt-3 text-sm text-amber-800">No se pudo cargar el historial de respuestas.</p>}
     </section>
     <section id="notas" class="rounded-xl border border-slate-200 bg-white p-5" aria-labelledby="notes-title">
@@ -281,16 +313,6 @@ const fields = [
               Guardar nota
             </button>
           </form>
-          {!!notes?.length && (
-            <ol class="mt-5 divide-y divide-slate-200">
-              {notes.map((note) => (
-                <li class="py-3">
-                  <time class="text-sm text-slate-600" datetime={note.created_at}>{formatDate(note.created_at)}</time>
-                  <p class="mt-1 whitespace-pre-wrap break-words">{note.body}</p>
-                </li>
-              ))}
-            </ol>
-          )}
         </>
       )}
     </section>
@@ -300,6 +322,26 @@ const fields = [
 
 <script>
   const form = document.querySelector<HTMLFormElement>("#crm-reply-form");
+  const templates = {
+    project: ["Sobre tu proyecto", "Gracias por contarme sobre tu proyecto. ¿Qué te gustaría conseguir y para cuándo lo necesitas?"],
+    job: ["Sobre la oportunidad laboral", "Gracias por pensar en mi perfil. ¿Podrías compartirme las funciones del puesto, la modalidad y los siguientes pasos?"],
+    network: ["Gracias por conectar", "Gracias por escribirme. Cuéntame qué tienes en mente y vemos cómo podemos colaborar."],
+  } as const;
+  const select = document.querySelector<HTMLSelectElement>("#reply-template");
+  select?.addEventListener("change", () => {
+    const key = select.value as keyof typeof templates;
+    const subject = form?.querySelector<HTMLInputElement>('input[name="subject"]');
+    const body = form?.querySelector<HTMLTextAreaElement>('textarea[name="body"]');
+    if (!subject || !body || !Object.hasOwn(templates, key)) return;
+    if (body.value.trim() && !window.confirm("¿Reemplazar el texto del borrador por esta plantilla?")) {
+      select.value = "";
+      return;
+    }
+    subject.value = templates[key][0];
+    const name = select.dataset.firstName;
+    body.value = `Hola${name ? " " + name : ""},\n\n${templates[key][1]}\n\nUn saludo,\nOrlando Pineda Raad\nOrPiRa`;
+    select.value = "";
+  });
   form?.addEventListener("submit", (event) => {
     const button = event.submitter;
     if (button instanceof HTMLButtonElement && button.value === "send") {

@@ -14,8 +14,21 @@ export const POST: APIRoute = async ({ params, request, redirect }) => {
   const category = form?.get("category");
   const action = form?.get("action");
 
+  const nextAction = form?.get("nextAction");
   if (
     typeof date !== "string" || (date && !/^20\d{2}-\d{2}-\d{2}$/.test(date)) ||
+    typeof nextAction !== "string" || nextAction.trim().length > 160
+  ) return back("invalid");
+
+  if (action === "complete") {
+    if (!date) return back("invalid");
+    const { data, error } = await supabaseAdmin.rpc("complete_crm_follow_up", {
+      p_id: id, p_due_on: date, p_action: nextAction.trim() || null,
+    });
+    return back(data && !error ? "completed" : "error");
+  }
+
+  if (
     (category !== "" && !isContactCategory(category)) ||
     (action !== "save" && action !== "contacted")
   ) return back("invalid");
@@ -23,6 +36,7 @@ export const POST: APIRoute = async ({ params, request, redirect }) => {
   const { data, error } = await supabaseAdmin.from("contacts")
     .update({
       next_follow_up_on: date || null,
+      next_follow_up_action: date ? nextAction.trim() || null : null,
       contact_category: category || null,
       ...(action === "contacted" && { last_contacted_at: new Date().toISOString() }),
     })

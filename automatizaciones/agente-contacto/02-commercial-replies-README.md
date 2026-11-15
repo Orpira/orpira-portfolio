@@ -45,3 +45,32 @@ a la activación y los dominios de ejemplo quedan fuera. La reserva es atómica
 y limita a un intento por destinatario en 24 horas. Un resultado incierto puede
 revisarse en el CRM antes de cualquier seguimiento. Para detener la tarea,
 despublica el flujo en n8n.
+
+## Reservas con Cal.com Cloud
+
+1. En Cal.com, instala la integración Apple Calendar. Conecta iCloud con tu
+   cuenta de Apple y una contraseña específica de aplicación dedicada. Selecciona
+   el calendario de conflictos y el calendario donde se guardarán las reuniones.
+2. Crea un evento individual y verifica en Cal.com que una franja ocupada no
+   se ofrezca y que puedas reservar una franja libre. Selecciona una ubicación
+   que entregue un enlace HTTPS, si la reunión será por vídeo.
+3. Aplica `10-crm-calcom.sql` antes del despliegue. Configura el secreto
+   `CALCOM_WEBHOOK_SECRET` en Vercel y en el webhook del evento en Cal.com.
+   Usa el payload predeterminado, `BOOKING_CREATED` y la URL
+   `https://www.orpira.es/api/webhooks/calcom`.
+4. Prueba con un contacto de tu propiedad y comprueba en su ficha la reserva,
+   la hora y el enlace. La reserva se identifica por el UID de Cal.com y se
+   vincula por el correo del primer asistente. Si hay varios contactos del mismo
+   correo, se prioriza el registro abierto más reciente.
+5. Una vez verificado, en Supabase asigna la URL pública del evento a la fila
+   única de `crm_booking_settings`. Ejemplo, sustituye usuario y evento:
+
+   ```sql
+   insert into public.crm_booking_settings(singleton, booking_url)
+   values (true, 'https://cal.com/usuario/evento')
+   on conflict (singleton) do update set booking_url = excluded.booking_url;
+   ```
+
+   Un valor nulo desactiva el enlace en los siguientes correos automáticos.
+   La firma y los párrafos se aplican al reservar la entrega. La contraseña de
+   Apple se configura solo en Cal.com y se conserva el SMTP existente de n8n.

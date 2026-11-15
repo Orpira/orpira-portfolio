@@ -8,7 +8,7 @@ const parts = new Intl.DateTimeFormat("en", {
 }).formatToParts(new Date());
 const today = ["year", "month", "day"].map((part) => parts.find(({ type }) => type === part)?.value).join("-");
 const followUps = () => supabaseAdmin.from("contacts")
-  .select("id,name,contact_category,next_follow_up_on")
+  .select("id,name,contact_category,next_follow_up_on,next_follow_up_action")
   .or("status.is.null,status.not.in.(won,lost)")
   .order("next_follow_up_on").order("id").limit(100);
 
@@ -34,7 +34,10 @@ const format = new Intl.DateTimeFormat("es-ES", { dateStyle: "medium", timeZone:
           <ul class="mt-3 divide-y divide-slate-200">
             {result.data.map((contact) => (
               <li class="flex flex-wrap justify-between gap-2 py-3">
-                <a class="font-semibold text-teal-800 hover:underline" href={`/dashboard/lead/${contact.id}#seguimiento`}>{contact.name}</a>
+                <div>
+                  <a class="font-semibold text-teal-800 hover:underline" href={`/dashboard/lead/${contact.id}#seguimiento`}>{contact.name}</a>
+                  {contact.next_follow_up_action && <p class="text-sm text-slate-600">{contact.next_follow_up_action}</p>}
+                </div>
                 <span class="text-sm text-slate-600">
                   {isContactCategory(contact.contact_category) && `${categories[contact.contact_category]} · `}
                   <time datetime={contact.next_follow_up_on}>{format.format(new Date(contact.next_follow_up_on))}</time>
