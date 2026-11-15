@@ -1,5 +1,6 @@
 ---
 import { stages, stageLabel, stageFeedback } from "../../../lib/crm-pipeline";
+import { categories } from "../../../lib/crm-categories";
 import CRMLayout from "../../../layouts/CRMLayout.astro";
 import { supabaseAdmin } from "../../../lib/supabase-admin";
 import {
@@ -19,7 +20,7 @@ const { id } = Astro.params;
 
 const { data: lead } = await supabaseAdmin
   .from("contacts")
-  .select("id, name, email, status, lead_type, priority, lead_score, message, created_at")
+  .select("id, name, email, status, lead_type, priority, lead_score, message, created_at, contact_category, company, social_profile, source, source_page, last_contacted_at, next_follow_up_on")
   .eq("id", id)
   .single();
 
@@ -125,6 +126,41 @@ const fields = [
         </div>
       ))}
     </dl>
+
+    <section id="seguimiento" class="rounded-xl border border-slate-200 bg-white p-5">
+      <h2 class="text-lg font-semibold">Seguimiento</h2>
+      <p class="mt-2 text-sm text-slate-600">
+        {lead.company && <span>Empresa {lead.company} · </span>}
+        {lead.social_profile && <span class="break-all">Perfil {lead.social_profile} · </span>}
+        Origen {lead.source ?? "Sin especificar"}{lead.source_page && ` · ${lead.source_page}`}
+      </p>
+      <p class="mt-2 text-sm text-slate-600">
+        Último contacto {lead.last_contacted_at || replies?.some((reply) => reply.sent_at)
+          ? formatDate([lead.last_contacted_at, ...(replies ?? []).map((reply) => reply.sent_at)]
+              .filter(Boolean).sort((a, b) => Date.parse(b) - Date.parse(a))[0])
+          : "Sin registrar"}
+      </p>
+      {Astro.url.searchParams.has("seguimiento") && (
+        <p role="status" class="mt-2 text-sm text-teal-900">
+          {Astro.url.searchParams.get("seguimiento") === "saved" ? "Seguimiento guardado." : "No se pudo guardar el seguimiento."}
+        </p>
+      )}
+      <form method="post" action={`/dashboard/lead/${lead.id}/seguimiento`} class="mt-4 flex flex-wrap items-end gap-3">
+        <label class="grid gap-1 text-sm font-medium">
+          Categoría
+          <select name="category" class="rounded-lg border-slate-300 bg-white">
+            <option value="">Sin categorizar</option>
+            {Object.entries(categories).map(([key, label]) => <option value={key} selected={lead.contact_category === key}>{label}</option>)}
+          </select>
+        </label>
+        <label class="grid gap-1 text-sm font-medium">
+          Próximo seguimiento
+          <input type="date" name="date" value={lead.next_follow_up_on} class="rounded-lg border-slate-300 bg-white" />
+        </label>
+        <button name="action" value="save" class="rounded-lg bg-teal-700 px-3 py-2 text-sm font-semibold text-white">Guardar seguimiento</button>
+        <button name="action" value="contacted" class="rounded-lg border border-slate-300 px-3 py-2 text-sm font-semibold">Registrar contacto de hoy</button>
+      </form>
+    </section>
 
     <div class="grid gap-6 lg:grid-cols-2">
       <section class="min-w-0 self-start rounded-xl border border-slate-200 bg-white p-5" aria-labelledby="original-title">

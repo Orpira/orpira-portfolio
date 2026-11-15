@@ -1,3 +1,4 @@
+import { isContactCategory } from "../../lib/crm-categories";
 export const prerender = false;
 
 import type { APIRoute } from "astro";
@@ -146,11 +147,24 @@ export const POST: APIRoute = async ({ request }) => {
 			);
 		}
 
+		const company = typeof data.company === "string" ? data.company.trim() : "";
+		const socialProfile = typeof data.socialProfile === "string" ? data.socialProfile.trim() : "";
+		const sourcePage = typeof data.sourcePage === "string" && /^\/[a-z0-9/_-]{0,199}$/i.test(data.sourcePage)
+			? data.sourcePage : null;
+		const category = isContactCategory(data.category) ? data.category : null;
+		if (company.length > 120 || socialProfile.length > 250) {
+			return jsonResponse({ success: false, error: "Revisá la longitud de la empresa o el perfil." }, 400);
+		}
+
 		const { error } = await supabase.from("contacts").insert({
 			name,
 			email,
 			message,
 			source: "portfolio",
+			contact_category: category,
+			company: company || null,
+			social_profile: socialProfile || null,
+			source_page: sourcePage,
 			status: "new",
 		});
 

@@ -1,4 +1,5 @@
 ---
+import { categories } from "../../lib/crm-categories";
 /**
  * Contacto (fase 2C). Usa la misma API que el formulario anterior
  * (POST /api/contact con name, email, message, botcheck, consent).
@@ -40,7 +41,7 @@ const errorText = "mt-1.5 hidden text-sm text-red-700 dark:text-red-300";
 			novalidate
 			aria-describedby="form-required-note"
 		>
-			<p id="form-required-note" class="t-data mb-6 text-ink-muted">Todos los campos son obligatorios.</p>
+			<p id="form-required-note" class="t-data mb-6 text-ink-muted">Los campos opcionales están indicados.</p>
 
 			<!-- Trampa para bots: oculta a personas y a lectores de pantalla -->
 			<div class="hidden" aria-hidden="true">
@@ -78,6 +79,23 @@ const errorText = "mt-1.5 hidden text-sm text-red-700 dark:text-red-300";
 						aria-describedby="cf-email-error"
 					/>
 					<p id="cf-email-error" class={errorText}>Escribe un email válido, por ejemplo nombre@empresa.es.</p>
+				</div>
+			</div>
+
+			<div class="mt-6 grid gap-6 sm:grid-cols-2">
+				<div>
+					<label for="cf-reason" class="font-medium text-ink">Motivo de contacto</label>
+					<select id="cf-reason" name="category" class={field}>
+						{Object.entries(categories).map(([value, label]) => <option value={value} selected={value === "other"}>{label}</option>)}
+					</select>
+				</div>
+				<div>
+					<label for="cf-company" class="font-medium text-ink">Empresa (opcional)</label>
+					<input id="cf-company" name="company" autocomplete="organization" maxlength="120" class={field} />
+				</div>
+				<div class="sm:col-span-2">
+					<label for="cf-profile" class="font-medium text-ink">Perfil profesional o red social (opcional)</label>
+					<input id="cf-profile" name="socialProfile" maxlength="250" class={field} />
 				</div>
 			</div>
 
@@ -227,6 +245,10 @@ const errorText = "mt-1.5 hidden text-sm text-red-700 dark:text-red-300";
 						name: String(data.get("name") ?? "").trim(),
 						email: String(data.get("email") ?? "").trim(),
 						message: need ? `[${need}] ${message}` : message,
+						category: data.get("category"),
+						company: data.get("company"),
+						socialProfile: data.get("socialProfile"),
+						sourcePage: window.location.pathname,
 						botcheck: data.get("botcheck") !== null,
 						consent: data.get("consent") !== null,
 					}),
