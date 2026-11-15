@@ -1,0 +1,163 @@
+---
+import CRMLayout from "../../layouts/CRMLayout.astro";
+import { stages, stageFeedback } from "../../lib/crm-pipeline";
+import { supabaseAdmin } from "../../lib/supabase-admin";
+
+const { data: leads, error } = await supabaseAdmin.from("contacts")
+  .select("id,name,email,status,lead_type,priority,lead_score,created_at")
+  .order("created_at", { ascending: false }).order("id");
+
+const columns = stages.map((stage) => ({
+  ...stage,
+  leads: (leads ?? []).filter((lead) =>
+    lead.status === stage.id || (stage.id === "new" && !stages.some(({ id }) => id === lead.status))),
+}));
+
+const feedback = stageFeedback[Astro.url.searchParams.get("etapa") ?? ""];
+const date = new Intl.DateTimeFormat("es-ES", {
+  day: "numeric", month: "short", timeZone: "Europe/Madrid",
+});
+---
+
+<CRMLayout title="Embudo | CRM OrPiRa">
+  <div class="pipeline">
+    <header>
+      <div>
+        <h1>Embudo comercial</h1>
+        {!error && <p>{leads?.length ?? 0} contactos</p>}
+      </div>
+      <div class="controls">
+        <label>
+          <span class="sr-only">Buscar en el embudo</span>
+          <input id="pipeline-search" type="search" placeholder="Buscar contacto…" />
+        </label>
+        <a href="/dashboard/leads">Vista de lista</a>
+      </div>
+    </header>
+    {feedback && <p role="status" class="notice">{feedback}</p>}
+    {error ? <p role="alert" class="notice">No se pudo cargar el embudo.</p> : (
+      <div class="board" aria-label="Etapas del embudo">
+        {columns.map((column) => (
+          <section class="column" data-stage={column.id} aria-label={column.label} style={`--stage-color: ${column.color}`}>
+            <h2>{column.label} <span data-stage-count>{column.leads.length}</span></h2>
+            <div class="cards">
+              {column.leads.map((lead) => (
+                <article draggable="true" data-card data-id={lead.id}
+                  data-search={`${lead.name} ${lead.email} ${lead.lead_type ?? ""}`}>
+                  <a class="contact" href={`/dashboard/lead/${lead.id}`} draggable="false">{lead.name}</a>
+                  <p class="email">{lead.email}</p>
+                  <div class="meta">
+                    <time datetime={lead.created_at}>{date.format(new Date(lead.created_at))}</time>
+                    {lead.priority === "alta" && <span class="priority">Prioridad alta</span>}
+                  </div>
+                  <form class="move" method="post" action={`/dashboard/lead/${lead.id}/etapa`}>
+                    <input name="from" type="hidden" value={lead.status ?? ""} />
+                    <select name="to" aria-label={`Mover ${lead.name} a otra etapa`} required>
+                      <option value="">Mover a…</option>
+                      {stages.filter((stage) => stage.id !== lead.status).map((stage) => (
+                        <option value={stage.id}>{stage.label}</option>
+                      ))}
+                    </select>
+                    <button type="submit">Mover</button>
+                  </form>
+                </article>
+              ))}
+              <p class="empty" data-empty hidden={column.leads.length > 0}>Sin contactos</p>
+            </div>
+          </section>
+        ))}
+      </div>
+    )}
+  </div>
+</CRMLayout>
+
+<script>
+  const board = document.querySelector<HTMLElement>(".board");
+  const columns = Array.from(board?.querySelectorAll<HTMLElement>("[data-stage]") ?? []);
+  const cards = Array.from(board?.querySelectorAll<HTMLElement>("[data-card]") ?? []);
+  const search = document.querySelector<HTMLInputElement>("#pipeline-search");
+  const normalize = (value: string) => value.toLocaleLowerCase("es-ES").normalize("NFD").replace(/\p{M}/gu, "");
+
+  search?.addEventListener("input", () => {
+    const term = normalize(search.value.trim());
+    for (const column of columns) {
+      let count = 0;
+      for (const card of column.querySelectorAll<HTMLElement>("[data-card]")) {
+        card.hidden = !normalize(card.dataset.search ?? "").includes(term);
+        if (!card.hidden) count++;
+      }
+      const badge = column.querySelector("[data-stage-count]");
+      const empty = column.querySelector<HTMLElement>("[data-empty]");
+      if (badge) badge.textContent = String(count);
+      if (empty) empty.hidden = count > 0;
+    }
+  });
+
+  let dragged: HTMLElement | null = null;
+  for (const card of cards) {
+    card.addEventListener("dragstart", (event) => {
+      dragged = card;
+      event.dataTransfer?.setData("text/plain", card.dataset.id ?? "");
+      if (event.dataTransfer) event.dataTransfer.effectAllowed = "move";
+    });
+    card.addEventListener("dragend", () => {
+      dragged = null;
+      for (const column of columns) column.classList.remove("drop-target");
+    });
+  }
+
+  for (const column of columns) {
+    column.addEventListener("dragover", (event) => {
+      if (!dragged || dragged.closest("[data-stage]") === column) return;
+      event.preventDefault();
+      column.classList.add("drop-target");
+    });
+    column.addEventListener("dragleave", (event) => {
+      if (!(event.relatedTarget instanceof Node) || !column.contains(event.relatedTarget)) {
+        column.classList.remove("drop-target");
+      }
+    });
+    column.addEventListener("drop", (event) => {
+      column.classList.remove("drop-target");
+      if (!dragged || dragged.closest("[data-stage]") === column) return;
+      event.preventDefault();
+      const form = dragged.querySelector("form");
+      const select = form?.querySelector("select");
+      if (select && column.dataset.stage) {
+        select.value = column.dataset.stage;
+        form?.requestSubmit();
+      }
+    });
+  }
+</script>
+
+<style>
+  .pipeline { color: #172635; }
+  header { display: flex; justify-content: space-between; gap: 1rem; align-items: flex-end; flex-wrap: wrap; margin-bottom: 1.4rem; }
+  h1 { font-size: clamp(1.65rem, 3vw, 2.25rem); font-weight: 740; letter-spacing: -.025em; }
+  header p, .email, .meta, .empty { color: #536475; }
+  .controls, .meta, .move { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+  .controls a, .controls input, .move select, .move button { border: 1px solid #c5d1d9; border-radius: .45rem; background: white; color: #172635; }
+  .controls a, .controls input { padding: .55rem .75rem; }
+  .controls a, .move button { font-weight: 650; }
+  .notice { background: #e0f2ec; border-radius: .55rem; padding: .7rem 1rem; margin-bottom: 1rem; }
+  .board { display: grid; grid-template-columns: repeat(5, minmax(13rem, 1fr)); gap: .7rem; overflow-x: auto; padding: .1rem .1rem .75rem; align-items: start; }
+  .column { min-width: 0; min-height: 12rem; background: #e8eef2; border: 1px solid #d8e0e6; border-top: .2rem solid var(--stage-color); border-radius: .75rem; padding: .65rem; }
+  .column h2 { display: flex; justify-content: space-between; align-items: center; gap: .5rem; padding: .2rem .25rem .7rem; font-size: .95rem; font-weight: 720; }
+  .column h2 span { border-radius: 99px; padding: .1rem .55rem; background: #d7e1e8; font-size: .8rem; }
+  .column.drop-target { background: #d8f2e7; border-color: #047857; }
+  .cards { display: grid; gap: .55rem; }
+  article { min-width: 0; background: white; border: 1px solid #d7e1e8; padding: .75rem; border-radius: .6rem; box-shadow: 0 1px 2px #1623340a; }
+  article[draggable] { cursor: grab; }
+  .contact { font-weight: 700; color: #075b48; overflow-wrap: anywhere; }
+  .contact:hover { text-decoration: underline; }
+  .email { overflow-wrap: anywhere; font-size: .8rem; }
+  .meta { margin: .6rem 0; font-size: .75rem; }
+  .priority { background: #feeadf; color: #8a321b; border-radius: 99px; padding: .1rem .45rem; }
+  .move { border-top: 1px solid #e6ecef; padding-top: .55rem; }
+  .move select, .move button { font-size: .78rem; padding: .35rem .45rem; }
+  .move select { flex: 1; min-width: 6rem; padding-right: 1.5rem; }
+  .move button:hover, .controls a:hover { background: #e0f2ec; }
+  .empty { padding: .5rem; font-size: .8rem; }
+  [hidden] { display: none !important; }
+</style>
