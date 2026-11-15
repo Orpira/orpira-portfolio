@@ -2,6 +2,7 @@
 import { stages, stageLabel, stageFeedback } from "../../../lib/crm-pipeline";
 import { categories } from "../../../lib/crm-categories";
 import CRMLayout from "../../../layouts/CRMLayout.astro";
+import CrmConfirmation from "../../../components/ui/CrmConfirmation.astro";
 import { supabaseAdmin } from "../../../lib/supabase-admin";
 import {
   ADMIN_SESSION_COOKIE,
@@ -396,10 +397,13 @@ activity.sort((a, b) => Date.parse(b.date) - Date.parse(a.date));
         )}
       </section>
     )}
+    {showEditor && <CrmConfirmation id="crm-reply-confirmation" />}
   </div>
 </CRMLayout>
 
 <script>
+  import { confirmCrmAction } from "../../../lib/crm-confirmation";
+
   const bookingLink = document.querySelector<HTMLAnchorElement>("#lead-booking-open");
   const bookingDialog = document.querySelector<HTMLDialogElement>("#lead-booking");
   const bookingFrame = document.querySelector<HTMLIFrameElement>("#lead-booking-frame");
@@ -428,25 +432,42 @@ activity.sort((a, b) => Date.parse(b.date) - Date.parse(a.date));
     network: ["Gracias por conectar", "Gracias por escribirme. Cuéntame qué tienes en mente y vemos cómo podemos colaborar."],
   } as const;
   const select = document.querySelector<HTMLSelectElement>("#reply-template");
-  select?.addEventListener("change", () => {
+  const confirmationDialog = document.querySelector<HTMLDialogElement>("#crm-reply-confirmation");
+  select?.addEventListener("change", async () => {
     const key = select.value as keyof typeof templates;
     const subject = form?.querySelector<HTMLInputElement>('input[name="subject"]');
     const body = form?.querySelector<HTMLTextAreaElement>('textarea[name="body"]');
     if (!subject || !body || !Object.hasOwn(templates, key)) return;
-    if (body.value.trim() && !window.confirm("¿Reemplazar el texto del borrador por esta plantilla?")) {
-      select.value = "";
-      return;
-    }
+    select.value = "";
+    if ((body.value.trim() || subject.value !== subject.defaultValue) &&
+      !await confirmCrmAction(confirmationDialog, {
+        title: "¿Usar esta plantilla?",
+        message: "La plantilla reemplazará el asunto y el mensaje que tenés en el editor.",
+        action: "Reemplazar borrador",
+      })) return;
     subject.value = templates[key][0];
     const name = select.dataset.firstName;
     body.value = `Hola${name ? " " + name : ""},\n\n${templates[key][1]}\n\nUn saludo,\nOrlando Pineda Raad\nOrPiRa`;
-    select.value = "";
   });
-  form?.addEventListener("submit", (event) => {
+
+  let confirmedSend = false;
+  form?.addEventListener("submit", async (event) => {
     const button = event.submitter;
-    if (button instanceof HTMLButtonElement && button.value === "send") {
-      const recipient = new FormData(form).get("recipient");
-      if (!window.confirm(`¿Poner en cola el correo para ${recipient}?`)) event.preventDefault();
+    if (!(button instanceof HTMLButtonElement) || button.value !== "send" || confirmedSend) return;
+
+    event.preventDefault();
+    const recipient = new FormData(form).get("recipient");
+    if (!await confirmCrmAction(confirmationDialog, {
+      title: "¿Enviar este correo?",
+      message: `El mensaje para ${recipient} quedará en cola de envío.`,
+      action: "Confirmar envío",
+    })) return;
+
+    confirmedSend = true;
+    try {
+      form.requestSubmit(button);
+    } finally {
+      confirmedSend = false;
     }
   });
 </script>
