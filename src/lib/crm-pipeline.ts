@@ -1,6 +1,7 @@
 export const stages = [
   { id: "new", label: "Nuevo", color: "#64748b" },
   { id: "qualified", label: "Cualificado", color: "#2563eb" },
+  { id: "meeting_scheduled", label: "Reunión agendada", color: "#0f766e" },
   { id: "proposal", label: "Propuesta", color: "#a16207" },
   { id: "won", label: "Ganado", color: "#047857" },
   { id: "lost", label: "Perdido", color: "#b91c1c" },
