@@ -1,5 +1,6 @@
 ---
 import "@fontsource-variable/geist";
+import CrmAppMetadata from "../../components/ui/CrmAppMetadata.astro";
 import { ADMIN_SESSION_COOKIE, verifyAdminSession } from "../../lib/admin-session";
 
 if (verifyAdminSession(Astro.cookies.get(ADMIN_SESSION_COOKIE)?.value)) {
@@ -21,6 +22,7 @@ const errorMessage =
     <meta name="robots" content="noindex, nofollow" />
     <meta name="theme-color" content="#101829" />
     <title>Iniciar sesión | CRM OrPiRa</title>
+    <CrmAppMetadata />
   </head>
   <body>
     <main class="access">
