@@ -1,5 +1,6 @@
 ---
 import "@fontsource-variable/geist";
+import CrmAppMetadata from "../components/ui/CrmAppMetadata.astro";
 import { Image } from "astro:assets";
 import portrait from "../assets/images/orpira-hero-professional.png";
 import "../styles/global.css";
@@ -28,6 +29,7 @@ const navigation = [
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{title}</title>
+    <CrmAppMetadata />
   </head>
   <body class="crm-shell">
     <a href="#contenido-crm" class="sr-only focus:not-sr-only">Saltar al contenido</a>

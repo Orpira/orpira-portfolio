@@ -1,0 +1,18 @@
+{
+  "id": "/dashboard",
+  "name": "CRM OrPiRa",
+  "short_name": "CRM OrPiRa",
+  "lang": "es",
+  "start_url": "/dashboard",
+  "scope": "/dashboard",
+  "display": "standalone",
+  "theme_color": "#101829",
+  "background_color": "#101829",
+  "icons": [
+    {
+      "src": "/brand/crm-apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ]
+}
