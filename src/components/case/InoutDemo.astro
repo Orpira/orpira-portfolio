@@ -1,0 +1,80 @@
+---
+import Section from "../ui/Section.astro";
+
+const steps = [
+	{
+		title: "1. Fichaje en el kiosko",
+		description: "Al llegar a la bodega, la empleada se identifica con su código. Si la tablet pierde Internet, el kiosko guarda la marcación y la sincroniza cuando vuelve la conexión.",
+		rows: [
+			["Empleado", "2005 · Diana Moreno"],
+			["Entrada", "08:00"],
+			["Estado de la marcación", "Sincronizada tras recuperar la conexión"],
+		],
+	},
+	{
+		title: "2. Revisión de horas extra",
+		description: "El supervisor revisa el turno y deja un motivo para su decisión. Puede aprobar todas las horas extra, aprobar una parte o rechazarlas.",
+		rows: [
+			["Horario previsto", "08:00–17:00"],
+			["Salida registrada", "17:45"],
+			["Horas extra aprobadas", "00:30"],
+			["Motivo", "Apoyo en el despacho final"],
+		],
+	},
+	{
+		title: "3. Consulta de la liquidación",
+		description: "En la liquidación aparecen los minutos aprobados. El sistema los clasifica según la hora, el tipo de día y las reglas vigentes en la fecha del turno.",
+		rows: [
+			["Empleado", "2005 · Diana Moreno"],
+			["Tipo de día del ejemplo", "Laborable"],
+			["Concepto", "Hora extra diurna"],
+			["Tiempo liquidado", "00:30"],
+		],
+	},
+];
+---
+
+<Section id="demo-inout" title="Demostración interactiva de Inout">
+	<p class="mb-6 max-w-[65ch] text-ink-soft">
+		Explora un turno de principio a fin. Cada paso muestra datos ficticios y se puede consultar sin iniciar sesión.
+	</p>
+	<div class="grid gap-3">
+		{steps.map((step, index) => (
+			<details
+				name="inout-demo"
+				open={index === 0}
+				class="overflow-hidden rounded-ds-lg border border-line bg-surface"
+			>
+				<summary class="t-h3 cursor-pointer px-5 py-4 focus-visible:outline focus-visible:-outline-offset-2 focus-visible:outline-accent-ink">
+					{step.title}
+				</summary>
+				<div class="demo-panel border-t border-line px-5 py-5 sm:grid sm:grid-cols-2 sm:gap-8">
+					<p class="text-ink-soft">{step.description}</p>
+					<dl class="mt-4 divide-y divide-line sm:mt-0">
+						{step.rows.map(([label, value]) => (
+							<div class="grid gap-1 py-2 first:pt-0 sm:grid-cols-2">
+								<dt class="text-ink-muted">{label}</dt>
+								<dd class="font-medium text-ink">{value}</dd>
+							</div>
+						))}
+					</dl>
+				</div>
+			</details>
+		))}
+	</div>
+</Section>
+
+<style>
+	@media (prefers-reduced-motion: no-preference) {
+		details[open] .demo-panel {
+			animation: demo-enter 220ms ease-out;
+		}
+	}
+
+	@keyframes demo-enter {
+		from {
+			opacity: 0;
+			transform: translateY(4px);
+		}
+	}
+</style>

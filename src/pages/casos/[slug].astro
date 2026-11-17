@@ -15,6 +15,7 @@ import Button from "../../components/ui/Button.astro";
 import Tag from "../../components/ui/Tag.astro";
 import Pending from "../../components/ui/Pending.astro";
 import CaseArchitecture from "../../components/case/CaseArchitecture.astro";
+import InoutDemo from "../../components/case/InoutDemo.astro";
 import { isProduction } from "../../data/home";
 import { caseJsonLd } from "../../data/seo";
 
@@ -38,6 +39,7 @@ interface Props {
 
 const { entry, prev, next } = Astro.props as Props;
 const c = entry.data;
+const showInoutDemo = entry.id === "inout";
 // image() de la colección y <Image> difieren solo en `format` opcional (tipado de Astro 7).
 const asImage = (img: unknown) => img as ImageMetadata;
 
@@ -88,8 +90,9 @@ const idx = () => String(++n).padStart(2, "0");
 						{
 							c.links.length > 0 && (
 								<div class="mt-8 flex flex-wrap gap-3">
+									{showInoutDemo && <Button href="#demo-inout" arrow>Explorar la demo</Button>}
 									{c.links.map((link, i) => (
-										<Button href={link.href} external arrow variant={i === 0 ? "primary" : "secondary"}>
+										<Button href={link.href} external arrow variant={!showInoutDemo && i === 0 ? "primary" : "secondary"}>
 											{link.label}
 										</Button>
 									))}
@@ -130,6 +133,8 @@ const idx = () => String(++n).padStart(2, "0");
 				)
 			}
 		</header>
+
+		{showInoutDemo && <InoutDemo />}
 
 		<Section id="problema" index={idx()} eyebrow="El problema" title={c.problem.title}>
 			<div class="grid gap-10 md:grid-cols-12">
