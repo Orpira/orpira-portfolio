@@ -1,5 +1,6 @@
 ---
 import Section from "../ui/Section.astro";
+import InoutPlayback from "./InoutPlayback.astro";
 
 const steps = [
 	{
@@ -38,6 +39,7 @@ const steps = [
 	<p class="mb-6 max-w-[65ch] text-ink-soft">
 		Explora un turno de principio a fin. Cada paso muestra datos ficticios y se puede consultar sin iniciar sesión.
 	</p>
+	<InoutPlayback />
 	<div class="grid gap-3">
 		{steps.map((step, index) => (
 			<details
