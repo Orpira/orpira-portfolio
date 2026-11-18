@@ -90,7 +90,7 @@ const idx = () => String(++n).padStart(2, "0");
 						{
 							c.links.length > 0 && (
 								<div class="mt-8 flex flex-wrap gap-3">
-									{showInoutDemo && <Button href="#demo-inout" arrow>Explorar la demo</Button>}
+									{showInoutDemo && <Button href="#demo-inout" arrow>Ver la demostración</Button>}
 									{c.links.map((link, i) => (
 										<Button href={link.href} external arrow variant={!showInoutDemo && i === 0 ? "primary" : "secondary"}>
 											{link.label}

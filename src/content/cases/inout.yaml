@@ -23,6 +23,8 @@ links:
     href: https://inout.orpira.es/
   - label: Ver el código
     href: https://github.com/Orpira/Inout
+cover: ../../assets/images/inout/portada.webp
+coverAlt: Kiosko de Inout en la tablet de la bodega, con la hora 21:47 y la ficha de Andrés Ramírez lista para marcar la salida
 
 problem:
   title: Las horas extra de una bodega no caben en una fórmula fija.
@@ -94,7 +96,23 @@ decisions:
       en hora de Bogotá, contra un PostgreSQL real.
     why: El resultado de una liquidación no puede depender de la zona horaria del servidor.
 
-galleryPending: Capturas del kiosko de marcación, del panel de supervisión y de una liquidación
+gallery:
+  - src: ../../assets/images/inout/salida.webp
+    alt: Kiosko con la salida registrada a las 21:47 y el aviso de 17 minutos de hora extra nocturna
+    caption: Al fichar la salida, separa sola los minutos de extra nocturna. Datos de demostración.
+  - src: ../../assets/images/inout/sin-conexion.webp
+    alt: Kiosko sin conexión con una marcación de las 06:02 guardada en la tablet
+    caption: Sin wifi, la marcación se guarda en la tablet y se envía al volver la red.
+  - src: ../../assets/images/inout/panel.webp
+    alt: Panel del supervisor con empleados en turno, horas trabajadas del periodo y extras por aprobar
+    caption: El supervisor ve quién está trabajando y cuántas horas se acumulan.
+  - src: ../../assets/images/inout/marcaciones.webp
+    alt: Lista de marcaciones con horas extra del personal administrativo pendientes de aprobar o rechazar
+    caption: Las extras del personal administrativo esperan aprobación, y cada decisión queda auditada.
+  - src: ../../assets/images/inout/liquidacion.webp
+    alt: Liquidación por empleado con recargos nocturnos, dominicales y extras, un aviso de límite legal y el botón de exportar a CSV
+    caption: Liquidación por empleado, con avisos de límites legales y exportación para nómina.
+galleryPending: null
 
 architecture:
   summary: >-
@@ -132,8 +150,8 @@ stack:
     tech: [Vitest, GitHub Actions]
     why: El motor de liquidación y la API se prueban en cada cambio.
   - layer: Despliegue
-    tech: [Docker]
-    why: La API y la web en un único contenedor.
+    tech: [Docker, Hetzner]
+    why: La API y la web en un único contenedor, en un servidor propio.
 
 results:
   - value: "8"
