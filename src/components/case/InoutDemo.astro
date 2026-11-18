@@ -1,82 +1,190 @@
 ---
+/**
+ * Demostración de Inout: el vídeo del recorrido y, al lado, los capítulos
+ * con un texto que explica cada paso. Pulsar un capítulo salta a ese momento;
+ * mientras se reproduce, se marca el capítulo en curso.
+ */
 import Section from "../ui/Section.astro";
-import InoutPlayback from "./InoutPlayback.astro";
 
-const steps = [
+const VIDEO = "/videos/inout-demo.mp4";
+const POSTER = "/videos/inout-demo-poster.webp";
+
+const chapters = [
 	{
-		title: "1. Fichaje en el kiosko",
-		description: "Al llegar a la bodega, la empleada se identifica con su código. Si la tablet pierde Internet, el kiosko guarda la marcación y la sincroniza cuando vuelve la conexión.",
-		rows: [
-			["Empleado", "2005 · Diana Moreno"],
-			["Entrada", "08:00"],
-			["Estado de la marcación", "Sincronizada tras recuperar la conexión"],
-		],
+		at: 4,
+		title: "Por qué existe",
+		text: "Nació en una bodega real: calcular a mano las horas extra de los operarios era lento y daba errores. La primera versión, en Java y PostgreSQL, tenía reglas fijas; esta liquida minuto a minuto y deja auditoría de cada cambio.",
 	},
 	{
-		title: "2. Revisión de horas extra",
-		description: "El supervisor revisa el turno y deja un motivo para su decisión. Puede aprobar todas las horas extra, aprobar una parte o rechazarlas.",
-		rows: [
-			["Horario previsto", "08:00–17:00"],
-			["Salida registrada", "17:45"],
-			["Horas extra aprobadas", "00:30"],
-			["Motivo", "Apoyo en el despacho final"],
-		],
+		at: 11,
+		title: "Fichar en el kiosko",
+		text: "En la entrada hay una tablet. Cada operario marca con su código, un lector o la cámara, e Inout reconoce al instante quién es y en qué turno está.",
 	},
 	{
-		title: "3. Consulta de la liquidación",
-		description: "En la liquidación aparecen los minutos aprobados. El sistema los clasifica según la hora, el tipo de día y las reglas vigentes en la fecha del turno.",
-		rows: [
-			["Empleado", "2005 · Diana Moreno"],
-			["Tipo de día del ejemplo", "Laborable"],
-			["Concepto", "Hora extra diurna"],
-			["Tiempo liquidado", "00:30"],
-		],
+		at: 19,
+		title: "Horas nocturnas, solas",
+		text: "Al registrar la salida a las 21:47, separa los minutos de extra nocturna. Desde las 19:00 se liquidan con su recargo, según la ley vigente en la fecha del turno.",
+	},
+	{
+		at: 28,
+		title: "Sin conexión",
+		text: "Si se cae el wifi, el kiosko sigue marcando y guarda cada fichaje en la tablet. Al volver la red los envía en orden y sin duplicados.",
+	},
+	{
+		at: 34,
+		title: "El panel del supervisor",
+		text: "De un vistazo: quién está trabajando ahora, las horas acumuladas en el periodo y las extras pendientes de aprobar.",
+	},
+	{
+		at: 45,
+		title: "Aprobar horas extra",
+		text: "Las extras del personal administrativo no se pagan solas: esperan a que un supervisor las apruebe o rechace, y cada decisión queda registrada.",
+	},
+	{
+		at: 55,
+		title: "Liquidación para nómina",
+		text: "Recargos y extras por empleado, con avisos cuando alguien supera los límites legales, y exportación en CSV para nómina.",
+	},
+	{
+		at: 65,
+		title: "Por dentro",
+		text: "Las reglas viven en un único paquete cubierto por pruebas: el motor minuto a minuto, la ley colombiana con sus fechas de vigencia y la PWA que funciona sin conexión.",
 	},
 ];
+
+const mmss = (s: number) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
 ---
 
-<Section id="demo-inout" title="Demostración interactiva de Inout">
+<Section id="demo-inout" title="Demostración de Inout">
 	<p class="mb-6 max-w-[65ch] text-ink-soft">
-		Explora un turno de principio a fin. Cada paso muestra datos ficticios y se puede consultar sin iniciar sesión.
+		Un recorrido de 1:19 por la app: del fichaje en la tablet de la bodega a la liquidación
+		que recibe nómina. Los datos son ficticios. El vídeo tiene música y no tiene voz: los
+		textos de la pantalla y los capítulos de al lado explican cada paso.
 	</p>
-	<InoutPlayback />
-	<div class="grid gap-3">
-		{steps.map((step, index) => (
-			<details
-				name="inout-demo"
-				open={index === 0}
-				class="overflow-hidden rounded-ds-lg border border-line bg-surface"
-			>
-				<summary class="t-h3 cursor-pointer px-5 py-4 focus-visible:outline focus-visible:-outline-offset-2 focus-visible:outline-accent-ink">
-					{step.title}
-				</summary>
-				<div class="demo-panel border-t border-line px-5 py-5 sm:grid sm:grid-cols-2 sm:gap-8">
-					<p class="text-ink-soft">{step.description}</p>
-					<dl class="mt-4 divide-y divide-line sm:mt-0">
-						{step.rows.map(([label, value]) => (
-							<div class="grid gap-1 py-2 first:pt-0 sm:grid-cols-2">
-								<dt class="text-ink-muted">{label}</dt>
-								<dd class="font-medium text-ink">{value}</dd>
-							</div>
-						))}
-					</dl>
-				</div>
-			</details>
-		))}
-	</div>
+
+	<inout-video class="grid gap-5 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)] lg:items-start">
+		<div class="relative overflow-hidden rounded-ds-lg border border-line bg-[#0f4c4a] lg:sticky lg:top-24">
+			<video
+				data-video
+				class="block aspect-video w-full"
+				src={VIDEO}
+				poster={POSTER}
+				preload="metadata"
+				playsinline
+				aria-label="Vídeo: recorrido por Inout, de 1 minuto y 19 segundos"
+			></video>
+			<button type="button" data-play class="play absolute inset-0 flex items-end justify-start p-4 sm:p-6">
+				<span class="flex items-center gap-2 whitespace-nowrap rounded-full bg-accent px-4 py-2 text-sm font-medium text-accent-on shadow-lg sm:gap-3 sm:px-5 sm:py-3 sm:text-base">
+					<svg aria-hidden="true" viewBox="0 0 24 24" class="h-4 w-4 fill-current sm:h-5 sm:w-5"><path d="M8 5v14l11-7z" /></svg>
+					Reproducir demostración
+					<span class="t-data hidden opacity-80 sm:inline">1:19</span>
+				</span>
+			</button>
+		</div>
+
+		<ol class="chapters grid gap-1" aria-label="Capítulos de la demostración">
+			{
+				chapters.map((c, i) => (
+					<li>
+						<button type="button" class="chapter" data-chapter={c.at} data-end={chapters[i + 1]?.at ?? 999}>
+							<span class="t-data chapter-time">{mmss(c.at)}</span>
+							<span class="min-w-0">
+								<span class="block font-medium text-ink">{c.title}</span>
+								<span class="chapter-text mt-1 block text-[0.9375rem] leading-relaxed text-ink-soft">{c.text}</span>
+							</span>
+						</button>
+					</li>
+				))
+			}
+		</ol>
+	</inout-video>
 </Section>
 
-<style>
-	@media (prefers-reduced-motion: no-preference) {
-		details[open] .demo-panel {
-			animation: demo-enter 220ms ease-out;
+<script>
+	class InoutVideo extends HTMLElement {
+		connectedCallback() {
+			const video = this.querySelector<HTMLVideoElement>("[data-video]");
+			const play = this.querySelector<HTMLButtonElement>("[data-play]");
+			const chapters = [...this.querySelectorAll<HTMLButtonElement>("[data-chapter]")];
+			if (!video || !play) return;
+
+			const start = (at?: number) => {
+				play.hidden = true;
+				video.controls = true;
+				if (at !== undefined) video.currentTime = at;
+				void video.play().catch(() => {});
+			};
+
+			play.addEventListener("click", () => start(0));
+			chapters.forEach((btn) =>
+				btn.addEventListener("click", () => start(Number(btn.dataset.chapter))),
+			);
+
+			// Marca el capítulo que se está viendo.
+			video.addEventListener("timeupdate", () => {
+				const t = video.currentTime;
+				chapters.forEach((btn) => {
+					const on = t >= Number(btn.dataset.chapter) && t < Number(btn.dataset.end);
+					btn.toggleAttribute("aria-current", on);
+				});
+			});
+			video.addEventListener("ended", () => {
+				chapters.forEach((btn) => btn.removeAttribute("aria-current"));
+			});
 		}
 	}
+	customElements.define("inout-video", InoutVideo);
+</script>
 
-	@keyframes demo-enter {
-		from {
-			opacity: 0;
-			transform: translateY(4px);
-		}
+<style>
+	.play {
+		background: linear-gradient(to top, rgb(0 0 0 / 0.45), transparent 45%);
+		transition: background-color 0.2s ease;
+	}
+	.play > span {
+		transition: transform 0.2s ease;
+	}
+	.play:hover > span,
+	.play:focus-visible > span {
+		transform: scale(1.05);
+	}
+	.play:focus-visible {
+		outline: 2px solid rgb(var(--accent));
+		outline-offset: -4px;
+	}
+	.play[hidden] {
+		display: none;
+	}
+
+	.chapter {
+		display: grid;
+		width: 100%;
+		grid-template-columns: 3rem minmax(0, 1fr);
+		gap: 0.75rem;
+		border-radius: var(--radius-lg);
+		border: 1px solid transparent;
+		padding: 0.75rem 0.875rem;
+		text-align: left;
+		transition:
+			background-color 0.2s ease,
+			border-color 0.2s ease;
+	}
+	.chapter:hover {
+		background: rgb(var(--surface));
+	}
+	.chapter:focus-visible {
+		outline: 2px solid rgb(var(--accent));
+		outline-offset: -2px;
+	}
+	.chapter-time {
+		padding-top: 0.15rem;
+		color: rgb(var(--ink-muted));
+	}
+	.chapter[aria-current] {
+		border-color: rgb(var(--accent) / 0.5);
+		background: rgb(var(--surface));
+	}
+	.chapter[aria-current] .chapter-time {
+		color: rgb(var(--accent));
 	}
 </style>
