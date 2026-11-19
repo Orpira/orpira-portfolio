@@ -7,12 +7,10 @@ import CursorCube from "../CursorCube.astro";
 import { getCollection } from "astro:content";
 import { labProjects, isProduction } from "../../data/home";
 
-// Casos de estudio del Laboratorio, por título: la tarjeta abre la app y, si el
-// proyecto tiene caso, debajo se enlaza.
+// Casos de estudio del Laboratorio, por título.
 const caseByTitle = new Map(
 	(await getCollection("cases", (e) => e.data.section === "laboratorio")).map((e) => [e.data.title, `/casos/${e.id}`]),
 );
-
 ---
 
 <Section
@@ -22,181 +20,103 @@ const caseByTitle = new Map(
 	title="Prototipos y pilotos <em class='t-accent'>en evolución.</em>"
 	intro="MVPs, pilotos y herramientas que siguen creciendo. Cuando uno se asienta con uso real, pasa a Proyectos."
 >
-	<CursorCube zone="#laboratorio" hideOver="button" />
-	<div class="cinta" data-cinta>
-		<div class="cinta-viewport" data-cinta-viewport>
-			<ul class="cinta-track" data-cinta-track role="list">
-				{
-					labProjects.map((project, i) => {
-						const Wrapper = project.href ? "a" : "div";
-						// Todas las tarjetas abren la app en otra pestaña.
-						const attrs = project.href
-							? { href: project.href, target: "_blank", rel: "noopener noreferrer" }
-							: {};
-						const caseHref = caseByTitle.get(project.title);
-						return (
-							<li class="cinta-item">
-								<Wrapper {...attrs} class="lab-card group" data-card style={`--tone: ${project.tone}`}>
-									<div class="lab-stage">
-										<div class="lab-window">
-											<div class="lab-bar">
-												<span /><span /><span />
-												<em>{project.href ? new URL(project.href).hostname : "demo local"}</em>
-											</div>
-											<LabArt art={project.art} />
-										</div>
+	<CursorCube zone="#laboratorio" hideOver="a, button" />
+	{/* Todos los proyectos a la vista: con pocos, una cuadrícula se lee mejor que una cinta
+	   que esconde tarjetas. Cada tarjeta lleva sus dos acciones dentro, siempre en el
+	   mismo sitio y sin moverse. */}
+	<ul class="lab-grid" role="list">
+		{
+			labProjects.map((project, i) => {
+				const caseHref = caseByTitle.get(project.title);
+				const host = project.href ? new URL(project.href).hostname : "demo local";
+				const titleHref = caseHref ?? project.href;
+				return (
+					<li class="lab-item">
+						<article class="lab-card" data-card style={`--tone: ${project.tone}`}>
+							<div class="lab-stage" aria-hidden="true">
+								<div class="lab-window">
+									<div class="lab-bar">
+										<span /><span /><span />
+										<em>{host}</em>
 									</div>
-									<div class="lab-body">
-									<div class="flex items-center justify-between gap-3">
-										<span class="t-data text-ink-muted">L—{String(i + 1).padStart(2, "0")}</span>
-										<Tag variant="status" status={project.status}>
-											{project.statusLabel}
-										</Tag>
-									</div>
-									<h3 class="mt-4 font-heading text-[1.75rem] leading-[1.05] text-ink">
-										{project.title}
-										{project.href && <span class="sr-only"> (se abre en otra pestaña)</span>}
-									</h3>
-									<p class="lab-summary mt-3 text-[0.9375rem] leading-relaxed text-ink-soft">
-										{project.summary}
-									</p>
-									<div class="mt-auto flex flex-wrap items-center gap-1.5 pt-5">
-										{project.tags.map((tag) => (
-											<Tag>{tag}</Tag>
-										))}
-										{!project.href && !isProduction && project.pendingHint && (
-											<Pending hint={project.pendingHint} />
-										)}
-									</div>
-									</div>
-								</Wrapper>
-								<p class="lab-case">
+									<LabArt art={project.art} />
+								</div>
+							</div>
+							<div class="lab-body">
+								<div class="flex items-center justify-between gap-3">
+									<span class="t-data text-ink-muted">L—{String(i + 1).padStart(2, "0")}</span>
+									<Tag variant="status" status={project.status}>
+										{project.statusLabel}
+									</Tag>
+								</div>
+								<h3 class="mt-4 font-heading text-[1.75rem] leading-[1.05] text-ink">
+									{titleHref ? (
+										<a href={titleHref} class="lab-title" {...(!caseHref ? { target: "_blank", rel: "noopener noreferrer" } : {})}>
+											{project.title}
+										</a>
+									) : (
+										project.title
+									)}
+								</h3>
+								<p class="lab-summary mt-3 text-[0.9375rem] leading-relaxed text-ink-soft">
+									{project.summary}
+								</p>
+								<div class="mt-5 flex flex-wrap items-center gap-1.5">
+									{project.tags.map((tag) => (
+										<Tag>{tag}</Tag>
+									))}
+									{!project.href && !isProduction && project.pendingHint && (
+										<Pending hint={project.pendingHint} />
+									)}
+								</div>
+								<div class="lab-actions">
 									{caseHref && (
-										<a class="t-data link-underline text-ink-soft hover:text-ink" href={caseHref}>
-											Caso de estudio<span class="sr-only"> de {project.title}</span> <span aria-hidden="true">→</span>
+										<a class="lab-btn lab-btn--case" href={caseHref}>
+											Caso de estudio<span class="sr-only"> de {project.title}</span>
+											<span aria-hidden="true" class="lab-arrow">→</span>
 										</a>
 									)}
-								</p>
-							</li>
-						);
-					})
-				}
-			</ul>
-		</div>
-
-		<button type="button" class="cinta-edge cinta-edge--prev" data-cinta-prev aria-label="Proyectos anteriores">
-			<span aria-hidden="true">‹</span>
-		</button>
-		<button type="button" class="cinta-edge cinta-edge--next" data-cinta-next aria-label="Más proyectos">
-			<span aria-hidden="true">›</span>
-		</button>
-	</div>
+									{project.href && (
+										<a class="lab-btn lab-btn--app" href={project.href} target="_blank" rel="noopener noreferrer">
+											Abrir la app<span class="sr-only"> {project.title} (se abre en otra pestaña)</span>
+											<span aria-hidden="true" class="lab-arrow">↗</span>
+										</a>
+									)}
+								</div>
+							</div>
+						</article>
+					</li>
+				);
+			})
+		}
+	</ul>
 </Section>
 
 <script>
-	import "../../scripts/cinta";
+	// Halo que sigue al puntero en cada tarjeta (solo decorativo).
+	document.querySelectorAll<HTMLElement>("#laboratorio [data-card]").forEach((card) => {
+		card.addEventListener("pointermove", (e) => {
+			const r = card.getBoundingClientRect();
+			card.style.setProperty("--mx", `${e.clientX - r.left}px`);
+			card.style.setProperty("--my", `${e.clientY - r.top}px`);
+		});
+	});
 </script>
 
 <style>
-	/* La cinta va entre los márgenes del contenido: las tarjetas entran y salen
-	   por debajo de ese borde, con un corte limpio. */
-	.cinta-viewport {
-		overflow: hidden;
-		/* Aire para que la sombra y la elevación al pasar el ratón no se recorten. */
-		padding-block: 1.5rem 3rem;
-		margin-block: -1.5rem -3rem;
-		touch-action: pan-y;
-	}
-	.cinta-viewport.is-dragging .lab-card,
-	.cinta-viewport.is-dragging .lab-case a {
-		pointer-events: none;
-	}
-	.cinta-track {
-		position: relative;
-		display: flex;
-		gap: 1.25rem;
-		width: max-content;
-		will-change: transform;
-	}
-	/* Sin movimiento: desplazamiento nativo con ajuste por tarjeta. */
-	.cinta.is-static .cinta-viewport {
-		overflow-x: auto;
-		scroll-snap-type: x mandatory;
-		scrollbar-width: none;
-		touch-action: auto;
-	}
-	.cinta.is-static .cinta-viewport::-webkit-scrollbar {
-		display: none;
-	}
-	.cinta.is-static .cinta-item {
-		scroll-snap-align: start;
-	}
-
-	/* Flechas de los extremos, como en Netflix: una franja sobre el borde de la
-	   cinta que aparece al pasar el ratón. En táctil se desliza con el dedo. */
-	.cinta {
-		position: relative;
-	}
-	.cinta-edge {
-		position: absolute;
-		top: 0;
-		bottom: 0;
-		z-index: 2;
+	.lab-grid {
 		display: grid;
-		place-items: center;
-		width: 3.5rem;
-		color: rgb(var(--ink));
-		font-size: 2.75rem;
-		line-height: 1;
-		opacity: 0;
-		transition: opacity 0.25s ease;
+		gap: 1.25rem;
+		grid-template-columns: 1fr;
 	}
-	.cinta-edge--prev {
-		left: 0;
-		background: linear-gradient(to right, rgb(var(--paper)) 15%, rgb(var(--paper) / 0));
-		border-radius: var(--radius-lg) 0 0 var(--radius-lg);
-	}
-	.cinta-edge--next {
-		right: 0;
-		background: linear-gradient(to left, rgb(var(--paper)) 15%, rgb(var(--paper) / 0));
-		border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
-	}
-	.cinta-edge span {
-		transition: transform 0.2s ease;
-	}
-	.cinta-edge:hover span {
-		transform: scale(1.25);
-	}
-	.cinta-edge:focus-visible {
-		opacity: 1;
-		outline: 2px solid rgb(var(--accent));
-		outline-offset: -2px;
-	}
-	@media (hover: hover) {
-		.cinta:hover .cinta-edge {
-			opacity: 1;
+	@media (min-width: 768px) {
+		.lab-grid {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+			gap: 1.5rem;
 		}
 	}
-	@media (hover: none) {
-		.cinta-edge {
-			display: none;
-		}
-	}
-
-	.cinta-item {
+	.lab-item {
 		display: flex;
-		flex-direction: column;
-		width: clamp(17.5rem, 80vw, 24rem);
-		flex: none;
-	}
-	/* Enlace al caso, bajo la tarjeta. La fila existe siempre para que todas las
-	   tarjetas midan lo mismo. */
-	.lab-case {
-		display: flex;
-		align-items: center;
-		height: 1.75rem;
-		margin-top: 0.75rem;
-		padding-inline: 0.25rem;
 	}
 
 	.lab-card {
@@ -210,7 +130,6 @@ const caseByTitle = new Map(
 		border-radius: var(--radius-lg);
 		background: rgb(var(--paper));
 		transition:
-			transform 0.35s cubic-bezier(0.2, 0.7, 0.2, 1),
 			border-color 0.25s ease,
 			box-shadow 0.35s ease;
 	}
@@ -221,21 +140,23 @@ const caseByTitle = new Map(
 		inset: 0;
 		z-index: -1;
 		background: radial-gradient(
-			260px circle at var(--mx, 50%) var(--my, 0%),
-			rgb(var(--tone) / 0.14),
+			320px circle at var(--mx, 50%) var(--my, 0%),
+			rgb(var(--tone) / 0.12),
 			transparent 70%
 		);
 		opacity: 0;
 		transition: opacity 0.3s ease;
+		pointer-events: none;
 	}
-	a.lab-card:hover,
-	a.lab-card:focus-visible {
-		transform: translateY(-6px);
-		border-color: rgb(var(--ink) / 0.35);
-		box-shadow: 0 18px 40px -24px rgb(var(--ink) / 0.35);
+	/* Al pasar por encima la tarjeta no se desplaza: así los botones no se mueven
+	   bajo el puntero. Solo cambian el borde, la sombra y la ventana de la portada. */
+	.lab-card:hover,
+	.lab-card:focus-within {
+		border-color: rgb(var(--ink) / 0.3);
+		box-shadow: 0 18px 40px -26px rgb(var(--ink) / 0.35);
 	}
-	a.lab-card:hover::before,
-	a.lab-card:focus-visible::before {
+	.lab-card:hover::before,
+	.lab-card:focus-within::before {
 		opacity: 1;
 	}
 
@@ -243,7 +164,8 @@ const caseByTitle = new Map(
 	.lab-stage {
 		position: relative;
 		overflow: hidden;
-		padding: 1.5rem 1.5rem 0;
+		aspect-ratio: 16 / 8.5;
+		padding: 1.75rem 9% 0;
 		background:
 			radial-gradient(120% 90% at 85% 0%, rgb(255 255 255 / 0.18), transparent 60%),
 			rgb(var(--tone));
@@ -295,43 +217,118 @@ const caseByTitle = new Map(
 		text-overflow: ellipsis;
 		white-space: nowrap;
 	}
-	a.lab-card:hover .lab-window,
-	a.lab-card:focus-visible .lab-window {
+	.lab-card:hover .lab-window,
+	.lab-card:focus-within .lab-window {
 		transform: translateY(0) rotateX(0);
 	}
-	/* En táctil no hay "pasar por encima": la ventana va recta. */
 	@media (hover: none) {
 		.lab-window {
 			transform: none;
 		}
 	}
+
 	.lab-body {
 		display: flex;
 		flex: 1;
 		flex-direction: column;
 		padding: 1.25rem 1.5rem 1.5rem;
 	}
-
 	.lab-summary {
 		display: -webkit-box;
 		-webkit-line-clamp: 4;
 		-webkit-box-orient: vertical;
 		overflow: hidden;
 	}
+	.lab-title {
+		text-decoration: none;
+		background-image: linear-gradient(currentColor, currentColor);
+		background-size: 0 1px;
+		background-position: 0 100%;
+		background-repeat: no-repeat;
+		transition: background-size 0.25s ease;
+	}
+	.lab-title:hover,
+	.lab-title:focus-visible {
+		background-size: 100% 1px;
+	}
 
-
+	/* Acciones al pie de la tarjeta, alineadas entre tarjetas (mt-auto). Botones
+	   amplios (44 px de alto) para pincharlos a la primera, también con el dedo. */
+	.lab-actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.625rem;
+		margin-top: auto;
+		padding-top: 1.5rem;
+	}
+	.lab-btn {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		gap: 0.5rem;
+		min-height: 2.75rem;
+		padding: 0 1.125rem;
+		border-radius: 999px;
+		font-size: 0.9375rem;
+		font-weight: 500;
+		white-space: nowrap;
+		transition:
+			background-color 0.2s ease,
+			border-color 0.2s ease,
+			color 0.2s ease;
+	}
+	.lab-btn--case {
+		background: rgb(var(--ink));
+		color: rgb(var(--paper));
+	}
+	.lab-btn--case:hover {
+		background: rgb(var(--ink) / 0.85);
+	}
+	.lab-btn--app {
+		border: 1px solid rgb(var(--ink) / 0.2);
+		color: rgb(var(--ink));
+	}
+	.lab-btn--app:hover {
+		border-color: rgb(var(--ink) / 0.6);
+	}
+	.lab-btn:focus-visible {
+		outline: 2px solid rgb(var(--accent));
+		outline-offset: 2px;
+	}
+	.lab-arrow {
+		display: inline-block;
+		transition: transform 0.2s ease;
+	}
+	.lab-btn--case:hover .lab-arrow {
+		transform: translateX(3px);
+	}
+	.lab-btn--app:hover .lab-arrow {
+		transform: translate(2px, -2px);
+	}
+	/* En móvil, los dos botones a lo ancho y en una sola fila. */
+	@media (max-width: 480px) {
+		.lab-body {
+			padding-inline: 1.25rem;
+		}
+		.lab-actions {
+			flex-wrap: nowrap;
+			gap: 0.5rem;
+		}
+		.lab-btn {
+			flex: 1;
+			padding: 0 0.75rem;
+			font-size: 0.875rem;
+		}
+	}
 
 	@media (prefers-reduced-motion: reduce) {
 		.lab-card,
 		.lab-window,
-		.cinta-edge {
+		.lab-arrow,
+		.lab-title {
 			transition: none;
 		}
 		.lab-window {
-			transform: none;
-		}
-		a.lab-card:hover,
-		a.lab-card:focus-visible {
 			transform: none;
 		}
 	}
