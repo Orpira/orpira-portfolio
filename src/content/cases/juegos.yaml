@@ -22,8 +22,6 @@ tags: [Next.js, TypeScript, Supabase, Three.js]
 links:
   - label: Abrir la suite
     href: https://suite-juegos.orpira.es/juegos
-  - label: Ver el código
-    href: https://github.com/Orpira/Cleta-s-stop
 cover: ../../assets/images/juegos/portada.webp
 coverAlt: >-
   Portada de la suite «Elige a qué jugar» con las tarjetas de Dominó 3D, ¡Stop!,

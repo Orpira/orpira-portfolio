@@ -21,8 +21,6 @@ tags: [React, Vite, Tailwind CSS, Node.js, Docker]
 links:
   - label: Abrir PRL Master
     href: https://prl.orpira.es/
-  - label: Ver el código
-    href: https://github.com/Orpira/test_interactivo-prl
 
 cover: ../../assets/images/prl-master/portada.webp
 coverAlt: Portada de PRL Master con una cinta de señalización amarilla y negra y el lema Aprende prevención haciendo

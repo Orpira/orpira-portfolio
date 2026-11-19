@@ -21,8 +21,6 @@ tags: [React, TypeScript, Fastify, PostgreSQL, PWA]
 links:
   - label: Abrir Inout
     href: https://inout.orpira.es/
-  - label: Ver el código
-    href: https://github.com/Orpira/Inout
 cover: ../../assets/images/inout/portada.webp
 coverAlt: Kiosko de Inout en la tablet de la bodega, con la hora 21:47 y la ficha de Andrés Ramírez lista para marcar la salida
 

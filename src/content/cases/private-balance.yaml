@@ -18,8 +18,6 @@ tags: [React, TypeScript, IndexedDB, PWA, Capacitor]
 links:
   - label: Abrir la PWA
     href: https://private-balance.orpira.es/
-  - label: Código en GitHub
-    href: https://github.com/Orpira/finance-app
 cover: ../../assets/images/private-balance/dashboard-pwa.webp
 coverAlt: Inicio de Private Balance con el resultado, los ingresos y los egresos de una temporada de demostración
 

@@ -21,8 +21,6 @@ tags: [React, TypeScript, Fastify, PostgreSQL, n8n]
 links:
   - label: Abrir Las Delicias
     href: https://lasdelicias.orpira.es/
-  - label: Ver el código
-    href: https://github.com/Orpira/lasdelicias
 
 cover: ../../assets/images/las-delicias/portada.webp
 coverAlt: Portada de Las Delicias con el estado «Abierto hasta las 20:00», el lema y la foto de la vitrina de pastelería

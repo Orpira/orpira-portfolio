@@ -19,8 +19,6 @@ tags: [React, TypeScript, Supabase, Claude API, Capacitor]
 links:
   - label: Abrir WebWiz
     href: https://webwiz.orpira.es/
-  - label: Ver el código
-    href: https://github.com/Orpira/test_interactivo-supabase
 cover: ../../assets/images/webwiz/landing.webp
 coverAlt: Portada de WebWiz con una pregunta de event loop y el selector de confianza
 
