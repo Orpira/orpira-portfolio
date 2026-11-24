@@ -143,7 +143,7 @@ export interface LabProject {
 	status: "live" | "building";
 	statusLabel: string;
 	/** Ilustración de la portada de la tarjeta (ver LabArt.astro). */
-	art: "delicias" | "empleo" | "inout" | "balance";
+	art: "delicias" | "empleo" | "inout" | "balance" | "wms";
 	/** Color de identidad del proyecto, en canales RGB ("r g b"). */
 	tone: string;
 }
@@ -181,6 +181,17 @@ export const labProjects: LabProject[] = [
 		tone: "58 86 196",
 		status: "live",
 		statusLabel: "En línea",
+	},
+	{
+		title: "WMS OrPiRa",
+		summary:
+			"Gestión de almacenes para varios clientes a la vez: recepción, ubicación, picking, conteos y devoluciones desde el móvil, también sin conexión, con kardex inmutable, zona franca en Colombia y España y lectura de documentos con IA.",
+		tags: ["Next.js", "PostgreSQL", "PWA", "Claude API"],
+		href: "https://wms.orpira.es/",
+		art: "wms",
+		tone: "196 120 32",
+		status: "building",
+		statusLabel: "Demo",
 	},
 	{
 		title: "Private Balance",

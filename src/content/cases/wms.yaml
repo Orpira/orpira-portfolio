@@ -1,0 +1,148 @@
+# Redactado solo con hechos del README y de docs/diseno-fase1.md del repo Orpira/wms (privado).
+# Sin enlace al código: solo a la demo. Lo que falta está en `pending` o en valores null.
+title: WMS OrPiRa
+order: 8
+section: laboratorio
+headline: >-
+  Gestión de almacenes para varios clientes a la vez, con app de bodega en el móvil que
+  trabaja sin conexión y control de zona franca en Colombia y España.
+summary: >-
+  WMS multi-cliente (3PL): recepción, ubicación, picking, conteos, devoluciones y zona
+  franca, con la app de bodega en el móvil y sin red.
+ogLine: El kardex manda, también sin conexión.
+seoDescription: >-
+  Caso de estudio del WMS OrPiRa: almacén multi-cliente con app de bodega sin conexión,
+  kardex inmutable, zona franca en Colombia y España y lectura de documentos con IA.
+role: Producto · Arquitectura · Full Stack
+platform: Web y móvil (PWA)
+status: building
+statusLabel: Demo
+tags: [Next.js, TypeScript, PostgreSQL, PWA, Claude API]
+links:
+  - label: Probar la demo
+    href: https://wms.orpira.es/
+
+problem:
+  title: Un almacén de varios clientes no se lleva en hojas sueltas.
+  paragraphs:
+    - >-
+      Un operador logístico (3PL) guarda mercancía de varios clientes en las mismas bodegas,
+      y cada cliente tiene sus reglas: si admite pallets mixtos o mezclar lotes, con qué
+      estrategia sale la mercancía (FEFO, FIFO o LIFO) o qué vida útil mínima exige.
+    - >-
+      Además, en una zona franca cada unidad tiene un estado aduanero: lo que no está
+      nacionalizado no puede salir al territorio nacional, y cada entrada y salida va
+      respaldada por un documento aprobado. Y el trabajo de bodega se hace con el móvil o
+      con terminales de lectura, muchas veces donde la red no llega.
+  pending:
+    - Qué operador o qué volumen de bodegas, clientes y movimientos usa el WMS
+
+beforeAfter:
+  - before: Cada canal (correo, Excel, sistema del cliente) metía pedidos a su manera.
+    after: Formulario, Excel, API, webhook, conectores e IA entran por la misma puerta y un pedido repetido se crea una sola vez.
+  - before: Sin red en la bodega, el trabajo se apunta en papel y se teclea después.
+    after: Descargue, ubicación, picking y conteos en el móvil, también sin conexión, sin duplicar nada al sincronizar.
+  - before: Saber de qué contenedor salió una unidad era una investigación.
+    after: La trazabilidad por contenedor, hacia delante y hacia atrás, sale del kardex.
+  - before: Los documentos del embarque se pasaban a mano.
+    after: La IA lee BL, factura, lista de empaque, DUTA y DIM, los cruza y propone un pre-aviso que el analista confirma.
+
+decisions:
+  - title: El kardex manda
+    context: Si varios procesos escriben en los saldos, tarde o temprano el stock no cuadra con su historia.
+    decision: >-
+      Toda variación de stock es una fila inmutable en el kardex. Los saldos y la ocupación
+      de cada posición se actualizan en la misma transacción, desde una única función de
+      PostgreSQL. Ningún otro código escribe en los saldos.
+    why: El stock nunca queda negativo y siempre se puede reconstruir desde sus movimientos.
+  - title: El saldo tiene dimensiones
+    context: La mercancía averiada o sin nacionalizar no puede mezclarse con la disponible.
+    decision: >-
+      Un saldo es la combinación de cliente, producto, lote, posición, LPN (pallet), estado
+      de calidad y estado aduanero. Si cambia cualquiera de ellas, es un saldo distinto.
+    why: La reserva de un pedido solo toma lo que de verdad puede salir a ese destino.
+  - title: Cada lectura es idempotente
+    context: En una bodega la red se cae, y la cola del móvil reintenta.
+    decision: >-
+      Cada lectura desde el móvil lleva un identificador generado en el dispositivo. Al
+      sincronizar, lo que ya se aplicó no se repite, y lo que ya no cuadra va a una bandeja
+      de conflictos.
+    why: Trabajar sin conexión no duplica inventario.
+  - title: Todos los canales entran por la misma puerta
+    context: Pedidos y pre-avisos llegan por formulario, Excel, API, webhook, web services del cliente o documentos.
+    decision: >-
+      Todos terminan en la misma función de validación, idempotente por el número del
+      cliente. Lo que llega con errores va a una bandeja para corregir y reprocesar.
+    why: Las reglas se aplican igual venga de donde venga, y nada se pierde.
+  - title: Lo legal se configura
+    context: Colombia y España tienen estados aduaneros, documentos y transiciones distintos.
+    decision: >-
+      Estados aduaneros, transiciones, operaciones del formulario de zona franca y reglas de
+      salida por destino son datos por país, no código. El conector con cada zona franca es
+      intercambiable.
+    why: Un país o una zona franca nueva no exige reescribir el núcleo.
+  - title: La IA propone, el analista confirma
+    context: Leer los documentos de un embarque a mano es lento, pero un error de lectura no puede entrar al inventario.
+    decision: >-
+      La API de Claude lee los documentos sin inventar y marca lo dudoso. El WMS cruza bultos,
+      pesos, contenedores y totales entre documentos y propone un pre-aviso en borrador con los
+      campos dudosos resaltados.
+    why: Nada entra al inventario sin la confirmación de una persona.
+
+galleryPending: Capturas de la app de bodega en el móvil, del tablero de recepción y de los reportes
+
+architecture:
+  summary: >-
+    Una app Next.js con PostgreSQL como fuente de verdad: las reglas del inventario viven en
+    funciones de la base de datos, con seguridad por filas para clientes y operarios. El móvil
+    es una PWA que guarda su trabajo en el dispositivo y lo sincroniza al volver la red.
+  layers:
+    - label: App de bodega
+      items: [Descargue, Ubicar, Picking, Conteos, Devoluciones]
+      note: PWA en el móvil o en terminales Zebra y Honeywell, con cámara o pistola, también sin red.
+    - label: Panel
+      items: [Maestros y bodegas, Inventario, Embarques, Pedidos, Zona franca, Reportes]
+      note: Por rol, y con portal propio para cada cliente.
+    - label: Integraciones
+      items: [API v1, Webhook firmado, Conectores REST y SOAP, Lectura con IA]
+      note: Todos los canales pasan por la misma validación.
+    - label: Datos
+      items: [Kardex inmutable, Saldos, Seguridad por filas, Auditoría]
+      note: PostgreSQL 16 en Docker, en un servidor propio.
+
+stack:
+  - layer: Aplicación
+    tech: [Next.js, React, TypeScript, Tailwind CSS]
+    why: Panel, portal del cliente y app de bodega en el mismo proyecto.
+  - layer: Sin conexión
+    tech: [PWA, IndexedDB (Dexie)]
+    why: Cola de lecturas idempotente y paquete de turno guardados en el dispositivo.
+  - layer: Lectura de códigos
+    tech: [ZXing, GS1-128, ISO 6346]
+    why: EAN, cajas, lotes y vencimientos con la cámara; contenedores y SSCC validados.
+  - layer: Datos
+    tech: [PostgreSQL, Drizzle ORM, Better Auth]
+    why: Reglas del inventario en la base de datos, seguridad por filas y sesiones por rol.
+  - layer: Documentos e IA
+    tech: [pdf-lib, ZPL, Claude API]
+    why: Etiquetas y actas en PDF o para impresora Zebra, y lectura de documentos del embarque.
+  - layer: Despliegue
+    tech: [Docker, GitHub Actions, Hetzner]
+    why: Cada cambio que pasa las pruebas se despliega solo en un servidor propio.
+
+results:
+  - value: "10"
+    label: hitos de la Fase 1, del modelo de datos a la logística inversa
+  - value: "2"
+    label: países con su régimen de zona franca (Colombia y España)
+  - value: null
+    label: movimientos o pedidos al mes
+    pendingHint: Volumen real de operación
+
+learned:
+  - Si el stock solo se escribe desde un sitio, siempre cuadra con su historia.
+  - Trabajar sin conexión exige que reenviar no duplique nada.
+  - La IA ahorra el tecleo, pero la confirmación sigue siendo de una persona.
+
+next: >-
+  Fase 2, por definir: entre lo aplazado están las fotos de la inspección de devoluciones.

@@ -16,6 +16,7 @@ import Tag from "../../components/ui/Tag.astro";
 import Pending from "../../components/ui/Pending.astro";
 import CaseArchitecture from "../../components/case/CaseArchitecture.astro";
 import InoutDemo from "../../components/case/InoutDemo.astro";
+import CaseVideo from "../../components/case/CaseVideo.astro";
 import { isProduction } from "../../data/home";
 import { caseJsonLd } from "../../data/seo";
 
@@ -91,8 +92,9 @@ const idx = () => String(++n).padStart(2, "0");
 							c.links.length > 0 && (
 								<div class="mt-8 flex flex-wrap gap-3">
 									{showInoutDemo && <Button href="#demo-inout" arrow>Ver la demostración</Button>}
+									{c.demoVideo && <Button href="#demo" arrow>Ver la demostración</Button>}
 									{c.links.map((link, i) => (
-										<Button href={link.href} external arrow variant={!showInoutDemo && i === 0 ? "primary" : "secondary"}>
+										<Button href={link.href} external arrow variant={!showInoutDemo && !c.demoVideo && i === 0 ? "primary" : "secondary"}>
 											{link.label}
 										</Button>
 									))}
@@ -135,6 +137,7 @@ const idx = () => String(++n).padStart(2, "0");
 		</header>
 
 		{showInoutDemo && <InoutDemo />}
+		{c.demoVideo && <CaseVideo title={c.title} video={c.demoVideo} />}
 
 		<Section id="problema" index={idx()} eyebrow="El problema" title={c.problem.title}>
 			<div class="grid gap-10 md:grid-cols-12">

@@ -1,0 +1,155 @@
+---
+/**
+ * Vídeo de demostración de un caso, con capítulos explicativos al lado.
+ * Pulsar un capítulo salta a ese momento; mientras se reproduce, se marca el capítulo en curso.
+ * Los datos vienen del YAML del caso (`demoVideo`).
+ */
+import Section from "../ui/Section.astro";
+
+interface Props {
+	title: string;
+	video: {
+		src: string;
+		poster: string;
+		/** Duración en "m:ss". */
+		duration: string;
+		intro: string;
+		chapters: { at: number; title: string; text: string }[];
+	};
+}
+const { title, video } = Astro.props;
+const { chapters } = video;
+const VIDEO = video.src;
+const POSTER = video.poster;
+const mmss = (s: number) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
+---
+
+<Section id="demo" title={`Demostración de ${title}`}>
+	<p class="mb-6 max-w-[65ch] text-ink-soft">{video.intro}</p>
+
+	<case-video class="grid gap-5 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)] lg:items-start">
+		<div class="relative overflow-hidden rounded-ds-lg border border-line bg-[#0f4c4a] lg:sticky lg:top-24">
+			<video
+				data-video
+				class="block aspect-video w-full"
+				src={VIDEO}
+				poster={POSTER}
+				preload="metadata"
+				playsinline
+				aria-label={`Vídeo: recorrido por ${title} (${video.duration})`}
+			></video>
+			<button type="button" data-play class="play absolute inset-0 flex items-end justify-start p-4 sm:p-6">
+				<span class="flex items-center gap-2 whitespace-nowrap rounded-full bg-accent px-4 py-2 text-sm font-medium text-accent-on shadow-lg sm:gap-3 sm:px-5 sm:py-3 sm:text-base">
+					<svg aria-hidden="true" viewBox="0 0 24 24" class="h-4 w-4 fill-current sm:h-5 sm:w-5"><path d="M8 5v14l11-7z" /></svg>
+					Reproducir demostración
+					<span class="t-data hidden opacity-80 sm:inline">{video.duration}</span>
+				</span>
+			</button>
+		</div>
+
+		<ol class="chapters grid gap-1" aria-label="Capítulos de la demostración">
+			{
+				chapters.map((c, i) => (
+					<li>
+						<button type="button" class="chapter" data-chapter={c.at} data-end={chapters[i + 1]?.at ?? 999}>
+							<span class="t-data chapter-time">{mmss(c.at)}</span>
+							<span class="min-w-0">
+								<span class="block font-medium text-ink">{c.title}</span>
+								<span class="chapter-text mt-1 block text-[0.9375rem] leading-relaxed text-ink-soft">{c.text}</span>
+							</span>
+						</button>
+					</li>
+				))
+			}
+		</ol>
+	</case-video>
+</Section>
+
+<script>
+	class CaseVideo extends HTMLElement {
+		connectedCallback() {
+			const video = this.querySelector<HTMLVideoElement>("[data-video]");
+			const play = this.querySelector<HTMLButtonElement>("[data-play]");
+			const chapters = [...this.querySelectorAll<HTMLButtonElement>("[data-chapter]")];
+			if (!video || !play) return;
+
+			const start = (at?: number) => {
+				play.hidden = true;
+				video.controls = true;
+				if (at !== undefined) video.currentTime = at;
+				void video.play().catch(() => {});
+			};
+
+			play.addEventListener("click", () => start(0));
+			chapters.forEach((btn) =>
+				btn.addEventListener("click", () => start(Number(btn.dataset.chapter))),
+			);
+
+			// Marca el capítulo que se está viendo.
+			video.addEventListener("timeupdate", () => {
+				const t = video.currentTime;
+				chapters.forEach((btn) => {
+					const on = t >= Number(btn.dataset.chapter) && t < Number(btn.dataset.end);
+					btn.toggleAttribute("aria-current", on);
+				});
+			});
+			video.addEventListener("ended", () => {
+				chapters.forEach((btn) => btn.removeAttribute("aria-current"));
+			});
+		}
+	}
+	if (!customElements.get("case-video")) customElements.define("case-video", CaseVideo);
+</script>
+
+<style>
+	.play {
+		background: linear-gradient(to top, rgb(0 0 0 / 0.45), transparent 45%);
+		transition: background-color 0.2s ease;
+	}
+	.play > span {
+		transition: transform 0.2s ease;
+	}
+	.play:hover > span,
+	.play:focus-visible > span {
+		transform: scale(1.05);
+	}
+	.play:focus-visible {
+		outline: 2px solid rgb(var(--accent));
+		outline-offset: -4px;
+	}
+	.play[hidden] {
+		display: none;
+	}
+
+	.chapter {
+		display: grid;
+		width: 100%;
+		grid-template-columns: 3rem minmax(0, 1fr);
+		gap: 0.75rem;
+		border-radius: var(--radius-lg);
+		border: 1px solid transparent;
+		padding: 0.75rem 0.875rem;
+		text-align: left;
+		transition:
+			background-color 0.2s ease,
+			border-color 0.2s ease;
+	}
+	.chapter:hover {
+		background: rgb(var(--surface));
+	}
+	.chapter:focus-visible {
+		outline: 2px solid rgb(var(--accent));
+		outline-offset: -2px;
+	}
+	.chapter-time {
+		padding-top: 0.15rem;
+		color: rgb(var(--ink-muted));
+	}
+	.chapter[aria-current] {
+		border-color: rgb(var(--accent) / 0.5);
+		background: rgb(var(--surface));
+	}
+	.chapter[aria-current] .chapter-time {
+		color: rgb(var(--accent));
+	}
+</style>

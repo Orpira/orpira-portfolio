@@ -37,6 +37,16 @@ const cases = defineCollection({
 			links: z
 				.array(z.object({ label: z.string(), href: z.url() }))
 				.default([]),
+			/** Vídeo de la demostración con capítulos (archivo en public/videos). */
+			demoVideo: z
+				.object({
+					src: z.string(),
+					poster: z.string(),
+					duration: z.string(),
+					intro: z.string(),
+					chapters: z.array(z.object({ at: z.number(), title: z.string(), text: z.string() })).min(1),
+				})
+				.optional(),
 			cover: image().optional(),
 			coverAlt: z.string().optional(),
 

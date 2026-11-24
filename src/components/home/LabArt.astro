@@ -5,7 +5,7 @@
  * tamaño y se adapte al color del proyecto (var --tone).
  */
 interface Props {
-	art: "delicias" | "empleo" | "inout" | "balance";
+	art: "delicias" | "empleo" | "inout" | "balance" | "wms";
 }
 const { art } = Astro.props;
 const T = "rgb(var(--tone))";
@@ -111,6 +111,51 @@ const line = "#e7e4dd";
 						<text x="114" y="17" font-size="6.5" fill={i === 1 ? T : soft} text-anchor="end" font-weight={i === 1 ? "600" : "400"}>{k}</text>
 					</g>
 				))}
+			</g>
+		)
+	}
+	{
+		art === "wms" && (
+			<g>
+				<text x="18" y="28" font-size="11" font-weight="600" fill={ink}>Bodega BIL · Zona A</text>
+				<rect x="132" y="17" width="58" height="15" rx="7.5" fill={T2} />
+				<text x="161" y="27.5" font-size="7.5" fill={T} text-anchor="middle">72% ocupado</text>
+				{Array.from({ length: 4 }).map((_, f) =>
+					Array.from({ length: 8 }).map((_, c) => {
+						const lleno = (f * 8 + c) % 5;
+						return (
+							<rect
+								x={18 + c * 21}
+								y={42 + f * 34}
+								width="17"
+								height="28"
+								rx="3"
+								fill={lleno === 0 ? "#fff" : lleno === 3 ? T2 : T}
+								stroke={lleno === 0 ? line : "none"}
+								opacity={lleno === 1 ? 0.55 : 1}
+							/>
+						);
+					}),
+				)}
+				<g transform="translate(206 12)">
+					<rect width="98" height="172" rx="14" fill={ink} />
+					<rect x="6" y="18" width="86" height="148" rx="8" fill="#fff" />
+					<text x="14" y="34" font-size="7.5" font-weight="600" fill={ink}>Picking · Pedido 1042</text>
+					<rect x="14" y="42" width="70" height="44" rx="6" fill={T2} />
+					<rect x="22" y="50" width="54" height="28" rx="3" fill="none" stroke={T} stroke-dasharray="4 3" />
+					<line x1="20" y1="64" x2="78" y2="64" stroke={T} stroke-width="1.5">
+						<animate attributeName="y1" values="52;76;52" dur="2.2s" repeatCount="indefinite" />
+						<animate attributeName="y2" values="52;76;52" dur="2.2s" repeatCount="indefinite" />
+					</line>
+					<text x="14" y="100" font-size="6.5" fill={soft}>Posición</text>
+					<text x="84" y="100" font-size="7" font-weight="600" fill={ink} text-anchor="end">A-03-02</text>
+					<text x="14" y="114" font-size="6.5" fill={soft}>Lote</text>
+					<text x="84" y="114" font-size="7" fill={ink} text-anchor="end">L24 · 03/27</text>
+					<text x="14" y="128" font-size="6.5" fill={soft}>Cantidad</text>
+					<text x="84" y="128" font-size="7" font-weight="600" fill={T} text-anchor="end">12 / 24</text>
+					<rect x="14" y="140" width="70" height="16" rx="8" fill={T} />
+					<text x="49" y="150.5" font-size="7" fill="#fff" text-anchor="middle">Sin red · en cola</text>
+				</g>
 			</g>
 		)
 	}
