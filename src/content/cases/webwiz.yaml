@@ -136,3 +136,32 @@ results:
 next: >-
   Seguir ampliando temas y abrir /crear a más editores para que la comunidad proponga
   retos e incidencias validados automáticamente.
+
+demoVideo:
+  src: /videos/webwiz-demo.mp4
+  poster: /videos/webwiz-demo-poster.webp
+  duration: '1:19'
+  intro: 'Recorrido de 1:19 por WebWiz con una cuenta de demostración: quizzes con confianza, una incidencia real,
+    revisión de código de IA y SQL en el navegador.'
+  chapters:
+  - at: 4
+    title: Por qué existe
+    text: 'Acertar un test no es saber hacer el trabajo: leer un ticket, reproducir un fallo y revisar código ajeno.'
+  - at: 11
+    title: Portada
+    text: Quizzes que preguntan también cuánta confianza tienes en tu respuesta.
+  - at: 22
+    title: Hoy
+    text: Reúne el repaso, la incidencia del día y el mapa de habilidades.
+  - at: 32
+    title: 'Incidencia #482'
+    text: Ticket, editor, vista previa a 390 px y DevTools simuladas para depurar un bug real.
+  - at: 43
+    title: Revisión de IA
+    text: 'El código lo escribió la IA: hay que señalar la línea y la categoría del fallo.'
+  - at: 54
+    title: Laboratorio SQL
+    text: PostgreSQL real en el navegador con PGlite. Cada ejecución se deshace al terminar.
+  - at: 64
+    title: Por dentro
+    text: Los retos se ejecutan aislados en el navegador; Supabase guarda el progreso y la IA vive en una Edge Function.

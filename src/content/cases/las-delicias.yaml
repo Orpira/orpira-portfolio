@@ -146,3 +146,32 @@ results:
 next: >-
   Conectar la caja del local para sincronizar el stock y abrir los pedidos por WhatsApp
   atendidos con IA a través de n8n.
+
+demoVideo:
+  src: /videos/las-delicias-demo.mp4
+  poster: /videos/las-delicias-demo-poster.webp
+  duration: '1:19'
+  intro: 'Recorrido de 1:19 por Las Delicias con datos de demostración: de la web y la carta al seguimiento del
+    pedido, la barra y la cocina.'
+  chapters:
+  - at: 4
+    title: Por qué existe
+    text: Una cafetería panadería sin web, con Instagram como único escaparate.
+  - at: 11
+    title: La web
+    text: La carta, la vitrina del día y el horario en directo.
+  - at: 22
+    title: La carta
+    text: Fotos del propio obrador. Se pide desde la mesa o para recoger.
+  - at: 33
+    title: Mi pedido
+    text: El cliente sigue su pedido en directo, de recibido a entregado.
+  - at: 43
+    title: La barra
+    text: Mesas abiertas, cobros pendientes y pedidos por estado.
+  - at: 53
+    title: La cocina
+    text: 'En una tablet: resumen de producción y comandas por puesto.'
+  - at: 63
+    title: Por dentro
+    text: Una PWA en React y una API Fastify con PostgreSQL como única fuente de datos.
