@@ -21,5 +21,7 @@ export default defineConfig({
 		"/projects/dashboard-evaluacion": { status: 301, destination: "/#casos" },
 		// EcoTogo se retiró del portfolio y su lugar lo ocupa WebWiz.
 		"/casos/ecotogo": { status: 301, destination: "/casos/webwiz" },
+		// Seguimiento de empleabilidad se retiró del Laboratorio.
+		"/casos/seguimiento-empleabilidad": { status: 301, destination: "/#laboratorio" },
 	},
 });
