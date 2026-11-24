@@ -164,3 +164,34 @@ results:
 next: >-
   Reutilizar la misma base para nuevas formaciones a partir de otros temarios, con
   informes de progreso para quien organiza la formación.
+
+demoVideo:
+  src: /videos/prl-master-demo.mp4
+  poster: /videos/prl-master-demo-poster.webp
+  duration: '1:19'
+  intro: 'Recorrido de 1:19 por PRL Master con datos de demostración: de la portada a una sala en red con ranking
+    en directo.'
+  chapters:
+  - at: 4
+    title: Por qué existe
+    text: 'En el curso de PRL de 30 horas el temario llegaba en PDF y Word: se lee, pero no corrige ni sirve para
+      repasar en grupo.'
+  - at: 11
+    title: Inicio
+    text: 'Una app para aprender prevención haciendo: tests interactivos sobre la normativa PRL española.'
+  - at: 21
+    title: Elegir temas
+    text: Cada bloque es una señal y cada tema una pegatina. El contador suma las preguntas elegidas.
+  - at: 32
+    title: Corrección inmediata
+    text: Cada respuesta se corrige al momento y muestra la correcta. Las opciones se barajan en cada test.
+  - at: 43
+    title: Modo en red
+    text: La formadora comparte un código y la clase entra desde sus móviles.
+  - at: 53
+    title: Ranking en directo
+    text: El ranking se actualiza mientras la sala termina. Nombres de demostración.
+  - at: 63
+    title: Por dentro
+    text: Una SPA en React y una API de salas en Node.js que corrige en el servidor, probada con 30 alumnos a la
+      vez.

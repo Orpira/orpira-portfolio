@@ -146,3 +146,38 @@ learned:
 
 next: >-
   Fase 2, por definir: entre lo aplazado están las fotos de la inspección de devoluciones.
+
+demoVideo:
+  src: /videos/wms-demo.mp4
+  poster: /videos/wms-demo-poster.webp
+  duration: '1:19'
+  intro: 'Recorrido de 1:19 por el WMS con los datos de la demo: panel, embarques, pedidos, la app de bodega, el
+    kardex y la aduana.'
+  chapters:
+  - at: 4
+    title: Por qué existe
+    text: Un almacén de varios clientes, cada uno con sus reglas, no se lleva en hojas sueltas.
+  - at: 11
+    title: Panel
+    text: 'Lo de hoy de un vistazo: contenedores, pedidos y errores.'
+  - at: 19
+    title: Embarques
+    text: La IA lee los documentos del embarque y el analista confirma.
+  - at: 27
+    title: Pedidos
+    text: Todos los canales entran por la misma puerta; lo que falla va a la bandeja de errores.
+  - at: 35
+    title: App de bodega
+    text: El móvil descarga el paquete de turno y trabaja sin conexión.
+  - at: 43
+    title: Descargue
+    text: 'Por contenedor: se escanea y se valida al momento.'
+  - at: 50
+    title: Kardex
+    text: Cada movimiento queda con su usuario y su documento.
+  - at: 58
+    title: Aduana
+    text: Estado aduanero de cada referencia, en zona franca de Colombia y España.
+  - at: 65
+    title: Por dentro
+    text: 'Next.js con PostgreSQL como fuente de verdad: las reglas del inventario viven en la base de datos.'
