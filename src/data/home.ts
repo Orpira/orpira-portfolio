@@ -161,17 +161,6 @@ export const labProjects: LabProject[] = [
 		statusLabel: "Piloto",
 	},
 	{
-		title: "Seguimiento de empleabilidad",
-		summary:
-			"Sustituye el Excel con el que una entidad de empleo sigue las candidaturas de sus aspirantes: cada aspirante registra las suyas, los Excel antiguos se migran una vez (uno a uno o en bloque) y el equipo ve panel, próximas acciones y exportación.",
-		tags: ["Next.js", "Supabase", "ExcelJS"],
-		href: "https://laboratorio.orpira.es/",
-		art: "empleo",
-		tone: "23 114 110",
-		status: "building",
-		statusLabel: "MVP",
-	},
-	{
 		title: "Inout",
 		summary:
 			"Nueva versión de una herramienta que nació en Java para calcular las horas extra de una operación logística: fichaje que funciona sin conexión, turnos rotativos, aprobación de horas extra y liquidación minuto a minuto según la ley vigente en cada fecha.",
