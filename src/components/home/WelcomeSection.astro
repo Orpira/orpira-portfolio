@@ -1,0 +1,97 @@
+---
+/**
+ * Bienvenida bajo la franja de cifras: texto a la izquierda y, a la derecha,
+ * el vídeo de bienvenida en bucle (silencioso). El botón cambia al vídeo
+ * completo con sonido y controles. En móvil se usan las versiones verticales.
+ * Textos y rutas en src/data/home.ts (welcome).
+ */
+import Section from "../ui/Section.astro";
+import Button from "../ui/Button.astro";
+import { welcome } from "../../data/home";
+
+const { video } = welcome;
+---
+
+<Section id="bienvenida" eyebrow={welcome.eyebrow} title={welcome.title}>
+	<welcome-video class="grid gap-10 lg:grid-cols-12 lg:items-center">
+		<div class="lg:col-span-5">
+			{welcome.paragraphs.map((p) => <p class="mb-5 max-w-[60ch] text-lg leading-relaxed text-ink-soft">{p}</p>)}
+			<div class="mt-8 flex flex-wrap gap-3">
+				<Button href={welcome.cta.href} arrow>{welcome.cta.label}</Button>
+				<Button variant="secondary" data-full>
+					<svg aria-hidden="true" viewBox="0 0 24 24" class="h-4 w-4 fill-current"><path d="M8 5v14l11-7z" /></svg>
+					{video.fullLabel}
+					<span class="t-data opacity-75">{video.fullDuration}</span>
+				</Button>
+			</div>
+		</div>
+
+		<div class="lg:col-span-7">
+			<div class="frame overflow-hidden rounded-ds-lg border border-line bg-[#0b0d12]">
+				<video
+					data-video
+					class="block w-full"
+					src={video.loop.h}
+					poster={video.poster.h}
+					data-loop-h={video.loop.h}
+					data-loop-v={video.loop.v}
+					data-poster-h={video.poster.h}
+					data-poster-v={video.poster.v}
+					data-full-h={video.full.h}
+					data-full-v={video.full.v}
+					muted
+					loop
+					playsinline
+					preload="metadata"
+					aria-label="Vídeo de bienvenida a OrPiRa.es con las creaciones del portfolio"
+				></video>
+			</div>
+		</div>
+	</welcome-video>
+</Section>
+
+<script>
+	class WelcomeVideo extends HTMLElement {
+		connectedCallback() {
+			const video = this.querySelector<HTMLVideoElement>("[data-video]");
+			const full = this.querySelector<HTMLButtonElement>("[data-full]");
+			if (!video) return;
+
+			const vertical = window.matchMedia("(max-width: 767px)").matches;
+			const pick = (name: string) => video.dataset[`${name}${vertical ? "V" : "H"}`] ?? "";
+			if (vertical) {
+				video.src = pick("loop");
+				video.poster = pick("poster");
+				video.closest(".frame")?.classList.add("vertical");
+			}
+
+			// Bucle silencioso solo si el visitante no pidió reducir el movimiento.
+			const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+			if (!reduce) {
+				const io = new IntersectionObserver(([entry]) => {
+					if (video.dataset.mode === "full") return;
+					if (entry.isIntersecting) video.play().catch(() => {});
+					else video.pause();
+				}, { threshold: 0.3 });
+				io.observe(video);
+			}
+
+			full?.addEventListener("click", () => {
+				video.dataset.mode = "full";
+				video.loop = false;
+				video.muted = false;
+				video.controls = true;
+				video.src = pick("full");
+				video.play().catch(() => {});
+				full.disabled = true;
+			});
+		}
+	}
+	customElements.define("welcome-video", WelcomeVideo);
+</script>
+
+<style>
+	.frame video { aspect-ratio: 16 / 9; object-fit: cover; }
+	.frame.vertical { max-width: 26rem; margin-inline: auto; }
+	.frame.vertical video { aspect-ratio: 9 / 16; }
+</style>

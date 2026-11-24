@@ -6,6 +6,7 @@ export const prerender = true;
 import SiteLayout from "../layouts/SiteLayout.astro";
 import HomeHero from "../components/home/HomeHero.astro";
 import ProofStrip from "../components/home/ProofStrip.astro";
+import WelcomeSection from "../components/home/WelcomeSection.astro";
 import CasesSection from "../components/home/CasesSection.astro";
 import ServicesSection from "../components/home/ServicesSection.astro";
 import ProcessSection from "../components/home/ProcessSection.astro";
@@ -19,6 +20,7 @@ import { homeJsonLd } from "../data/seo";
 <SiteLayout title={seo.title} description={seo.description} isHome jsonLd={homeJsonLd}>
 	<HomeHero />
 	<ProofStrip />
+	<WelcomeSection />
 	<CasesSection />
 	<LabSection />
 	<ServicesSection />

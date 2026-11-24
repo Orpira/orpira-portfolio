@@ -195,6 +195,25 @@ export const labProjects: LabProject[] = [
 	},
 ];
 
+/** Bienvenida bajo el hero: texto, vídeo en bucle y comercial completo. */
+export const welcome = {
+	eyebrow: "Bienvenida",
+	title: "Bienvenido a OrPiRa.es",
+	paragraphs: [
+		"Aquí no hay maquetas: hay aplicaciones reales, diseñadas y desarrolladas de la idea al despliegue.",
+		"Un control horario que liquida cada minuto con la ley de su fecha, un almacén que trabaja sin conexión, una panadería que recibe pedidos desde la mesa, juegos para jugar en línea con amigos…",
+		"Entra en cada proyecto, mira su demostración y descubre cómo funciona por dentro.",
+	],
+	cta: { label: "Ver los proyectos", href: "#casos" },
+	video: {
+		loop: { h: "/videos/bienvenida-16x9.mp4", v: "/videos/bienvenida-9x16.mp4" },
+		poster: { h: "/videos/bienvenida-16x9-poster.webp", v: "/videos/bienvenida-9x16-poster.webp" },
+		full: { h: "/videos/comercial-16x9.mp4", v: "/videos/comercial-9x16.mp4" },
+		fullLabel: "Ver el vídeo completo",
+		fullDuration: "1:14",
+	},
+};
+
 export const contact = {
 	title: "¿Te interesa algo de <em class='t-accent'>lo que has visto?</em>",
 	intro:
