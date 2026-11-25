@@ -1,0 +1,56 @@
+---
+/**
+ * Protege los enlaces a demos: todo enlace con data-demo="<slug>" se comprueba
+ * contra /api/demo-status. Si la demo no responde, el enlace pasa a ofrecer el
+ * vídeo de demostración del caso, para que nadie aterrice en una pantalla de error.
+ * Con data-demo-down="hide" el enlace se oculta en vez de cambiar (cuando ya hay
+ * un botón al vídeo justo al lado).
+ * Si la comprobación falla o tarda, los enlaces se quedan como estaban.
+ * Se puede incluir varias veces: Astro carga el script una sola vez.
+ */
+---
+
+<script>
+	type Status = Record<string, boolean | null>;
+	let pending: Promise<Status | null> | null = null;
+
+	function load(): Promise<Status | null> {
+		pending ??= fetch("/api/demo-status", { signal: AbortSignal.timeout(6000) })
+			.then((r) => (r.ok ? r.json() : null))
+			.then((d) => (d?.status as Status) ?? null)
+			.catch(() => null);
+		return pending;
+	}
+
+	function toVideo(a: HTMLAnchorElement, slug: string) {
+		const anchor = a.dataset.demoVideo || "demo";
+		const here = location.pathname.replace(/\/+$/, "") === `/casos/${slug}`;
+		a.href = here ? `#${anchor}` : `/casos/${slug}#${anchor}`;
+		a.removeAttribute("target");
+		a.removeAttribute("rel");
+		a.dataset.demoState = "video";
+		a.title = "La demo en vivo está en mantenimiento: mira su vídeo de demostración";
+		const label = a.querySelector<HTMLElement>("[data-demo-label]");
+		if (label) label.textContent = "Ver el vídeo de la demo";
+		const sr = a.querySelector<HTMLElement>("[data-demo-sr]");
+		if (sr) sr.textContent = a.dataset.demoTitle ? ` de ${a.dataset.demoTitle}` : "";
+		const arrow = a.querySelector<HTMLElement>("[data-demo-arrow]");
+		if (arrow) arrow.textContent = "→";
+	}
+
+	async function guard() {
+		const links = [...document.querySelectorAll<HTMLAnchorElement>("a[data-demo]")];
+		if (!links.length) return;
+		const status = await load();
+		if (!status) return;
+		for (const a of links) {
+			const slug = a.dataset.demo!;
+			if (status[slug] !== false || a.dataset.demoState) continue;
+			if (a.dataset.demoDown === "hide") { a.hidden = true; a.dataset.demoState = "hidden"; }
+			else toVideo(a, slug);
+		}
+	}
+
+	guard();
+	document.addEventListener("astro:page-load", guard);
+</script>

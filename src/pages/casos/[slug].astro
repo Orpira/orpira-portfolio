@@ -17,6 +17,7 @@ import Pending from "../../components/ui/Pending.astro";
 import CaseArchitecture from "../../components/case/CaseArchitecture.astro";
 import InoutDemo from "../../components/case/InoutDemo.astro";
 import CaseVideo from "../../components/case/CaseVideo.astro";
+import DemoGuard from "../../components/DemoGuard.astro";
 import { isProduction } from "../../data/home";
 import { caseJsonLd } from "../../data/seo";
 
@@ -41,6 +42,9 @@ interface Props {
 const { entry, prev, next } = Astro.props as Props;
 const c = entry.data;
 const showInoutDemo = entry.id === "inout";
+// El enlace principal a la app se protege con DemoGuard: si la demo no responde, lleva al vídeo.
+const hasVideo = showInoutDemo || Boolean(c.demoVideo);
+const demoAttrs = hasVideo ? { "data-demo": entry.id, "data-demo-video": showInoutDemo ? "demo-inout" : "demo", "data-demo-title": c.title } : {};
 // image() de la colección y <Image> difieren solo en `format` opcional (tipado de Astro 7).
 const asImage = (img: unknown) => img as ImageMetadata;
 
@@ -94,8 +98,14 @@ const idx = () => String(++n).padStart(2, "0");
 									{showInoutDemo && <Button href="#demo-inout" arrow>Ver la demostración</Button>}
 									{c.demoVideo && <Button href="#demo" arrow>Ver la demostración</Button>}
 									{c.links.map((link, i) => (
-										<Button href={link.href} external arrow variant={!showInoutDemo && !c.demoVideo && i === 0 ? "primary" : "secondary"}>
-											{link.label}
+										<Button
+											href={link.href}
+											external
+											arrow
+											variant={!showInoutDemo && !c.demoVideo && i === 0 ? "primary" : "secondary"}
+											{...(i === 0 ? { ...demoAttrs, ...(hasVideo ? { "data-demo-down": "hide" } : {}) } : {})}
+										>
+											<span data-demo-label>{link.label}</span>
 										</Button>
 									))}
 								</div>
@@ -259,7 +269,9 @@ const idx = () => String(++n).padStart(2, "0");
 					)}
 					{c.links[0] && (
 						<div class="mt-12">
-							<Button href={c.links[0].href} external arrow size="lg">{c.links[0].label}</Button>
+							<Button href={c.links[0].href} external arrow size="lg" {...demoAttrs}>
+								<span data-demo-label>{c.links[0].label}</span>
+							</Button>
 						</div>
 					)}
 				</Section>
@@ -359,4 +371,5 @@ const idx = () => String(++n).padStart(2, "0");
 			}
 		</div>
 	</nav>
+	<DemoGuard />
 </SiteLayout>
