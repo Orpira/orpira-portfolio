@@ -27,27 +27,39 @@ function env(name: string): string | undefined {
 	return (import.meta.env as Record<string, string | undefined>)[name] ?? process.env[name];
 }
 
-async function ok(url: string, headers: Record<string, string> = {}): Promise<boolean> {
+type Result = { up: boolean | null; code?: number | string };
+
+async function probe(url: string, headers: Record<string, string> = {}): Promise<Result> {
 	try {
 		const res = await fetch(url, { headers, signal: AbortSignal.timeout(TIMEOUT_MS), redirect: "follow" });
-		return res.ok;
-	} catch {
-		return false;
+		return { up: res.ok, code: res.status };
+	} catch (e) {
+		return { up: false, code: e instanceof Error && e.name === "TimeoutError" ? "timeout" : "network" };
 	}
 }
 
-export async function checkDemo(check: Check): Promise<boolean | null> {
-	if (check.kind === "http") return ok(check.url);
-	const base = env(check.urlEnv)?.replace(/\/+$/, "");
-	const key = env(check.keyEnv);
-	if (!base || !key) return null;
+export async function checkDemo(check: Check): Promise<Result> {
+	if (check.kind === "http") return probe(check.url);
+	// Limpia lo que se suele colar al copiar: comillas, espacios, barra final o /rest/v1.
+	const base = env(check.urlEnv)?.trim().replace(/^["']|["']$/g, "").replace(/\/rest\/v1\/?$/, "").replace(/\/+$/, "");
+	const key = env(check.keyEnv)?.trim().replace(/^["']|["']$/g, "");
+	if (!base || !key) return { up: null };
 	// Consulta real de una fila: si el proyecto está en pausa, Supabase responde con error.
-	return ok(`${base}/rest/v1/${check.table}?select=*&limit=1`, { apikey: key, Authorization: `Bearer ${key}` });
+	// La clave va solo en `apikey`: así vale tanto la anon (JWT) como la publishable (sb_publishable_…),
+	// que Supabase rechaza en la cabecera Authorization.
+	return probe(`${base}/rest/v1/${check.table}?select=*&limit=1`, { apikey: key });
 }
 
-export async function checkAllDemos(): Promise<Record<string, boolean | null>> {
+export async function checkAllDemos(): Promise<{ status: Record<string, boolean | null>; codes: Record<string, number | string> }> {
 	const entries = await Promise.all(
 		Object.entries(DEMO_CHECKS).map(async ([slug, check]) => [slug, await checkDemo(check)] as const),
 	);
-	return Object.fromEntries(entries);
+	const status: Record<string, boolean | null> = {};
+	const codes: Record<string, number | string> = {};
+	for (const [slug, r] of entries) {
+		status[slug] = r.up;
+		// Solo el código HTTP de las que fallan: ayuda a diagnosticar sin exponer nada sensible.
+		if (r.up === false && r.code !== undefined) codes[slug] = r.code;
+	}
+	return { status, codes };
 }
