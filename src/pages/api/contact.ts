@@ -5,6 +5,11 @@ import type { APIRoute } from "astro";
 import { randomUUID } from "node:crypto";
 import { createClient } from "@supabase/supabase-js";
 import { createRateLimiter, getClientIp } from "../../lib/rate-limit";
+import {
+	CALL_CONSENT_POLICY_VERSION,
+	normalizePhone,
+	voiceCallsEnabled,
+} from "../../lib/voice-phone";
 
 const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL;
 const serviceKey = import.meta.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -156,7 +161,24 @@ export const POST: APIRoute = async ({ request }) => {
 			return jsonResponse({ success: false, error: "Revisá la longitud de la empresa o el perfil." }, 400);
 		}
 
-		const { error } = await supabase.from("contacts").insert({
+		// Teléfono y consentimiento para la llamada del asistente (opcionales).
+		const rawPhone = typeof data.phone === "string" ? data.phone.trim() : "";
+		const callConsent = voiceCallsEnabled && data.callConsent === true;
+		const phone = voiceCallsEnabled && rawPhone ? normalizePhone(rawPhone) : null;
+		if (voiceCallsEnabled && rawPhone && !phone) {
+			return jsonResponse(
+				{ success: false, error: "El teléfono no es válido. Usa el formato +34 600 000 000." },
+				400,
+			);
+		}
+		if (callConsent && !phone) {
+			return jsonResponse(
+				{ success: false, error: "Para que te llamemos, indica un teléfono." },
+				400,
+			);
+		}
+
+		const { data: inserted, error } = await supabase.from("contacts").insert({
 			name,
 			email,
 			message,
@@ -166,7 +188,14 @@ export const POST: APIRoute = async ({ request }) => {
 			social_profile: socialProfile || null,
 			source_page: sourcePage,
 			status: "new",
-		});
+			...(phone ? { phone } : {}),
+			...(callConsent
+				? {
+						call_consent_at: new Date().toISOString(),
+						call_consent_policy_version: CALL_CONSENT_POLICY_VERSION,
+					}
+				: {}),
+		}).select("id").single();
 
 		if (error) {
 			console.error(
@@ -189,6 +218,22 @@ export const POST: APIRoute = async ({ request }) => {
 			);
 		}
 
+		// Un solo canal por lead: con teléfono y consentimiento, llama el asistente
+		// de voz y la respuesta automática por email queda desactivada para él.
+		let voiceCallQueued = false;
+		if (callConsent && inserted?.id) {
+			const { data: voiceCallId, error: voiceError } = await supabase.rpc(
+				"enqueue_voice_call",
+				{ p_contact_id: inserted.id },
+			);
+			voiceCallQueued = Boolean(voiceCallId);
+			if (voiceError) {
+				console.error(
+					JSON.stringify({ correlationId, scope: "voice-enqueue", code: voiceError.code || "unknown" }),
+				);
+			}
+		}
+
 		if (contactWebhookUrl && !contactWebhookSecret) {
 			console.error(JSON.stringify({ correlationId, scope: "contact-webhook", reason: "missing-secret" }));
 		}
@@ -201,7 +246,12 @@ export const POST: APIRoute = async ({ request }) => {
 						"Content-Type": "application/json",
 						...(contactWebhookSecret ? { "X-Webhook-Secret": contactWebhookSecret } : {}),
 					},
-					body: JSON.stringify({ name, email, message }),
+					body: JSON.stringify({
+						name,
+						email,
+						message,
+						channel: voiceCallQueued ? "voice" : "email",
+					}),
 					signal: AbortSignal.timeout(5000),
 				});
 
@@ -225,7 +275,7 @@ export const POST: APIRoute = async ({ request }) => {
 			}
 		}
 
-		return jsonResponse({ success: true });
+		return jsonResponse({ success: true, channel: voiceCallQueued ? "voice" : "email" });
 	} catch (err) {
 		console.error(
 			JSON.stringify({

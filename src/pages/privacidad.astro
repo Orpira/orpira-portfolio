@@ -6,6 +6,7 @@ import SiteLayout from "../layouts/SiteLayout.astro";
 // Texto legal migrado de la versión anterior (agosto de 2026). Cambio de octubre de 2026:
 // la sección «Datos que se recogen» incluye la analítica sin cookies de Vercel.
 // Cambio de noviembre de 2026: primera respuesta redactada con IA y revisada por Orlando.
+// Cambio de noviembre de 2026: llamada opcional del asistente de voz (teléfono y consentimiento propios).
 const sections = [
 	{
 		title: "Responsable del tratamiento",
@@ -17,6 +18,7 @@ const sections = [
 		title: "Datos que se recogen",
 		body: [
 			"A través del formulario de contacto se recogen únicamente tu nombre, tu correo electrónico y el mensaje que envíes, incluida la opción que marques en «¿Qué necesitas?».",
+			"Si eliges que te llamemos, se recogen también tu número de teléfono y la fecha en que autorizas la llamada. La llamada se graba y se transcribe, y se guarda un resumen para Orlando.",
 			"Para saber qué páginas se visitan, esta web usa Vercel Web Analytics. Mide visitas de forma agregada y anónima, sin cookies y sin asociar las visitas a tu dirección IP: cada visitante se cuenta con un identificador temporal que se renueva cada día, de modo que no es posible seguirte entre días distintos ni entre otros sitios web. No se usan cookies de seguimiento ni publicidad.",
 		],
 	},
@@ -25,6 +27,7 @@ const sections = [
 		body: [
 			"Los datos del formulario se utilizan exclusivamente para responder a tu solicitud de contacto y, si procede, gestionar una relación profesional o comercial. La base jurídica es tu consentimiento, que otorgas al marcar la casilla de aceptación antes de enviar el formulario.",
 			"Para responder antes, la primera respuesta a tu mensaje la redacta un asistente de inteligencia artificial que se presenta como tal. Te hace unas preguntas sobre lo que necesitas para que Orlando llegue a la primera conversación sabiendo de qué se trata. Orlando revisa cada mensaje antes de enviarlo y ninguna decisión sobre ti se toma de forma automatizada.",
+			"Si dejas tu teléfono y marcas la casilla de llamada, en lugar del email te llama un asistente de voz de inteligencia artificial que se presenta como tal, en horario laboral y como máximo tres intentos. La base jurídica es ese consentimiento específico, que puedes retirar en cualquier momento, también durante la llamada diciendo que no quieres que te vuelva a llamar.",
 			"La medición agregada de visitas se basa en el interés legítimo de conocer el uso de la web para mejorarla.",
 		],
 	},
@@ -39,6 +42,7 @@ const sections = [
 		body: [
 			"Los datos se almacenan en Supabase (infraestructura en la UE) y el sitio, junto con su analítica, se sirve mediante Vercel. Al enviar el formulario puede enviarse una notificación a través de un servicio automatizado de mensajería. Ninguna de estas plataformas recibe tus datos con fines publicitarios ni los cede a terceros.",
 			"Para redactar la respuesta, el contenido de la conversación se envía a Anthropic, proveedor del modelo de IA Claude, mediante su API. Anthropic está en Estados Unidos, por lo que este tratamiento puede implicar una transferencia internacional de datos. Los emails se envían y se reciben con iCloud Mail (Apple).",
+			"Las llamadas del asistente de voz se gestionan con Vapi (plataforma de agentes de voz) y Twilio (operador telefónico), ambos en Estados Unidos, que procesan el audio, la grabación y la transcripción; esto también puede implicar una transferencia internacional de datos.",
 		],
 	},
 	{
@@ -57,7 +61,7 @@ const sections = [
 	<article class="pb-24 pt-12 md:pt-20">
 		<div class="container-site grid gap-10 md:grid-cols-12">
 			<header class="md:col-span-8 md:col-start-4">
-				<p class="t-data text-ink-muted">Legal · Última actualización: octubre de 2026</p>
+				<p class="t-data text-ink-muted">Legal · Última actualización: noviembre de 2026</p>
 				<h1 class="t-h2 mt-5">Política de privacidad</h1>
 			</header>
 			<div class="md:col-span-7 md:col-start-4">
