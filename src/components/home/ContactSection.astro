@@ -9,6 +9,7 @@ import { categories } from "../../lib/crm-categories";
 import Section from "../ui/Section.astro";
 import Button from "../ui/Button.astro";
 import { contact } from "../../data/home";
+import { voiceCallsEnabled } from "../../lib/voice-phone";
 
 const field =
 	"mt-2 block w-full rounded-ds-md border border-line bg-paper px-4 py-3 text-ink placeholder:text-ink-muted/80 transition-colors focus:border-ink focus:outline-none focus:ring-0 aria-[invalid=true]:border-red-600 dark:aria-[invalid=true]:border-red-400";
@@ -113,6 +114,44 @@ const errorText = "mt-1.5 hidden text-sm text-red-700 dark:text-red-300";
 					aria-describedby="cf-message-error"></textarea>
 				<p id="cf-message-error" class={errorText}>El mensaje necesita al menos 10 caracteres.</p>
 			</div>
+
+			{voiceCallsEnabled && (
+				<fieldset class="mt-6 rounded-ds-md border border-line p-4 sm:p-5">
+					<legend class="px-1 font-medium text-ink">¿Prefieres que te llamemos? (opcional)</legend>
+					<p class="text-[0.9375rem] text-ink-muted">
+						Si dejas tu teléfono y lo autorizas, mi asistente de IA te llamará en horario laboral
+						para hacerte unas preguntas sobre tu mensaje. Si no, te responderá por email.
+					</p>
+					<label for="cf-phone" class="mt-4 block font-medium text-ink">Teléfono</label>
+					<input
+						id="cf-phone"
+						name="phone"
+						type="tel"
+						autocomplete="tel"
+						inputmode="tel"
+						maxlength="32"
+						pattern="[0-9+ \(\)\.\-]{9,32}"
+						placeholder="+34 600 000 000"
+						class={field}
+						aria-describedby="cf-phone-error"
+					/>
+					<p id="cf-phone-error" class={errorText}>Escribe un teléfono válido, por ejemplo +34 600 000 000.</p>
+					<label class="mt-4 flex items-start gap-3 text-[0.9375rem]">
+						<input
+							id="cf-call-consent"
+							type="checkbox"
+							name="callConsent"
+							class="mt-1 size-4 rounded-[4px] border-line text-accent-ink focus:ring-accent-ink"
+							aria-describedby="cf-call-consent-error"
+						/>
+						<span>
+							Acepto que el asistente de IA de Orlando me llame a este número. La llamada se graba y
+							transcribe para que Orlando la revise. Puedo pedir que no me vuelva a llamar en cualquier momento.
+						</span>
+					</label>
+					<p id="cf-call-consent-error" class={errorText}>Para la llamada necesito un teléfono y tu autorización.</p>
+				</fieldset>
+			)}
 
 			<div class="mt-6">
 				<label class="flex items-start gap-3 text-[0.9375rem]">
@@ -219,10 +258,26 @@ const errorText = "mt-1.5 hidden text-sm text-red-700 dark:text-red-300";
 			});
 		});
 
+		const phone = form.querySelector<HTMLInputElement>("#cf-phone");
+		const callConsent = form.querySelector<HTMLInputElement>("#cf-call-consent");
+
+		// La casilla de llamada exige teléfono; el teléfono sin casilla es válido.
+		const validateCall = () => {
+			if (!phone || !callConsent) return true;
+			const phoneValid = phone.checkValidity() && (!callConsent.checked || phone.value.trim() !== "");
+			showError(phone, !phoneValid);
+			const consentError = document.getElementById("cf-call-consent-error");
+			consentError?.classList.toggle("hidden", phoneValid || !callConsent.checked);
+			return phoneValid;
+		};
+		phone?.addEventListener("blur", () => { if (phone.value) validateCall(); });
+		phone?.addEventListener("input", () => { if (phone.getAttribute("aria-invalid") === "true") validateCall(); });
+		callConsent?.addEventListener("change", validateCall);
+
 		form.addEventListener("submit", async (event) => {
 			event.preventDefault();
 			const results = fields.map(validate);
-			const firstInvalid = fields[results.indexOf(false)];
+			const firstInvalid = fields[results.indexOf(false)] ?? (validateCall() ? undefined : phone ?? undefined);
 			if (firstInvalid) {
 				firstInvalid.focus();
 				setStatus("Revisa los campos marcados.", "error");
@@ -251,6 +306,8 @@ const errorText = "mt-1.5 hidden text-sm text-red-700 dark:text-red-300";
 						sourcePage: window.location.pathname,
 						botcheck: data.get("botcheck") !== null,
 						consent: data.get("consent") !== null,
+						...(phone ? { phone: String(data.get("phone") ?? "").trim() } : {}),
+						...(callConsent ? { callConsent: data.get("callConsent") !== null } : {}),
 					}),
 				});
 				const result = await response.json().catch(() => ({}));
@@ -258,8 +315,11 @@ const errorText = "mt-1.5 hidden text-sm text-red-700 dark:text-red-300";
 				if (response.ok && result.success) {
 					form.reset();
 					fields.forEach((input) => showError(input, false));
+					if (phone) showError(phone, false);
 					setStatus(
-						"Mensaje enviado. Te llegará una confirmación por email y te responderé personalmente.",
+						result.channel === "voice"
+							? "Mensaje enviado. Mi asistente te llamará en horario laboral (lunes a viernes, de 9:30 a 20:00)."
+							: "Mensaje enviado. Te llegará una confirmación por email y te responderé personalmente.",
 						"ok",
 					);
 				} else {

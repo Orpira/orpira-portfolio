@@ -46,6 +46,38 @@ const [{ data: replies, error: repliesError }, { data: notes, error: notesError 
   supabaseAdmin.from("crm_booking_settings").select("booking_url").eq("singleton", true).maybeSingle(),
 ]);
 
+// Agente de voz (14-crm-voice.sql). Consultas aparte: si la migración aún no
+// está aplicada, fallan sin romper la ficha y el bloque no se muestra.
+const [{ data: voiceContact }, { data: voiceCalls, error: voiceCallsError }] = await Promise.all([
+  supabaseAdmin.from("contacts").select("phone, call_consent_at, do_not_call_at").eq("id", lead.id).maybeSingle(),
+  supabaseAdmin.from("voice_calls")
+    .select("id, status, attempts, max_attempts, next_attempt_at, started_at, ended_at, duration_seconds, ended_reason, summary, transcript, brief, created_at, last_error")
+    .eq("contact_id", lead.id).order("created_at", { ascending: false }),
+]);
+const voiceStatuses: Record<string, string> = {
+  queued: "En cola",
+  calling: "Llamando",
+  completed: "Completada",
+  no_answer: "Sin respuesta",
+  failed: "Fallida",
+  cancelled: "Cancelada",
+};
+const showVoice = !voiceCallsError && Boolean(voiceContact?.phone || voiceCalls?.length);
+const briefText = (value: unknown) => typeof value === "string" && value.trim() && value !== "Sin datos" ? value.trim() : null;
+const briefList = (value: unknown) => Array.isArray(value) ? value.filter((item): item is string => typeof item === "string" && item.trim() !== "") : [];
+const formatDuration = (seconds: number | null) =>
+  seconds === null ? null : `${Math.floor(seconds / 60)} min ${seconds % 60} s`;
+const voiceCallViews = (voiceCalls ?? []).map((call) => {
+  const brief = (call.brief ?? {}) as Record<string, unknown>;
+  return {
+    call,
+    oneLine: briefText(brief.en_una_frase),
+    callPreference: briefText(brief.llamada),
+    questions: briefList(brief.preguntas_para_la_llamada),
+    essentials: briefList(brief.imprescindibles),
+  };
+});
+
 const draft = replies?.find((reply) => reply.status === "draft");
 const queued = Boolean(draft?.manual_requested_at);
 const showEditor = !repliesError && (!replies?.length || Boolean(draft && !draft.approved_recipient));
@@ -120,6 +152,10 @@ const activity: Activity[] = [
   ...(followUpHistory ?? []).map((task) => ({ label: "Seguimiento completado", detail: task.action, date: task.completed_at })),
   ...(changes ?? []).map((change) => ({ label: `${stageLabel(change.from_stage)} → ${stageLabel(change.to_stage)}`, date: change.changed_at })),
   ...(notes ?? []).map((note) => ({ label: "Nota interna", detail: note.body, date: note.created_at })),
+  ...(voiceCalls ?? []).filter((call) => call.ended_at).map((call) => ({
+    label: `Llamada del asistente · ${voiceStatuses[call.status] ?? call.status}`,
+    date: call.ended_at!,
+  })),
   ...(replies ?? []).map((reply) => ({
     label: reply.status === "draft" && reply.manual_requested_at ? "Correo en cola" : replyStatuses[reply.status] ?? reply.status,
     date: reply.sent_at ?? reply.send_finished_at ?? reply.send_started_at ?? reply.manual_requested_at ?? reply.created_at, reply,
@@ -311,6 +347,71 @@ activity.sort((a, b) => Date.parse(b.date) - Date.parse(a.date));
         )}
       </section>
     </div>
+
+    {showVoice && (
+      <section id="llamadas" class="rounded-xl border border-slate-200 bg-white p-5" aria-labelledby="calls-title">
+        <div class="flex flex-wrap items-baseline justify-between gap-3">
+          <h2 id="calls-title" class="text-lg font-semibold">Llamadas del asistente</h2>
+          <p class="text-sm text-slate-600">
+            {voiceContact?.phone && <a href={`tel:${voiceContact.phone}`} class="font-semibold text-teal-800 hover:underline">{voiceContact.phone}</a>}
+            {voiceContact?.call_consent_at && <> · Autorizó la llamada el <time datetime={voiceContact.call_consent_at}>{formatDate(voiceContact.call_consent_at)}</time></>}
+          </p>
+        </div>
+        {voiceContact?.do_not_call_at && (
+          <p class="mt-3 rounded-lg bg-rose-50 p-3 text-sm text-rose-900">
+            Pidió que no le vuelvan a llamar (<time datetime={voiceContact.do_not_call_at}>{formatDate(voiceContact.do_not_call_at)}</time>).
+          </p>
+        )}
+        {!voiceCallViews.length ? (
+          <p class="mt-3 text-sm text-slate-600">Dejó su teléfono, pero sin autorizar la llamada.</p>
+        ) : (
+          <ol class="mt-4 space-y-4">
+            {voiceCallViews.map(({ call, oneLine, callPreference, questions, essentials }) => {
+              return (
+                <li class="space-y-2 rounded-lg border border-slate-200 p-4">
+                  <div class="flex flex-wrap items-baseline justify-between gap-x-3">
+                    <p class="font-semibold">
+                      {voiceStatuses[call.status] ?? call.status}
+                      <span class="font-normal text-slate-600"> · intento {call.attempts} de {call.max_attempts}</span>
+                    </p>
+                    <time class="text-sm text-slate-600" datetime={call.ended_at ?? call.started_at ?? call.created_at}>
+                      {formatDate(call.ended_at ?? call.started_at ?? call.created_at)}
+                    </time>
+                  </div>
+                  {call.status === "queued" && (
+                    <p class="text-sm text-slate-700">Próximo intento desde el <time datetime={call.next_attempt_at}>{formatDate(call.next_attempt_at)}</time> (lunes a viernes, 9:30–20:00).</p>
+                  )}
+                  {call.duration_seconds !== null && <p class="text-sm text-slate-600">Duración: {formatDuration(call.duration_seconds)}</p>}
+                  {call.last_error && call.status !== "completed" && <p class="text-sm text-amber-800">{call.last_error}</p>}
+                  {oneLine && <p class="font-medium text-slate-900">{oneLine}</p>}
+                  {call.summary && <p class="whitespace-pre-wrap break-words text-sm text-slate-700">{call.summary}</p>}
+                  {(essentials.length > 0 || callPreference || questions.length > 0) && (
+                    <dl class="space-y-2 text-sm">
+                      {essentials.length > 0 && (
+                        <div><dt class="font-medium">Imprescindible</dt><dd class="text-slate-700">{essentials.join(" · ")}</dd></div>
+                      )}
+                      {callPreference && <div><dt class="font-medium">Cuándo y por dónde hablar</dt><dd class="text-slate-700">{callPreference}</dd></div>}
+                      {questions.length > 0 && (
+                        <div>
+                          <dt class="font-medium">Preguntas para tu llamada</dt>
+                          <dd><ul class="list-disc pl-5 text-slate-700">{questions.map((question) => <li>{question}</li>)}</ul></dd>
+                        </div>
+                      )}
+                    </dl>
+                  )}
+                  {call.transcript && (
+                    <details>
+                      <summary class="cursor-pointer text-sm font-semibold text-teal-800">Ver transcripción</summary>
+                      <p class="mt-2 max-h-96 overflow-y-auto whitespace-pre-wrap break-words text-sm text-slate-700">{call.transcript}</p>
+                    </details>
+                  )}
+                </li>
+              );
+            })}
+          </ol>
+        )}
+      </section>
+    )}
 
     <section class="rounded-xl border border-slate-200 bg-white p-5" aria-labelledby="activity-title">
       <div class="flex flex-wrap items-center justify-between gap-3">
