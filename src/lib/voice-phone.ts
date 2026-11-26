@@ -3,8 +3,18 @@
 /** Versión del texto de consentimiento que se muestra en el formulario. */
 export const CALL_CONSENT_POLICY_VERSION = "2026-11-llamada-v1";
 
-/** La función se activa con PUBLIC_VOICE_CALLS_ENABLED=true (tras aplicar 14-crm-voice.sql). */
-export const voiceCallsEnabled = import.meta.env.PUBLIC_VOICE_CALLS_ENABLED === "true";
+/**
+ * La función se activa con VOICE_CALLS_ENABLED=true en Vercel (tras aplicar
+ * 14-crm-voice.sql). Solo se lee en el servidor y al compilar: la portada es
+ * estática, así que cambiarla exige volver a desplegar. Se acepta también el
+ * nombre anterior, PUBLIC_VOICE_CALLS_ENABLED.
+ */
+const flag =
+	import.meta.env.VOICE_CALLS_ENABLED ??
+	process.env.VOICE_CALLS_ENABLED ??
+	import.meta.env.PUBLIC_VOICE_CALLS_ENABLED ??
+	process.env.PUBLIC_VOICE_CALLS_ENABLED;
+export const voiceCallsEnabled = flag?.trim().toLowerCase() === "true";
 
 const E164 = /^\+[1-9]\d{7,14}$/;
 

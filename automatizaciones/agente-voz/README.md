@@ -53,7 +53,7 @@ Genera un secreto largo: `openssl rand -hex 32`.
 - **Vercel** → *Settings → Environment Variables* (Production):
   - `VAPI_WEBHOOK_SECRET` = el mismo secreto
   - `TELEGRAM_BOT_TOKEN` y `TELEGRAM_CHAT_ID` = los de tu bot de avisos (opcionales)
-  - `PUBLIC_VOICE_CALLS_ENABLED` = `true` (muestra el teléfono y la casilla en el formulario). Hace falta volver a desplegar.
+  - `VOICE_CALLS_ENABLED` = `true` (muestra el teléfono y la casilla en el formulario). Hace falta volver a desplegar.
 
 ### 4. Asistente en Vapi
 
@@ -105,7 +105,7 @@ node automatizaciones/agente-voz/construir.mjs
 3. Comprueba en la ficha del lead: bloque **Llamadas** con resumen y transcripción, nota interna y etapa «Por avanzar». Te llega el Telegram.
 4. Prueba también: colgar sin contestar (debe quedar para reintento) y decir «no me llames más» (la ficha lo muestra y no vuelve a llamar).
 
-Para pararlo todo: desactiva el flujo en n8n. Para ocultar la opción en la web: `PUBLIC_VOICE_CALLS_ENABLED=false` y redespliega.
+Para pararlo todo: desactiva el flujo en n8n. Para ocultar la opción en la web: `VOICE_CALLS_ENABLED=false` y redespliega.
 
 ## Antes de usarlo con leads reales
 

@@ -9,6 +9,7 @@ interface ImportMetaEnv {
 	readonly ADMIN_PASSWORD: string;
 	readonly ADMIN_SESSION_SECRET: string;
 	readonly CALCOM_WEBHOOK_SECRET?: string;
+	readonly VOICE_CALLS_ENABLED?: string;
 	readonly PUBLIC_VOICE_CALLS_ENABLED?: string;
 	readonly VAPI_WEBHOOK_SECRET?: string;
 	readonly TELEGRAM_BOT_TOKEN?: string;
