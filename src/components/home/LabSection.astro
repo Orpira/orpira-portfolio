@@ -1,4 +1,5 @@
 ---
+import DemoGuard from "../DemoGuard.astro";
 import Section from "../ui/Section.astro";
 import Tag from "../ui/Tag.astro";
 import Pending from "../ui/Pending.astro";
@@ -38,6 +39,8 @@ const caseByTitle = new Map(
 		{
 			labProjects.map((project, i) => {
 				const caseHref = caseByTitle.get(project.title);
+				// Con caso de estudio, el botón de la app se protege con DemoGuard (vídeo si la demo no responde).
+				const demoSlug = caseHref?.split("/").filter(Boolean).pop();
 				const host = project.href ? new URL(project.href).hostname : "demo local";
 				const titleHref = caseHref ?? project.href;
 				return (
@@ -87,9 +90,15 @@ const caseByTitle = new Map(
 										</a>
 									)}
 									{project.href && (
-										<a class="lab-btn lab-btn--app" href={project.href} target="_blank" rel="noopener noreferrer">
-											Abrir la app<span class="sr-only"> {project.title} (se abre en otra pestaña)</span>
-											<span aria-hidden="true" class="lab-arrow">↗</span>
+										<a
+											class="lab-btn lab-btn--app"
+											href={project.href}
+											target="_blank"
+											rel="noopener noreferrer"
+											{...(demoSlug ? { "data-demo": demoSlug, "data-demo-video": demoSlug === "inout" ? "demo-inout" : "demo", "data-demo-title": project.title } : {})}
+										>
+											<span data-demo-label>Abrir la app</span><span class="sr-only" data-demo-sr> {project.title} (se abre en otra pestaña)</span>
+											<span aria-hidden="true" class="lab-arrow" data-demo-arrow>↗</span>
 										</a>
 									)}
 								</div>
@@ -394,3 +403,5 @@ const caseByTitle = new Map(
 		}
 	}
 </style>
+
+<DemoGuard />

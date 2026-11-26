@@ -65,11 +65,12 @@ const externalAttrs: HTMLAttributes<"a"> = external
 				<span
 					aria-hidden="true"
 					class="transition-transform duration-200 group-hover:translate-x-0.5"
+					data-demo-arrow
 				>
 					{external ? "↗" : "→"}
 				</span>
 			)}
-			{external && <span class="sr-only">(se abre en otra pestaña)</span>}
+			{external && <span class="sr-only" data-demo-sr>(se abre en otra pestaña)</span>}
 		</a>
 	) : (
 		<button type={type} class={classes} {...rest}>

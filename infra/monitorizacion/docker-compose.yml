@@ -1,0 +1,18 @@
+# Uptime Kuma en OrPiRa-Cloud, detrás de Nginx Proxy Manager (como Inout).
+# Despliegue: ver README.md de esta carpeta.
+services:
+  uptime-kuma:
+    # Fijado a la 2.x: la etiqueta "latest" de Docker Hub sigue apuntando a la 1.23.
+    image: louislam/uptime-kuma:2
+    container_name: uptime-kuma
+    restart: unless-stopped
+    volumes:
+      - ./data:/app/data
+    networks:
+      - proxy
+    # Sin puertos publicados: solo se entra a través de Nginx Proxy Manager.
+
+networks:
+  proxy:
+    name: nginx-proxy-manager_default
+    external: true
