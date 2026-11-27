@@ -74,7 +74,9 @@ Necesita Node 18 o superior en el servidor. Crea `/opt/monitorizacion/.env`:
 
 ```bash
 # Token personal: supabase.com → Account → Access Tokens. Solo en el servidor.
-SUPABASE_PAT=sbp_...
+# Un token por organización: SUPABASE_PAT_<ref> para cada proyecto (o SUPABASE_PAT si comparten organización).
+SUPABASE_PAT_<ref-webwiz>=sbp_...
+SUPABASE_PAT_<ref-juegos>=sbp_...
 # ref:tabla:anonKey de cada proyecto, separados por comas
 PROYECTOS=<ref-webwiz>:questions:<anon-webwiz>,<ref-juegos>:rooms:<anon-juegos>
 TELEGRAM_BOT_TOKEN=
