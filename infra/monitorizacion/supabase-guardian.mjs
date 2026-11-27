@@ -11,6 +11,8 @@
 //
 // Variables (.env o entorno):
 //   SUPABASE_PAT          Token personal (Account → Access Tokens). Solo en el servidor, nunca en un frontend.
+//   SUPABASE_PAT_<ref>    (opcional) Token propio para un proyecto concreto, p. ej. cuando los
+//                         proyectos están en organizaciones distintas. Tiene prioridad sobre SUPABASE_PAT.
 //   PROYECTOS             Lista "ref:tabla:anonKey" separada por comas.
 //                         Ej: abcd1234:questions:eyJ...,efgh5678:rooms:eyJ...
 //   TELEGRAM_BOT_TOKEN    (opcional) Token del bot que ya usa el CRM
@@ -21,7 +23,7 @@ import { readFileSync, existsSync } from "node:fs";
 
 if (existsSync(new URL("./.env", import.meta.url))) {
   for (const linea of readFileSync(new URL("./.env", import.meta.url), "utf8").split("\n")) {
-    const m = linea.match(/^\s*([A-Z_]+)\s*=\s*(.*)\s*$/);
+    const m = linea.match(/^\s*([A-Za-z0-9_]+)\s*=\s*(.*)\s*$/);
     if (m && !process.env[m[1]]) process.env[m[1]] = m[2].replace(/^["']|["']$/g, "");
   }
 }
@@ -32,7 +34,10 @@ const PROYECTOS = (process.env.PROYECTOS || "").split(",").map((p) => p.trim()).
 const ESPERA_MAX = (+process.env.ESPERA_MAX_MIN || 10) * 60_000;
 const API = "https://api.supabase.com/v1";
 
-if (!PAT || !PROYECTOS.length) { console.error("Faltan SUPABASE_PAT o PROYECTOS"); process.exit(1); }
+const tokenDe = (ref) => process.env[`SUPABASE_PAT_${ref}`] || PAT;
+if (!PROYECTOS.length || PROYECTOS.some((p) => !tokenDe(p.ref))) {
+  console.error("Faltan PROYECTOS o un token (SUPABASE_PAT o SUPABASE_PAT_<ref>) para algún proyecto"); process.exit(1);
+}
 
 const dormir = (ms) => new Promise((r) => setTimeout(r, ms));
 const hora = () => new Date().toISOString();
@@ -48,14 +53,14 @@ async function telegram(texto) {
   } catch { /* un aviso fallido no debe parar el guardián */ }
 }
 
-async function api(ruta, metodo = "GET") {
-  const r = await fetch(API + ruta, { method: metodo, headers: { Authorization: `Bearer ${PAT}` } });
+async function api(ref, ruta, metodo = "GET") {
+  const r = await fetch(API + ruta, { method: metodo, headers: { Authorization: `Bearer ${tokenDe(ref)}` } });
   const cuerpo = await r.text();
   if (!r.ok) throw new Error(`${metodo} ${ruta} → ${r.status} ${cuerpo.slice(0, 200)}`);
   return cuerpo ? JSON.parse(cuerpo) : {};
 }
 
-async function estado(ref) { return (await api(`/projects/${ref}`)).status; }
+async function estado(ref) { return (await api(ref, `/projects/${ref}`)).status; }
 
 async function keepalive({ ref, tabla, anon }) {
   // Lee una fila de una tabla pública: cuenta como actividad real de la base de datos.
@@ -71,7 +76,7 @@ async function vigilar(p) {
 
   if (st === "INACTIVE" || st === "PAUSED") {
     await telegram(`⏸️ Supabase ${p.ref} estaba en pausa. Reanudando…`);
-    await api(`/projects/${p.ref}/restore`, "POST");
+    await api(p.ref, `/projects/${p.ref}/restore`, "POST");
     const inicio = Date.now();
     do { await dormir(20_000); st = await estado(p.ref); console.log(`${hora()} ${p.ref}: ${st}`); }
     while (st !== "ACTIVE_HEALTHY" && Date.now() - inicio < ESPERA_MAX);
